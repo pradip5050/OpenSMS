@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">sms-frontend</string>
+    <string name="main_activity_title">sms-frontend</string>
+</resources>
