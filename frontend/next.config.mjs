@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === "production";
+const isUsingTauri = false;
 
 let internalHost = null;
 
@@ -13,7 +14,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  assetPrefix: isProd ? null : `http://${internalHost}:3000`,
+  assetPrefix: isUsingTauri
+    ? isProd
+      ? null
+      : `http://${internalHost}:3000`
+    : undefined,
 };
 
 export default nextConfig;
