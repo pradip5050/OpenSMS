@@ -1,0 +1,26 @@
+services:
+  payload:
+    image: node:18-alpine
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./docker/dev:/home/node/app
+      - node_modules:/home/node/app/node_modules
+    working_dir: /home/node/app/
+    command: sh -c "yarn install && yarn dev"
+    depends_on:
+      - dev_database
+    env_file:
+      - .env
+
+  dev_database:
+    container_name: dev_database
+    image: postgres:16
+    env_file:
+      - .env
+    volumes:
+      - sms_database_dev:/var/lib/postgresql/data
+
+volumes:
+  sms_database_dev:
+  node_modules:
