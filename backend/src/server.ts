@@ -17,7 +17,7 @@ const start = async () => {
     },
   });
 
-  app.listen(3000);
+  app.listen(3002);
 };
 
 start();
