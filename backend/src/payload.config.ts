@@ -11,14 +11,17 @@ import Students from "./collections/Students";
 import Media from "./collections/Media";
 import Courses from "./collections/Courses";
 import Branches from "./collections/Branches";
+import { LoginLogo } from "./globals/LoginLogo";
 
 export default buildConfig({
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),
   },
+  cors: "*",
   editor: slateEditor({}),
   collections: [Users, Students, Courses, Branches, Media],
+  globals: [LoginLogo],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },

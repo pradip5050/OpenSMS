@@ -2,6 +2,7 @@ import { CollectionConfig } from "payload/types";
 import { isAdmin } from "../access/isAdmin";
 
 const Users: CollectionConfig = {
+  // Email added by default
   slug: "users",
   auth: true,
   admin: {
@@ -28,8 +29,6 @@ const Users: CollectionConfig = {
       required: true,
       options: ["admin", "faculty", "student"],
     },
-    // Email added by default
-    // Add more fields as needed
   ],
 };
 

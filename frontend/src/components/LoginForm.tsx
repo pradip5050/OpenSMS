@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 //   LoadCanvasTemplateNoReload,
 //   validateCaptcha,
 // } from "react-simple-captcha";
-// import { useEffect } from "react";
 
 export function LoginForm() {
   // useEffect(() => {
