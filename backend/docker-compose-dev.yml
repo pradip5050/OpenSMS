@@ -1,25 +1,36 @@
 services:
-  payload:
+  sms-payload-dev:
+    container_name: sms-payload-dev
     image: node:18-alpine
     ports:
-      - '3000:3000'
+      - 3002:3000
     volumes:
-      - /src:/home/node/app
+      - .:/home/node/app
       - node_modules:/home/node/app/node_modules
     working_dir: /home/node/app/
     command: sh -c "yarn install && yarn dev"
     depends_on:
-      - dev_database
+      - sms-database-dev
     env_file:
-      - .env
+      - dev.env
 
-  dev_database:
-    container_name: dev_database
+  sms-database-dev:
+    container_name: sms-database-dev
     image: postgres:16
     env_file:
-      - .env
+      - dev.env
     volumes:
       - sms_database_dev:/var/lib/postgresql/data
+
+  sms-pgadmin-dev:
+    container_name: sms-pgadmin-dev
+    image: dpage/pgadmin4
+    env_file:
+      - dev.env
+    ports:
+      - 5050:80
+    depends_on:
+      - sms-database-dev
 
 volumes:
   sms_database_dev:

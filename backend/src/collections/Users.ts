@@ -21,7 +21,7 @@ const Users: CollectionConfig = {
       required: true,
     },
     {
-      name: "role",
+      name: "roles",
       type: "select",
       hasMany: false,
       defaultValue: ["student"],
