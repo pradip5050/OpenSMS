@@ -6,6 +6,8 @@ import Image from "next/image";
 
 export default function Login() {
   const logo = useLogo();
+  const placeholderUrl =
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/991px-Placeholder_view_vector.svg.png";
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center">
@@ -13,8 +15,7 @@ export default function Login() {
         <LoginForm />
         <div className="hidden bg-muted lg:block">
           <Image
-            src={logo.data?.logo.url ?? ""}
-            // src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/991px-Placeholder_view_vector.svg.png"
+            src={logo.data?.logo?.url ?? placeholderUrl}
             alt="Image"
             width="1920"
             height="1080"

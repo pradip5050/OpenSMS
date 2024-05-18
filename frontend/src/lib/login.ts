@@ -34,5 +34,4 @@ export function useLogo() {
   } satisfies Response<Logo | undefined>;
 
   // return `${API_URL}${data.logo.url}`;
-  // return "f";
 }
