@@ -30,8 +30,6 @@ export function useLogo() {
     fetcher
   );
 
-  console.log(JSON.stringify(data));
-
   return {
     data,
     error,
@@ -41,6 +39,8 @@ export function useLogo() {
 
 export function mapLogo(logoModel: Logo): Logo {
   let url: string | undefined = logoModel?.logo?.url;
+
+  console.log(url);
 
   return {
     ...logoModel,
