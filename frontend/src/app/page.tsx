@@ -3,6 +3,7 @@
 import { LoginForm } from "@/components/login/LoginForm";
 import LogoImage from "@/components/login/Logo";
 import { useLogo } from "@/lib/login/logo";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function Login() {
   const { data, error, isLoading } = useLogo();
@@ -15,6 +16,7 @@ export default function Login() {
           <LogoImage data={data} error={error} isLoading={isLoading} />
         </div>
       </div>
+      <Toaster />
     </main>
   );
 }

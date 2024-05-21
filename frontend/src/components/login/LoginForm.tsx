@@ -11,14 +11,14 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { LoginPayload, useLogin } from "@/lib/login/login";
 import Spinner from "../Spinner";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 // import {
 //   loadCaptchaEnginge,
 //   LoadCanvasTemplateNoReload,
@@ -35,10 +35,11 @@ export function LoginForm() {
   //   loadCaptchaEnginge(6, "black", "white");
   // }, []);
   const { trigger, isMutating } = useLogin();
-
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const payload = {
       email: values.email,
@@ -47,8 +48,20 @@ export function LoginForm() {
 
     console.log(payload);
 
-    const result = await trigger(payload);
-    console.log(result);
+    try {
+      const result = await trigger(payload);
+      console.log(result);
+    } catch (err) {
+      const { dismiss } = toast({
+        variant: "destructive",
+        title: "Error!",
+        description: "Invalid credentials!",
+      });
+
+      setTimeout(() => {
+        dismiss();
+      }, 2000);
+    }
   }
 
   return (
