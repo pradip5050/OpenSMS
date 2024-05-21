@@ -1,12 +1,7 @@
-import axios, { AxiosError } from "axios";
-import { API_URL } from "./constants";
+import axios from "axios";
+import { API_URL } from "../constants";
 import useSWR, { Fetcher } from "swr";
-
-export interface Response<T> {
-  data: T;
-  error: AxiosError | undefined;
-  isLoading: boolean;
-}
+import { GetResponse } from "../utils";
 
 export interface Logo {
   id: number;
@@ -18,8 +13,6 @@ export interface Logo {
 
 const fetcher: Fetcher<Logo> = (url: string) =>
   axios.get(url).then((res) => res.data);
-
-export async function signIn(name: string, password: string) {}
 
 export const placeholderUrl =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/991px-Placeholder_view_vector.svg.png";
@@ -34,7 +27,7 @@ export function useLogo() {
     data,
     error,
     isLoading,
-  } satisfies Response<Logo | undefined>;
+  } satisfies GetResponse<Logo | undefined>;
 }
 
 export function mapLogo(logoModel: Logo): Logo {

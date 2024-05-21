@@ -17,27 +17,38 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Enter valid email address" }),
-  password: z.string(),
-});
+import { LoginPayload, useLogin } from "@/lib/login/login";
+import Spinner from "../Spinner";
 // import {
 //   loadCaptchaEnginge,
 //   LoadCanvasTemplateNoReload,
 //   validateCaptcha,
 // } from "react-simple-captcha";
 
+const formSchema = z.object({
+  email: z.string().email({ message: "Enter valid email address" }),
+  password: z.string(),
+});
+
 export function LoginForm() {
   // useEffect(() => {
   //   loadCaptchaEnginge(6, "black", "white");
   // }, []);
+  const { trigger, isMutating } = useLogin();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const payload = {
+      email: values.email,
+      password: values.password,
+    } satisfies LoginPayload;
+
+    console.log(payload);
+
+    const result = await trigger(payload);
+    console.log(result);
   }
 
   return (
@@ -97,8 +108,8 @@ export function LoginForm() {
                 >
                   Forgot your password?
                 </Link> */}
-            <Button type="submit" className="w-full">
-              Login
+            <Button disabled={isMutating} type="submit" className="w-full">
+              {isMutating ? <Spinner width="24" height="24" /> : "Login"}
             </Button>
             {/* <div className="min-w-full flex items-center justify-center">
             <LoadCanvasTemplateNoReload />

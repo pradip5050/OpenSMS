@@ -2,7 +2,7 @@
 
 import { LoginForm } from "@/components/login/LoginForm";
 import LogoImage from "@/components/login/Logo";
-import { useLogo } from "@/lib/login";
+import { useLogo } from "@/lib/login/logo";
 
 export default function Login() {
   const { data, error, isLoading } = useLogo();
