@@ -19,6 +19,7 @@ import { LoginPayload, useLogin } from "@/lib/login/login";
 import Spinner from "../Spinner";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 // import {
 //   loadCaptchaEnginge,
 //   LoadCanvasTemplateNoReload,
@@ -39,6 +40,7 @@ export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const router = useRouter();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const payload = {
@@ -50,7 +52,11 @@ export function LoginForm() {
 
     try {
       const result = await trigger(payload);
-      console.log(result);
+
+      // Use session management library
+      localStorage.setItem("token", result.token);
+
+      router.push("/home");
     } catch (err) {
       const { dismiss } = toast({
         variant: "destructive",
