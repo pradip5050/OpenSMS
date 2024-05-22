@@ -5,6 +5,8 @@ interface SpinnerProps {
   height: string;
 }
 
+// TODO: Use Loader2 from lucide instead
+
 export default function Spinner({ width, height }: SpinnerProps) {
   return (
     <svg

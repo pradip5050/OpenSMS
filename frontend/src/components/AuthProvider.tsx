@@ -1,20 +1,19 @@
 import {
   createContext,
   useContext,
-  useState,
   useEffect,
   useReducer,
   Dispatch,
 } from "react";
 
-enum AuthActionKind {
-  login,
-  logout,
+export enum AuthActionKind {
+  Login = "LOGIN",
+  Logout = "LOGOUT",
 }
 
-interface AuthAction {
+export interface AuthAction {
   type: AuthActionKind;
-  payload: string | null;
+  token: string | null;
 }
 
 interface AuthState {
@@ -22,16 +21,21 @@ interface AuthState {
 }
 
 const AuthContext = createContext<AuthState>({ token: null });
-// TODO:
-const AuthDispatchContext = createContext<Dispatch<AuthAction>>(null);
+export const AuthDispatchContext = createContext<Dispatch<AuthAction>>(
+  () => null
+);
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
+  console.log(action.type, action.token);
   switch (action.type) {
-    case AuthActionKind.login: {
-      return { token: action.payload };
+    case AuthActionKind.Login: {
+      return { token: action.token };
     }
-    case AuthActionKind.logout: {
+    case AuthActionKind.Logout: {
       return { token: null };
+    }
+    default: {
+      return state;
     }
   }
 }
@@ -39,22 +43,22 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 export const AuthProvider = ({ children }: any) => {
   const [state, dispatch] = useReducer(authReducer, { token: null });
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      dispatch({ type: AuthActionKind.login, payload: storedToken });
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedToken = localStorage.getItem("token");
+  //   if (storedToken) {
+  //     dispatch({ type: AuthActionKind.login, token: storedToken });
+  //   }
+  // }, []);
 
-  const login = (newToken: string) => {
-    localStorage.setItem("token", newToken);
-    dispatch({ type: AuthActionKind.login, payload: newToken });
-  };
+  // const login = (newToken: string) => {
+  //   localStorage.setItem("token", newToken);
+  //   dispatch({ type: AuthActionKind.login, token: newToken });
+  // };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    dispatch({ type: AuthActionKind.logout, payload: null });
-  };
+  // const logout = () => {
+  //   localStorage.removeItem("token");
+  //   dispatch({ type: AuthActionKind.logout, token: null });
+  // };
 
   return (
     <AuthContext.Provider value={state}>
@@ -66,3 +70,4 @@ export const AuthProvider = ({ children }: any) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+export const useAuthDispatch = () => useContext(AuthDispatchContext);

@@ -33,8 +33,6 @@ export function useLogo() {
 export function mapLogo(logoModel: Logo): Logo {
   let url: string | undefined = logoModel?.logo?.url;
 
-  console.log(url);
-
   return {
     ...logoModel,
     logo: {
