@@ -6,7 +6,6 @@ import "../globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AuthProvider, useAuth } from "@/components/AuthProvider";
-import AuthError from "@/components/AuthError";
 import Template from "./template";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -35,10 +34,10 @@ export default function RootLayout({
           <header className="h-16 absolute w-full flex justify-end p-4">
             <ThemeToggle />
           </header>
-          {/* TODO: Template is not the problem, AuthProvider creates a new reducer every time its instantiated and hence causes problems */}
+          {/* TODO: Template is probably the solution for auth although AuthProvider creates a new reducer every time its instantiated and hence causes problems */}
           {/* Instead, create a wrapper around the provider and provide the wrapper only to both layouts */}
           <AuthProvider>
-            <Template key="auth">{children}</Template>
+            <Template key="dashboard">{children}</Template>
           </AuthProvider>
         </ThemeProvider>
       </body>
