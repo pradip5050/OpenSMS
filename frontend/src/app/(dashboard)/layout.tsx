@@ -62,7 +62,7 @@ export default function RootLayout({
             </div>
             <ThemeToggle />
           </header>
-          <aside className="hidden md:flex flex-col w-48 mt-16 border border-t-0 py-2">
+          <aside className="hidden md:flex flex-col min-w-56 max-w-56 w-56 mt-16 border border-t-0 py-2">
             <Navbar />
           </aside>
           <AuthProvider>

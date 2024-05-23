@@ -131,7 +131,7 @@ export function LoginForm() {
                   Forgot your password?
                 </Link> */}
             <Button disabled={isMutating} type="submit" className="w-full">
-              {isMutating ? <Spinner width="24" height="24" /> : "Login"}
+              {isMutating ? <Spinner size="24" /> : "Login"}
             </Button>
             {/* <div className="min-w-full flex items-center justify-center">
             <LoadCanvasTemplateNoReload />

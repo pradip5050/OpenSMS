@@ -9,7 +9,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
 
   if (auth.loading) {
-    return <Spinner width="100" height="100" />;
+    return (
+      <div className="flex w-full items-center justify-center">
+        <Spinner size="100" />
+      </div>
+    );
   }
 
   if (auth.token) {
