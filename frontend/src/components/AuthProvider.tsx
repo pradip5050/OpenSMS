@@ -4,7 +4,10 @@ import {
   useEffect,
   useReducer,
   Dispatch,
+  useMemo,
+  useLayoutEffect,
 } from "react";
+import AuthError from "./AuthError";
 
 export enum AuthActionKind {
   Login = "LOGIN",
@@ -16,23 +19,26 @@ export interface AuthAction {
   token: string | null;
 }
 
-interface AuthState {
+export interface AuthState {
   token: string | null;
+  loading: boolean;
 }
 
-const AuthContext = createContext<AuthState>({ token: null });
+const initialState = { token: null, loading: true };
+
+const AuthContext = createContext<AuthState>(initialState);
 export const AuthDispatchContext = createContext<Dispatch<AuthAction>>(
   () => null
 );
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
-  console.log(action.type, action.token);
+  // FIXME: Invoked 4 times in (home)
   switch (action.type) {
     case AuthActionKind.Login: {
-      return { token: action.token };
+      return { token: action.token, loading: false };
     }
     case AuthActionKind.Logout: {
-      return { token: null };
+      return { token: null, loading: false };
     }
     default: {
       return state;
@@ -41,24 +47,16 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 }
 
 export const AuthProvider = ({ children }: any) => {
-  const [state, dispatch] = useReducer(authReducer, { token: null });
+  const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // useEffect(() => {
-  //   const storedToken = localStorage.getItem("token");
-  //   if (storedToken) {
-  //     dispatch({ type: AuthActionKind.login, token: storedToken });
-  //   }
-  // }, []);
-
-  // const login = (newToken: string) => {
-  //   localStorage.setItem("token", newToken);
-  //   dispatch({ type: AuthActionKind.login, token: newToken });
-  // };
-
-  // const logout = () => {
-  //   localStorage.removeItem("token");
-  //   dispatch({ type: AuthActionKind.logout, token: null });
-  // };
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      dispatch({ type: AuthActionKind.Login, token: storedToken });
+    } else {
+      dispatch({ type: AuthActionKind.Logout, token: null });
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={state}>

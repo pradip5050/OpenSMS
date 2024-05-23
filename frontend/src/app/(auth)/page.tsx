@@ -1,7 +1,7 @@
 "use client";
 
-import { LoginForm } from "@/components/login/LoginForm";
-import LogoImage from "@/components/login/Logo";
+import { LoginForm } from "@/components/auth/LoginForm";
+import LogoImage from "@/components/auth/Logo";
 import { useLogo } from "@/lib/login/logo";
 import { Toaster } from "@/components/ui/toaster";
 

@@ -1,9 +1,9 @@
 "use client";
 
-export default function Home() {
+export default function Attendance() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center">
-      Home
+      Attendance
     </main>
   );
 }
