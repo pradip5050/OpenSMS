@@ -25,7 +25,7 @@ const Users: CollectionConfig = {
       name: "roles",
       type: "select",
       hasMany: false,
-      defaultValue: ["student"],
+      defaultValue: "student",
       required: true,
       options: ["admin", "faculty", "student"],
     },

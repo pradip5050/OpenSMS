@@ -4,11 +4,13 @@ import {
   lexicalEditor,
   lexicalHTML,
 } from "@payloadcms/richtext-lexical";
+import { isAdmin } from "../access/isAdmin";
 
 const Announcements: CollectionConfig = {
   slug: "announcements",
   access: {
     read: () => true,
+    create: isAdmin,
   },
   admin: {
     useAsTitle: "title",
