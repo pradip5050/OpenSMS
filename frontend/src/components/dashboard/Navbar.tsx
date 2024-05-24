@@ -1,20 +1,46 @@
-import { Home } from "lucide-react";
+import { Calendar, Home } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import {
+  PiCalendarBlankBold,
+  PiHouseSimpleBold,
+  PiCurrencyDollarSimpleBold,
+  PiStudentBold,
+  PiListNumbersBold,
+} from "react-icons/pi";
 
 interface Route {
   name: string;
   path: string;
   selected: boolean;
+  icon: typeof PiCalendarBlankBold;
 }
 
 export default function Navbar() {
-  const [routes, setRoutes] = useState([
-    { name: "Home", path: "/home", selected: true },
-    { name: "Attendance", path: "/attendance", selected: false },
+  const [routes, setRoutes] = useState<Route[]>([
+    { name: "Home", path: "/home", selected: true, icon: PiHouseSimpleBold },
+    { name: "Courses", path: "/courses", selected: false, icon: PiStudentBold },
+    {
+      name: "Attendance",
+      path: "/attendance",
+      selected: false,
+      icon: PiCalendarBlankBold,
+    },
+    {
+      name: "Marks",
+      path: "/marks",
+      selected: false,
+      icon: PiListNumbersBold,
+    },
+    {
+      name: "Finance",
+      path: "/finance",
+      selected: false,
+      icon: PiCurrencyDollarSimpleBold,
+    },
   ]);
   const currentPath = usePathname();
 
@@ -38,7 +64,7 @@ export default function Navbar() {
               route.selected ? "bg-muted" : "",
             ])}
           >
-            <Home className="h-4 w-4" />
+            {<route.icon className="w-4 h-4" />}
             {route.name}
             {/* <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
                 6
