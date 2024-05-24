@@ -7,14 +7,14 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AuthProvider, AuthState, useAuth } from "@/components/AuthProvider";
 import Template from "./template";
-import { useEffect, useState } from "react";
-import AuthError from "@/components/AuthError";
-import Link from "next/link";
-import { Home, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/dashboard/Navbar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { UserProfile } from "@/components/dashboard/UserProfile";
+import { log } from "console";
+import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,35 +37,38 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <header className="h-16 absolute w-full flex justify-between p-3 border border-b-1">
-            <div className="flex items-center justify-center gap-4">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="shrink-0 md:hidden"
-                  >
-                    <Menu className="h-5 w-5" />
-                    <span className="sr-only">Toggle navigation menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="flex flex-col">
-                  <div className="py-16">
-                    <Navbar />
-                  </div>
-                </SheetContent>
-              </Sheet>
-              <h1 className="flex text-xl items-center justify-center">
-                OpenSMS
-              </h1>
-            </div>
-            <ThemeToggle />
-          </header>
-          <aside className="hidden md:flex flex-col min-w-56 max-w-56 w-56 mt-16 border border-t-0 py-2">
-            <Navbar />
-          </aside>
           <AuthProvider>
+            <header className="h-16 absolute w-full flex justify-between p-3 border border-b-1">
+              <div className="flex items-center justify-center gap-4">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="shrink-0 md:hidden"
+                    >
+                      <Menu className="h-5 w-5" />
+                      <span className="sr-only">Toggle navigation menu</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left" className="flex flex-col">
+                    <div className="py-16">
+                      <Navbar />
+                    </div>
+                  </SheetContent>
+                </Sheet>
+                <h1 className="flex text-xl items-center justify-center">
+                  OpenSMS
+                </h1>
+              </div>
+              <div className="flex gap-2">
+                <ThemeToggle />
+                <UserProfile />
+              </div>
+            </header>
+            <aside className="hidden md:flex flex-col min-w-56 max-w-56 w-56 mt-16 border border-t-0 py-2">
+              <Navbar />
+            </aside>
             <Template key="dashboard">{children}</Template>
           </AuthProvider>
         </ThemeProvider>

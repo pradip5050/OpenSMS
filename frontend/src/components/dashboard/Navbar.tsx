@@ -10,6 +10,7 @@ import {
   PiCurrencyDollarSimpleBold,
   PiStudentBold,
   PiListNumbersBold,
+  PiUserBold,
 } from "react-icons/pi";
 
 interface Route {
@@ -40,6 +41,12 @@ export default function Navbar() {
       path: "/finance",
       selected: false,
       icon: PiCurrencyDollarSimpleBold,
+    },
+    {
+      name: "User Profile",
+      path: "/user-profile",
+      selected: false,
+      icon: PiUserBold,
     },
   ]);
   const currentPath = usePathname();
