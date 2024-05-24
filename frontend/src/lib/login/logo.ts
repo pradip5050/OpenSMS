@@ -20,7 +20,8 @@ export const placeholderUrl =
 export function useLogo() {
   const { data, error, isLoading } = useSWR<Logo>(
     `${API_URL}/api/globals/loginlogo?locale=undefined&draft=false&depth=1`,
-    fetcher
+    fetcher,
+    { revalidateIfStale: false }
   );
 
   return {
