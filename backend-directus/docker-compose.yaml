@@ -1,0 +1,12 @@
+services:
+  directus:
+    container_name: sms-directus-dev
+    image: directus/directus
+    ports:
+      - 8055:8055
+    env_file:
+      - .env
+    volumes:
+      - ./database:/directus/database
+      - ./uploads:/directus/uploads
+      - ./extensions:/directus/extensions

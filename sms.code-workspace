@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "frontend-ps"
+		},
+		{
+			"path": "backend-directus"
 		}
 	],
 	"settings": {}
