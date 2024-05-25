@@ -6,11 +6,14 @@ const Users: CollectionConfig = {
   slug: "users",
   auth: true,
   admin: {
-    useAsTitle: "email",
+    useAsTitle: "name",
     disableDuplicate: true,
   },
   access: {
     read: () => true,
+    admin: ({ req: { user } }) => {
+      return Boolean(user.roles.includes("admin"));
+    },
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
@@ -25,7 +28,7 @@ const Users: CollectionConfig = {
       name: "roles",
       type: "select",
       hasMany: false,
-      defaultValue: "student",
+      defaultValue: ["student"],
       required: true,
       options: ["admin", "faculty", "student"],
     },
