@@ -20,7 +20,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   cors: "*",
-  csrf: ["http://127.0.0.1:3000"],
+  // csrf: ["http://127.0.0.1:3000"],
   editor: slateEditor({}),
   collections: [Users, Announcements, Students, Courses, Branches, Media],
   globals: [LoginLogo],
