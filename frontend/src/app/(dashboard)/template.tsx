@@ -11,7 +11,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   if (auth.loading) {
     return (
       <div className="flex w-full items-center justify-center">
-        <Spinner size="100" />
+        <Spinner size="50" />
       </div>
     );
   }

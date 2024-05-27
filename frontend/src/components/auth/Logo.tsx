@@ -12,7 +12,7 @@ export default function LogoImage({ data, error, isLoading }: LogoProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <Spinner size="100" />
+        <Spinner size="50" />
       </div>
     );
   } else if (error) {

@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/dashboard/Navbar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { UserProfile } from "@/components/dashboard/UserProfile";
+import UserProfile from "@/components/dashboard/UserProfile";
 import { log } from "console";
 import { useEffect, useState } from "react";
 

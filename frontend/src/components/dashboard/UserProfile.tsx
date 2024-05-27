@@ -15,7 +15,7 @@ import { logout } from "@/lib/login/login";
 import { useAuth, useAuthDispatch } from "@/components/AuthProvider";
 import { useRouter } from "next/navigation";
 
-export function UserProfile() {
+export default function UserProfile() {
   const dispatch = useAuthDispatch();
   const router = useRouter();
   const { token, loading } = useAuth();

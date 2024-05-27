@@ -1,5 +1,14 @@
 "use client";
 
+import NewAnnouncement from "@/components/dashboard/home/NewAnnouncement";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
@@ -7,7 +16,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col">
-      <h1 className="text-left w-full pb-4">Announcements</h1>
+      <div className="flex flex-row justify-between items-center pb-4">
+        <h1 className="text-left w-full">Announcements</h1>
+        <NewAnnouncement />
+      </div>
       <ul className="flex flex-col  gap-4">
         {list.map((element) => {
           return (
