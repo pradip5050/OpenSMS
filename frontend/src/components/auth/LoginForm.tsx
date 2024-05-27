@@ -56,7 +56,6 @@ export function LoginForm() {
       const result = await trigger(payload);
 
       // Use session management library
-      // localStorage.setItem("token", result.token);
       login(result.token, authDispatch);
 
       router.push("/home");

@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
+import { useCreateAnnouncements } from "@/lib/dashboard/announcements";
 
 const formSchema = z.object({
   title: z.string().max(10, {
@@ -33,9 +34,10 @@ export default function NewAnnouncement() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const { trigger, isMutating } = useCreateAnnouncements();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const result = trigger({ token: "", payload: { title: "", content: "" } });
   }
 
   return (
