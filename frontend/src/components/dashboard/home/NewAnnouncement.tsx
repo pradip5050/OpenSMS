@@ -43,7 +43,7 @@ export default function NewAnnouncement() {
   return (
     <Sheet>
       <SheetTrigger>
-        <Button variant={"outline"}>New</Button>
+        <Button variant={"secondary"}>New</Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>

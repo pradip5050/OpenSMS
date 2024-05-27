@@ -46,6 +46,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   }
 }
 
+// TODO: Add auth role state
 export const AuthProvider = ({ children }: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
