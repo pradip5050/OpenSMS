@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === "production";
-const isUsingTauri = false;
+const isUsingTauri = true;
 
 let internalHost = null;
 

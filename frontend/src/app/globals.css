@@ -61,6 +61,7 @@
   }
 }
 
+/* TODO: Improve styles */
 .lexical {
   & h1 {
     @apply text-5xl;

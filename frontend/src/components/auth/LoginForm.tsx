@@ -54,12 +54,13 @@ export function LoginForm() {
 
     try {
       const result = await trigger(payload);
-
+      console.log(result);
       // Use session management library
       login(result.token, authDispatch);
 
       router.push("/home");
     } catch (err) {
+      console.log(err);
       const { dismiss } = toast({
         variant: "destructive",
         title: "Error!",

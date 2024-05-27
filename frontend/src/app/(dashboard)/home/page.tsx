@@ -1,11 +1,14 @@
 "use client";
 
 import NewAnnouncement from "@/components/dashboard/home/NewAnnouncement";
-import LexicalEditor from "@/components/dashboard/LexicalEditor";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAnnouncements } from "@/lib/dashboard/announcements";
-import { useEffect } from "react";
+
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import Link from "next/link";
+import { PiWarningBold } from "react-icons/pi";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const list = [1, 2, 3, 4, 5];
@@ -36,23 +39,36 @@ export default function Home() {
           })}
         </ul>
       ) : (
-        <ul className="flex flex-col gap-4">
-          {data!.docs.map((element) => {
-            return (
-              <li
-                key={element.title}
-                className="flex flex-col justify-center items-start"
-              >
-                <h1>{element.title}</h1>
-                <div
-                  className="lexical"
-                  dangerouslySetInnerHTML={{ __html: element.contentHtml }}
-                ></div>
-              </li>
-            );
-          })}
-        </ul>
+        <Table>
+          <TableBody>
+            {data!.docs.map((element) => {
+              return (
+                <TableRow
+                  key={element.id}
+                  className="flex flex-row items-center justify-between"
+                >
+                  <TableCell>
+                    <div className="font-medium text-3xl">{element.title}</div>
+                    <div className="text-lg text-muted-foreground md:inline">
+                      Description
+                    </div>
+                  </TableCell>
+                  <TableCell className="flex justify-end h-full items-center">
+                    {/* <PiWarningBold size={30}></PiWarningBold */}
+                    <Button>Open</Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       )}
     </main>
   );
+}
+{
+  /* <div
+                  className="lexical"
+                  dangerouslySetInnerHTML={{ __html: element.contentHtml }}
+                ></div> */
 }
