@@ -10,7 +10,7 @@ export interface Announcement {
 }
 
 export interface AnnouncementResponse {
-  docs: { id: number; title: string; content: any }[];
+  docs: { id: number; title: string; content: any; contentHtml: string }[];
 }
 
 const getFetcher: Fetcher<AnnouncementResponse> = (url: string) =>

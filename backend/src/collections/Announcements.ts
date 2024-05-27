@@ -29,7 +29,7 @@ const Announcements: CollectionConfig = {
       }),
       required: true,
     },
-    lexicalHTML("content", { name: "content_html" }),
+    lexicalHTML("content", { name: "contentHtml" }),
   ],
 };
 

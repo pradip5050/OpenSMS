@@ -1,6 +1,7 @@
 "use client";
 
 import NewAnnouncement from "@/components/dashboard/home/NewAnnouncement";
+import LexicalEditor from "@/components/dashboard/LexicalEditor";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAnnouncements } from "@/lib/dashboard/announcements";
@@ -16,6 +17,7 @@ export default function Home() {
         <h1 className="text-left w-full">Announcements</h1>
         <NewAnnouncement />
       </div>
+      {/* TODO: Handle error */}
       {error || isLoading ? (
         <ul className="flex flex-col gap-4">
           {list.map((element) => {
@@ -42,7 +44,10 @@ export default function Home() {
                 className="flex flex-col justify-center items-start"
               >
                 <h1>{element.title}</h1>
-                <h2>{element.content.toString()}</h2>
+                <div
+                  className="lexical"
+                  dangerouslySetInnerHTML={{ __html: element.contentHtml }}
+                ></div>
               </li>
             );
           })}
