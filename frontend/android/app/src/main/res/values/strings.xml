@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">sms-frontend</string>
+    <string name="title_activity_main">sms-frontend</string>
+    <string name="package_name">com.dhzdhd.opensms</string>
+    <string name="custom_url_scheme">com.dhzdhd.opensms</string>
+</resources>

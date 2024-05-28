@@ -7,9 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "cap": "cap"
   },
   "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
     "@hookform/resolvers": "^3.4.2",
     "@lexical/react": "^0.15.0",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -40,6 +44,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
     "@tauri-apps/cli": ">=2.0.0-beta.0",
     "@types/node": "^20",
     "@types/react": "^18",

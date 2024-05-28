@@ -18,7 +18,6 @@ import Spinner from "../Spinner";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useAuthDispatch } from "../AuthProvider";
-import { invoke } from "@tauri-apps/api/core";
 import { AxiosError } from "axios";
 
 const formSchema = z.object({
@@ -27,8 +26,7 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
-  // FIXME: Make sure window is defined before checking
-  const { trigger, isMutating } = useLogin("__TAURI__" in window);
+  const { trigger, isMutating } = useLogin();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,20 +45,15 @@ export function LoginForm() {
     try {
       const result = await trigger(payload);
 
-      // FIXME: Tauri http currently does not work on android
-      invoke("debug", { message: result });
-
       // Use session management library
       login(result.token, authDispatch);
 
       router.push("/home");
     } catch (err) {
-      invoke("debug", { message: JSON.stringify(err) });
-
       const { dismiss } = toast({
         variant: "destructive",
         title: "Error!",
-        description: "Invalid credentials!",
+        description: JSON.stringify(err),
       });
 
       setTimeout(() => {
