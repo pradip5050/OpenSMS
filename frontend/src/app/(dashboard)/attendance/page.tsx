@@ -1,6 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -25,7 +33,7 @@ export default function Attendance() {
             <TableHead>Days absent</TableHead>
             <TableHead>Total days</TableHead>
             <TableHead>Percentage</TableHead>
-            <TableHead>Per day attendance</TableHead>
+            <TableHead>Daily attendance</TableHead>
           </TableRow>
           <TableRow>
             <TableCell>1</TableCell>
@@ -35,9 +43,22 @@ export default function Attendance() {
             <TableCell>10</TableCell>
             <TableCell>70%</TableCell>
             <TableCell>
-              <Button>
-                <PiCalendarBlankBold />
-              </Button>
+              <Dialog>
+                <DialogTrigger>
+                  <Button>
+                    <PiCalendarBlankBold />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Daily attendance calendar</DialogTitle>
+                  </DialogHeader>
+                  {/* TODO: Add daily attendance with https://react-day-picker.js.org/advanced-guides/custom-modifiers#custom-modifiers */}
+                  <div className="flex items-center justify-center">
+                    <Calendar />
+                  </div>
+                </DialogContent>
+              </Dialog>
             </TableCell>
           </TableRow>
         </TableBody>
