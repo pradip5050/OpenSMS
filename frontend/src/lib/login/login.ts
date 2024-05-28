@@ -3,6 +3,7 @@ import useSWRMutation from "swr/mutation";
 import { API_URL } from "../constants";
 import { Dispatch } from "react";
 import { AuthAction, AuthActionKind } from "@/components/AuthProvider";
+import { CapacitorHttp } from "@capacitor/core";
 
 export interface LoginPayload {
   email: string;
@@ -21,7 +22,7 @@ const fetcher = (url: string, { arg }: { arg: LoginPayload }) =>
 
 export function useLogin() {
   const { trigger, isMutating } = useSWRMutation(
-    `${API_URL}/api/users/login`,
+    `http://10.0.2.2:3002/api/users/login`,
     fetcher
   );
 

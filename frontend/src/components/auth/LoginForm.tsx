@@ -40,8 +40,6 @@ export function LoginForm() {
       password: values.password,
     } satisfies LoginPayload;
 
-    console.log(payload);
-
     try {
       const result = await trigger(payload);
 
