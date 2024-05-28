@@ -24,6 +24,7 @@ export default function Attendance() {
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Attendance</h1>
       </div>
+      {/* TODO: Convert to a more powerful DataTable instead */}
       <Table>
         <TableBody>
           <TableRow>
