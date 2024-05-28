@@ -6,9 +6,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAnnouncements } from "@/lib/dashboard/announcements";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import Link from "next/link";
-import { PiWarningBold } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export default function Home() {
   const list = [1, 2, 3, 4, 5];
@@ -55,7 +60,25 @@ export default function Home() {
                   </TableCell>
                   <TableCell className="flex justify-end h-full items-center">
                     {/* <PiWarningBold size={30}></PiWarningBold */}
-                    <Button>Open</Button>
+                    <Sheet>
+                      <SheetTrigger>
+                        <Button>Open</Button>
+                      </SheetTrigger>
+                      <SheetContent
+                        className="overflow-y-scroll h-[80%] max-h-[80%]"
+                        side={"bottom"}
+                      >
+                        <SheetHeader>
+                          <SheetTitle>{element.title}</SheetTitle>
+                        </SheetHeader>
+                        <div
+                          className="pt-8 lexical"
+                          dangerouslySetInnerHTML={{
+                            __html: element.contentHtml,
+                          }}
+                        ></div>
+                      </SheetContent>
+                    </Sheet>
                   </TableCell>
                 </TableRow>
               );
@@ -65,10 +88,4 @@ export default function Home() {
       )}
     </main>
   );
-}
-{
-  /* <div
-                  className="lexical"
-                  dangerouslySetInnerHTML={{ __html: element.contentHtml }}
-                ></div> */
 }

@@ -4,10 +4,7 @@ import {
   useEffect,
   useReducer,
   Dispatch,
-  useMemo,
-  useLayoutEffect,
 } from "react";
-import AuthError from "./AuthError";
 
 export enum AuthActionKind {
   Login = "LOGIN",
