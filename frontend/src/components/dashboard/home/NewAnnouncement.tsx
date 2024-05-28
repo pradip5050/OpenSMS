@@ -22,6 +22,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateAnnouncements } from "@/lib/dashboard/announcements";
+import { useState } from "react";
+import { useAuth } from "@/components/AuthProvider";
 
 const formSchema = z.object({
   title: z.string().max(10, {
@@ -35,13 +37,19 @@ export default function NewAnnouncement() {
     resolver: zodResolver(formSchema),
   });
   const { trigger, isMutating } = useCreateAnnouncements();
+  const [open, setOpen] = useState(false);
+  const auth = useAuth();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const result = trigger({ token: "", payload: { title: "", content: "" } });
+    const result = trigger({
+      token: auth.token!,
+      payload: { title: values.title, content: values.content },
+    });
+    setOpen(false);
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
         <Button variant={"secondary"}>New</Button>
       </SheetTrigger>
@@ -84,9 +92,9 @@ export default function NewAnnouncement() {
               )}
             ></FormField>
             <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Submit</Button>
-              </SheetClose>
+              <Button disabled={isMutating} type="submit">
+                Submit
+              </Button>
             </SheetFooter>
           </form>
         </Form>

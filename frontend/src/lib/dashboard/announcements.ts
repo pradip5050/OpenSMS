@@ -24,7 +24,7 @@ const postFetcher = (
     .post(url, JSON.stringify(arg.payload), {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer: ${arg.token}`,
+        Authorization: `Bearer ${arg.token}`,
       },
     })
     .then((res) => res.data);
