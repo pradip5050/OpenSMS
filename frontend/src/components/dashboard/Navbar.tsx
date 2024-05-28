@@ -20,7 +20,11 @@ interface Route {
   icon: typeof PiCalendarBlankBold;
 }
 
-export default function Navbar() {
+export interface NavbarProps {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Navbar({ setOpen }: NavbarProps) {
   const [routes, setRoutes] = useState<Route[]>([
     { name: "Home", path: "/home", selected: true, icon: PiHouseSimpleBold },
     { name: "Courses", path: "/courses", selected: false, icon: PiStudentBold },
@@ -64,6 +68,7 @@ export default function Navbar() {
       {routes.map((route: Route) => {
         return (
           <Link
+            onClick={() => setOpen(false)}
             key={route.name}
             href={route.path}
             className={cn([

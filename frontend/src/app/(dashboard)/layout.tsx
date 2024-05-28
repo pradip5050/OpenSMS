@@ -28,6 +28,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [open, setOpen] = useState(false);
+
   return (
     <html lang="en">
       <body className={`${inter.className} flex flex-row min-h-screen`}>
@@ -40,7 +42,7 @@ export default function RootLayout({
           <AuthProvider>
             <header className="h-16 absolute w-full flex justify-between p-3 border border-b-1">
               <div className="flex items-center justify-center gap-4">
-                <Sheet>
+                <Sheet open={open} onOpenChange={setOpen}>
                   <SheetTrigger asChild>
                     <Button
                       variant="outline"
@@ -53,7 +55,7 @@ export default function RootLayout({
                   </SheetTrigger>
                   <SheetContent side="left" className="flex flex-col">
                     <div className="py-16">
-                      <Navbar />
+                      <Navbar setOpen={setOpen} />
                     </div>
                   </SheetContent>
                 </Sheet>
@@ -67,7 +69,7 @@ export default function RootLayout({
               </div>
             </header>
             <aside className="hidden md:flex flex-col min-w-56 max-w-56 w-56 mt-16 border border-t-0 py-2">
-              <Navbar />
+              <Navbar setOpen={setOpen} />
             </aside>
             <Template key="dashboard">{children}</Template>
           </AuthProvider>
