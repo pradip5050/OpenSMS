@@ -5,11 +5,21 @@ import { GetResponse } from "../utils";
 import { API_URL } from "../constants";
 import { Dispatch } from "react";
 import { AuthAction, AuthActionKind } from "@/components/AuthProvider";
+import { fetch } from "@tauri-apps/plugin-http";
 
 export interface LoginPayload {
   email: string;
   password: string;
 }
+
+const tauriFetcher = (url: string, { arg }: { arg: LoginPayload }) =>
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(arg),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((res) => res.json().then((data) => data));
 
 const fetcher = (url: string, { arg }: { arg: LoginPayload }) =>
   axios
@@ -20,10 +30,10 @@ const fetcher = (url: string, { arg }: { arg: LoginPayload }) =>
     })
     .then((res) => res.data);
 
-export function useLogin() {
+export function useLogin(isTauri: boolean) {
   const { trigger, isMutating } = useSWRMutation(
     `${API_URL}/api/users/login`,
-    fetcher
+    isTauri ? tauriFetcher : fetcher
   );
 
   return {

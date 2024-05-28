@@ -1,9 +1,7 @@
-// import Image from "next/image";
-import Link from "next/link";
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,15 +15,11 @@ import {
 } from "@/components/ui/form";
 import { login, LoginPayload, useLogin } from "@/lib/login/login";
 import Spinner from "../Spinner";
-import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { useAuth, useAuthDispatch } from "../AuthProvider";
-// import {
-//   loadCaptchaEnginge,
-//   LoadCanvasTemplateNoReload,
-//   validateCaptcha,
-// } from "react-simple-captcha";
+import { useAuthDispatch } from "../AuthProvider";
+import { invoke } from "@tauri-apps/api/core";
+import { AxiosError } from "axios";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter valid email address" }),
@@ -33,10 +27,8 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
-  // useEffect(() => {
-  //   loadCaptchaEnginge(6, "black", "white");
-  // }, []);
-  const { trigger, isMutating } = useLogin();
+  // FIXME: Make sure window is defined before checking
+  const { trigger, isMutating } = useLogin("__TAURI__" in window);
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,13 +46,17 @@ export function LoginForm() {
 
     try {
       const result = await trigger(payload);
-      console.log(result);
+
+      // FIXME: Tauri http currently does not work on android
+      invoke("debug", { message: result });
+
       // Use session management library
       login(result.token, authDispatch);
 
       router.push("/home");
     } catch (err) {
-      console.log(err);
+      invoke("debug", { message: JSON.stringify(err) });
+
       const { dismiss } = toast({
         variant: "destructive",
         title: "Error!",
@@ -124,18 +120,9 @@ export function LoginForm() {
                 )}
               />
             </div>
-            {/* <Link
-                  href="/forgot-password"
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  Forgot your password?
-                </Link> */}
             <Button disabled={isMutating} type="submit" className="w-full">
               {isMutating ? <Spinner size="24" /> : "Login"}
             </Button>
-            {/* <div className="min-w-full flex items-center justify-center">
-            <LoadCanvasTemplateNoReload />
-          </div> */}
           </div>
         </form>
       </Form>

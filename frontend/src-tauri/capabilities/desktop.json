@@ -3,5 +3,20 @@
   "identifier": "desktop-capability",
   "windows": ["main"],
   "platforms": ["linux", "macOS", "windows"],
-  "permissions": ["shell:allow-open"]
+  "permissions": [
+    "shell:allow-open",
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "http://127.0.0.1:3002"
+        }
+      ],
+      "deny": [
+        {
+          "url": "https://private.tauri.app"
+        }
+      ]
+    }
+  ]
 }
