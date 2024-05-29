@@ -18,6 +18,13 @@ const Students: CollectionConfig = {
     { name: "email", type: "email", required: true },
     { name: "dob", label: "Date Of Birth", type: "date", required: true },
     {
+      name: "user",
+      type: "relationship",
+      relationTo: ["users"],
+      hasMany: false,
+      required: true,
+    },
+    {
       name: "course",
       type: "relationship",
       relationTo: ["courses"],

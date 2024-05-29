@@ -20,7 +20,6 @@ export default function Home() {
   const list = [1, 2, 3, 4, 5];
   const { data, error, isLoading } = useAnnouncements();
   const { roles } = useAuth();
-  console.log(["admin", "faculty"].includes(roles!));
 
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
