@@ -28,7 +28,7 @@ export default function LogoImage({ data, error, isLoading }: LogoProps) {
   }
   return (
     <Image
-      src={mapLogo(data!).logo.url}
+      src={mapLogo(data!).image.url}
       alt="Image"
       width="1920"
       height="1080"

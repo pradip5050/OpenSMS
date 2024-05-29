@@ -11,7 +11,7 @@ import Students from "./collections/Students";
 import Media from "./collections/Media";
 import Courses from "./collections/Courses";
 import Branches from "./collections/Branches";
-import { LoginLogo } from "./globals/LoginLogo";
+import { LoginLogo } from "./globals/Logo";
 import Announcements from "./collections/Announcements";
 
 export default buildConfig({

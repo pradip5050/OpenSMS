@@ -5,7 +5,7 @@ import { GetResponse } from "../utils";
 
 export interface Logo {
   id: number;
-  logo: {
+  image: {
     alt: string;
     url: string;
   };
@@ -20,7 +20,7 @@ export const placeholderUrl =
 
 export function useLogo() {
   const { data, error, isLoading } = useSWR<Logo>(
-    `${API_URL}/api/globals/loginlogo?locale=undefined&draft=false&depth=1`,
+    `${API_URL}/api/globals/logo?locale=undefined&draft=false&depth=1`,
     fetcher,
     { revalidateIfStale: false }
   );
@@ -33,12 +33,12 @@ export function useLogo() {
 }
 
 export function mapLogo(logoModel: Logo): Logo {
-  let url: string | undefined = logoModel?.logo?.url;
+  let url: string | undefined = logoModel?.image?.url;
 
   return {
     ...logoModel,
-    logo: {
-      ...logoModel.logo,
+    image: {
+      ...logoModel.image,
       url: url ? `${API_URL}${url}` : placeholderUrl,
     },
   };

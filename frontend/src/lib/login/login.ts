@@ -3,7 +3,6 @@ import useSWRMutation from "swr/mutation";
 import { API_URL } from "../constants";
 import { Dispatch } from "react";
 import { AuthAction, AuthActionKind } from "@/components/AuthProvider";
-import { CapacitorHttp } from "@capacitor/core";
 
 export interface LoginPayload {
   email: string;
