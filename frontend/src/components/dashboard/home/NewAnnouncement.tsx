@@ -22,14 +22,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateAnnouncements } from "@/lib/dashboard/announcements";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
+import LexicalEditor from "../LexicalEditor";
 
 const formSchema = z.object({
-  title: z.string().max(10, {
+  title: z.string().max(50, {
     message: "Title must be at most 50 characters.",
   }),
-  content: z.string(),
 });
 
 export default function NewAnnouncement() {
@@ -40,13 +40,20 @@ export default function NewAnnouncement() {
   const [open, setOpen] = useState(false);
   const auth = useAuth();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const result = trigger({
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(JSON.stringify(editorRef.current.getEditorState()));
+    const result = await trigger({
       token: auth.token!,
-      payload: { title: values.title, content: values.content },
+      payload: {
+        title: values.title,
+        content: JSON.stringify(editorRef.current.getEditorState()),
+      },
     });
+    console.log(result);
     setOpen(false);
   }
+
+  const editorRef: any = useRef();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -74,7 +81,7 @@ export default function NewAnnouncement() {
                 </FormItem>
               )}
             ></FormField>
-            <FormField
+            {/* <FormField
               control={form.control}
               name="content"
               render={({ field }) => (
@@ -90,7 +97,11 @@ export default function NewAnnouncement() {
                   </FormControl>
                 </FormItem>
               )}
-            ></FormField>
+            ></FormField> */}
+            <div className="flex flex-col gap-3 min-h-20">
+              <FormLabel htmlFor="content">Content</FormLabel>
+              <LexicalEditor ref={editorRef} />
+            </div>
             <SheetFooter>
               <Button disabled={isMutating} type="submit">
                 Submit

@@ -1,5 +1,5 @@
 import { $getRoot, $getSelection } from "lexical";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
@@ -7,6 +7,7 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 const theme = {};
 
@@ -18,22 +19,42 @@ export interface LexicalEditorProps {
   editorState: string;
 }
 
-export default function LexicalEditor({ editorState }: LexicalEditorProps) {
+const EditorCapturePlugin = React.forwardRef((props: any, ref: any) => {
+  const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+    ref.current = editor;
+    return () => {
+      ref.current = null;
+    };
+  }, [editor, ref]);
+
+  return null;
+});
+
+const LexicalEditor = React.forwardRef((props, ref) => {
   const initialConfig = {
     namespace: "MyEditor",
-    editable: false,
-    editorState,
+    // editorState,
     theme,
     onError,
   };
 
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <RichTextPlugin
-        contentEditable={<ContentEditable />}
-        placeholder={<></>}
-        ErrorBoundary={LexicalErrorBoundary}
-      />
-    </LexicalComposer>
+    <div className="border border-1">
+      <LexicalComposer initialConfig={initialConfig}>
+        <RichTextPlugin
+          contentEditable={<ContentEditable />}
+          placeholder={<></>}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <EditorCapturePlugin ref={ref} />
+        <HistoryPlugin />
+        <AutoFocusPlugin />
+      </LexicalComposer>
+    </div>
   );
-}
+});
+
+EditorCapturePlugin.displayName = "EditorCapturePlugin";
+LexicalEditor.displayName = "LexicalEditor";
+export default LexicalEditor;

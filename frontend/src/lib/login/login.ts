@@ -9,7 +9,6 @@ export interface LoginPayload {
   password: string;
 }
 
-// FIXME: try capacitor http one last time and disable local storage
 const fetcher = (url: string, { arg }: { arg: LoginPayload }) =>
   axios
     .post(url, JSON.stringify(arg), {
@@ -21,7 +20,8 @@ const fetcher = (url: string, { arg }: { arg: LoginPayload }) =>
 
 export function useLogin() {
   const { trigger, isMutating } = useSWRMutation(
-    `http://10.0.2.2:3002/api/users/login`,
+    // `http://10.0.2.2:3002/api/users/login`,
+    `${API_URL}/api/users/login`,
     fetcher
   );
 
