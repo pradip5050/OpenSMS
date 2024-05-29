@@ -61,6 +61,27 @@
   }
 }
 
+@layer utilities {
+  *::-webkit-scrollbar {
+    width: 0.36rem;
+  }
+
+  *::-webkit-scrollbar-track {
+    @apply rounded-full bg-primary-foreground
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply rounded-full border-2 bg-muted-foreground
+    /* background: #e0cbcb;
+    border-radius: 100vh;
+    border: 3px solid #f6f7ed; */
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary
+  }
+}
+
 /* TODO: Improve styles */
 .lexical {
   & h1 {

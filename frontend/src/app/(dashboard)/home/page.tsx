@@ -63,7 +63,6 @@ export default function Home() {
                     </div>
                   </TableCell>
                   <TableCell className="flex justify-end h-full items-center">
-                    {/* <PiWarningBold size={30}></PiWarningBold */}
                     <Sheet>
                       <SheetTrigger>
                         <Button>Open</Button>

@@ -31,6 +31,8 @@ const EditorCapturePlugin = React.forwardRef((props: any, ref: any) => {
   return null;
 });
 
+// TODO: Fix the broken rich text
+// https://codesandbox.io/p/sandbox/purple-water-xf50bi?file=%2Fsrc%2FApp.tsx
 const LexicalEditor = React.forwardRef((props, ref) => {
   const initialConfig = {
     namespace: "MyEditor",
