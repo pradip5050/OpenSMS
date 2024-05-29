@@ -1,4 +1,4 @@
-/src/main/java/com/tauri/sms_frontend/generated
+/src/main/java/com/dhzdhd/sms_frontend/generated
 /src/main/jniLibs/**/*.so
 /src/main/assets/tauri.conf.json
 /tauri.build.gradle.kts

@@ -6,10 +6,10 @@ plugins {
 
 android {
     compileSdk = 33
-    namespace = "com.tauri.sms_frontend"
+    namespace = "com.dhzdhd.sms_frontend"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
-        applicationId = "com.tauri.sms_frontend"
+        applicationId = "com.dhzdhd.sms_frontend"
         minSdk = 24
         targetSdk = 33
         versionCode = 1

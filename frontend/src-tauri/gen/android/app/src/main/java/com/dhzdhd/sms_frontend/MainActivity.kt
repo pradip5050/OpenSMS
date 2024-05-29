@@ -1,3 +1,3 @@
-package com.tauri.sms_frontend
+package com.dhzdhd.sms_frontend
 
 class MainActivity : TauriActivity()
