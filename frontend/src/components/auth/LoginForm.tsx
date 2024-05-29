@@ -44,7 +44,7 @@ export function LoginForm() {
       const result = await trigger(payload);
 
       // Use session management library
-      login(result.token, authDispatch);
+      login(result.token, result.user.roles, authDispatch);
 
       router.push("/home");
     } catch (err) {

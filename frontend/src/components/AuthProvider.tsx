@@ -14,14 +14,16 @@ export enum AuthActionKind {
 export interface AuthAction {
   type: AuthActionKind;
   token: string | null;
+  roles: string | null;
 }
 
 export interface AuthState {
   token: string | null;
   loading: boolean;
+  roles: string | null;
 }
 
-const initialState = { token: null, loading: true };
+const initialState = { token: null, loading: true, roles: null };
 
 const AuthContext = createContext<AuthState>(initialState);
 export const AuthDispatchContext = createContext<Dispatch<AuthAction>>(
@@ -32,10 +34,10 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   // FIXME: Invoked 4 times in (home)
   switch (action.type) {
     case AuthActionKind.Login: {
-      return { token: action.token, loading: false };
+      return { token: action.token, loading: false, roles: action.roles };
     }
     case AuthActionKind.Logout: {
-      return { token: null, loading: false };
+      return { token: null, loading: false, roles: action.roles };
     }
     default: {
       return state;
@@ -49,10 +51,15 @@ export const AuthProvider = ({ children }: any) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+    const storedRoles = localStorage.getItem("roles");
     if (storedToken) {
-      dispatch({ type: AuthActionKind.Login, token: storedToken });
+      dispatch({
+        type: AuthActionKind.Login,
+        token: storedToken,
+        roles: storedRoles,
+      });
     } else {
-      dispatch({ type: AuthActionKind.Logout, token: null });
+      dispatch({ type: AuthActionKind.Logout, token: null, roles: null });
     }
   }, []);
 

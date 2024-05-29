@@ -31,12 +31,18 @@ export function useLogin() {
   };
 }
 
-export function login(token: string, dispatch: Dispatch<AuthAction>) {
+export function login(
+  token: string,
+  roles: string,
+  dispatch: Dispatch<AuthAction>
+) {
   localStorage.setItem("token", token);
-  dispatch({ type: AuthActionKind.Login, token: token });
+  localStorage.setItem("roles", roles);
+  dispatch({ type: AuthActionKind.Login, token: token, roles: roles });
 }
 
 export function logout(dispatch: Dispatch<AuthAction>) {
   localStorage.removeItem("token");
-  dispatch({ type: AuthActionKind.Logout, token: null });
+  localStorage.removeItem("roles");
+  dispatch({ type: AuthActionKind.Logout, token: null, roles: null });
 }

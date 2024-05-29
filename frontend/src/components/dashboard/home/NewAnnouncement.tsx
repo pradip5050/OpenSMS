@@ -20,7 +20,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
-import { Textarea } from "@/components/ui/textarea";
 import { useCreateAnnouncements } from "@/lib/dashboard/announcements";
 import { useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
@@ -50,6 +49,7 @@ export default function NewAnnouncement() {
       },
     });
     console.log(result);
+    // TODO: Handle error
     setOpen(false);
   }
 
