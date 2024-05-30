@@ -10,7 +10,7 @@ import Users from "./collections/Users";
 import Students from "./collections/Students";
 import Media from "./collections/Media";
 import Courses from "./collections/Courses";
-import { LoginLogo } from "./globals/Logo";
+import { Metadata } from "./globals/Metadata";
 import Announcements from "./collections/Announcements";
 
 export default buildConfig({
@@ -22,7 +22,7 @@ export default buildConfig({
   // csrf: ["http://127.0.0.1:3000"],
   editor: slateEditor({}),
   collections: [Users, Announcements, Students, Courses, Media],
-  globals: [LoginLogo],
+  globals: [Metadata],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },

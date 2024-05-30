@@ -1,9 +1,9 @@
-import { Logo, mapLogo, placeholderUrl } from "@/lib/login/logo";
+import { Metadata, mapMetadata, placeholderUrl } from "@/lib/login/metadata";
 import Image from "next/image";
 import Spinner from "../Spinner";
 
 export interface LogoProps {
-  data: Logo | undefined;
+  data: Metadata | undefined;
   error: any;
   isLoading: boolean;
 }
@@ -28,7 +28,7 @@ export default function LogoImage({ data, error, isLoading }: LogoProps) {
   }
   return (
     <Image
-      src={mapLogo(data!).image.url}
+      src={mapMetadata(data!).logo.url}
       alt="Image"
       width="1920"
       height="1080"

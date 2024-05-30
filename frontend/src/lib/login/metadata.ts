@@ -4,23 +4,26 @@ import useSWR, { Fetcher } from "swr";
 import { GetResponse } from "../utils";
 
 export interface Logo {
-  id: number;
-  image: {
-    alt: string;
-    url: string;
-  };
+  alt: string;
+  url: string;
 }
 
-const fetcher: Fetcher<Logo> = (url: string) =>
+export interface Metadata {
+  id: number;
+  logo: Logo;
+  title: string;
+}
+
+const fetcher: Fetcher<Metadata> = (url: string) =>
   axios.get(url).then((res) => res.data);
 
 // TODO: Create local image instead of URL
 export const placeholderUrl =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/991px-Placeholder_view_vector.svg.png";
 
-export function useLogo() {
-  const { data, error, isLoading } = useSWR<Logo>(
-    `${API_URL}/api/globals/logo?locale=undefined&draft=false&depth=1`,
+export function useMetadata() {
+  const { data, error, isLoading } = useSWR<Metadata>(
+    `${API_URL}/api/globals/metadata?locale=undefined&draft=false&depth=1`,
     fetcher,
     { revalidateIfStale: false }
   );
@@ -29,16 +32,16 @@ export function useLogo() {
     data,
     error,
     isLoading,
-  } satisfies GetResponse<Logo | undefined>;
+  } satisfies GetResponse<Metadata | undefined>;
 }
 
-export function mapLogo(logoModel: Logo): Logo {
-  let url: string | undefined = logoModel?.image?.url;
+export function mapMetadata(metadata: Metadata): Metadata {
+  let url: string | undefined = metadata?.logo?.url;
 
   return {
-    ...logoModel,
-    image: {
-      ...logoModel.image,
+    ...metadata,
+    logo: {
+      ...metadata.logo,
       url: url ? `${API_URL}${url}` : placeholderUrl,
     },
   };

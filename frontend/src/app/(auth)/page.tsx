@@ -2,11 +2,11 @@
 
 import { LoginForm } from "@/components/auth/LoginForm";
 import LogoImage from "@/components/auth/Logo";
-import { useLogo } from "@/lib/login/logo";
+import { useMetadata } from "@/lib/login/metadata";
 import { Toaster } from "@/components/ui/toaster";
 
 export default function Login() {
-  const { data, error, isLoading } = useLogo();
+  const { data, error, isLoading } = useMetadata();
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center">

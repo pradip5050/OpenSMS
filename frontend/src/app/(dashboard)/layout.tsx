@@ -15,6 +15,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import UserProfile from "@/components/dashboard/UserProfile";
 import { log } from "console";
 import { useEffect, useState } from "react";
+import { useMetadata } from "@/lib/login/metadata";
+import Spinner from "@/components/Spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [open, setOpen] = useState(false);
+  const { data, isLoading } = useMetadata();
 
   return (
     <html lang="en">
@@ -59,9 +63,14 @@ export default function RootLayout({
                     </div>
                   </SheetContent>
                 </Sheet>
-                <h1 className="flex text-xl items-center justify-center">
-                  OpenSMS
-                </h1>
+                {isLoading ? (
+                  // TODO: Choose better loading component or none at all
+                  <Skeleton className="w-32 h-5" />
+                ) : (
+                  <h1 className="flex text-xl items-center justify-center">
+                    {data?.title ?? "OpenSMS"}
+                  </h1>
+                )}
               </div>
               <div className="flex gap-2">
                 <ThemeToggle />
