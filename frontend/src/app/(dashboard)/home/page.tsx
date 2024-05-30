@@ -18,18 +18,20 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/components/AuthProvider";
+import { isFacultyOrAdmin } from "@/lib/rbac";
 
 export default function Home() {
   const list = [1, 2, 3, 4, 5];
   const { data, error, isLoading } = useAnnouncements();
   const { user } = useAuth();
 
+  console.log(user!.roles, isFacultyOrAdmin(user!.roles));
+
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Announcements</h1>
-        {/* TODO: Move RBAC utility functions to another file */}
-        {["admin", "faculty"].includes(user!.roles) && <NewAnnouncement />}
+        {isFacultyOrAdmin(user!.roles) && <NewAnnouncement />}
       </div>
       {/* TODO: Handle error */}
       {error || isLoading ? (

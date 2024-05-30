@@ -43,6 +43,6 @@ export function login(
 
 export function logout(dispatch: Dispatch<AuthAction>) {
   localStorage.removeItem("token");
-  localStorage.removeItem("roles");
+  localStorage.removeItem("user");
   dispatch({ type: AuthActionKind.Logout, token: null, user: null });
 }
