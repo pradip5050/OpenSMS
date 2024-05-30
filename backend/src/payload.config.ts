@@ -10,7 +10,6 @@ import Users from "./collections/Users";
 import Students from "./collections/Students";
 import Media from "./collections/Media";
 import Courses from "./collections/Courses";
-import Branches from "./collections/Branches";
 import { LoginLogo } from "./globals/Logo";
 import Announcements from "./collections/Announcements";
 
@@ -22,7 +21,7 @@ export default buildConfig({
   cors: "*",
   // csrf: ["http://127.0.0.1:3000"],
   editor: slateEditor({}),
-  collections: [Users, Announcements, Students, Courses, Branches, Media],
+  collections: [Users, Announcements, Students, Courses, Media],
   globals: [LoginLogo],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),

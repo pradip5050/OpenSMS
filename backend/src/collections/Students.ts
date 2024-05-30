@@ -28,41 +28,28 @@ const Students: CollectionConfig = {
       name: "course",
       type: "relationship",
       relationTo: ["courses"],
-      filterOptions: async ({ data, siblingData }) => {
-        if (data.branch) {
-          // const query = qs.stringify(
-          //   {
-          //     where: {
-          //       id: {
-          //         equals: Number(data.branch.value),
-          //       },
-          //     },
-          //   },
-          //   { addQueryPrefix: true }
-          // );
-          // const response = await fetch(
-          //   `http://localhost:3000/api/branches${query}`
-          // );
-          // const json = await response.json();
-          // const courses = json["docs"][0]["courses"].map(
-          //   (e) => e["value"]["id"]
-          // );
+      // filterOptions: async ({ data, siblingData }) => {
+      // const query = qs.stringify(
+      //   {
+      //     where: {
+      //       id: {
+      //         equals: Number(data.branch.value),
+      //       },
+      //     },
+      //   },
+      //   { addQueryPrefix: true }
+      // );
+      // const response = await fetch(
+      //   `http://localhost:3000/api/branches${query}`
+      // );
+      // const json = await response.json();
+      // const courses = json["docs"][0]["courses"].map(
+      //   (e) => e["value"]["id"]
+      // );
 
-          // console.log(data, siblingData, courses);
-
-          return true;
-        }
-
-        return false;
-      },
+      // console.log(data, siblingData, courses);
+      // },
       hasMany: true,
-      required: true,
-    },
-    {
-      name: "branch",
-      type: "relationship",
-      relationTo: ["branches"],
-      hasMany: false,
       required: true,
     },
     { name: "photo", type: "upload", relationTo: "media", required: true },
