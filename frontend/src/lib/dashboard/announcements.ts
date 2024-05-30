@@ -1,7 +1,7 @@
 import axios from "axios";
 import useSWR, { Fetcher } from "swr";
 import { API_URL } from "../constants";
-import { GenericPayload, GetResponse, PostResponse } from "../utils";
+import { AuthPayload, GetResponse, PostResponse } from "../utils";
 import useSWRMutation from "swr/mutation";
 
 export interface AnnouncementPayload {
@@ -27,7 +27,7 @@ const getFetcher: Fetcher<AnnouncementResponse> = (url: string) =>
 
 const postFetcher = (
   url: string,
-  { arg }: { arg: GenericPayload<AnnouncementPayload> }
+  { arg }: { arg: AuthPayload<AnnouncementPayload> }
 ) =>
   axios
     .post(url, JSON.stringify(arg.payload), {

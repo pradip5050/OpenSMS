@@ -10,7 +10,7 @@ const Announcements: CollectionConfig = {
   slug: "announcements",
   access: {
     read: () => true,
-    create: isAdmin,
+    create: () => true,
   },
   admin: {
     useAsTitle: "title",

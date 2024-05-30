@@ -41,14 +41,19 @@ export default function NewAnnouncement() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(JSON.stringify(editorRef.current.getEditorState()));
-    const result = await trigger({
-      token: auth.token!,
-      payload: {
-        title: values.title,
-        content: JSON.stringify(editorRef.current.getEditorState()),
-      },
-    });
-    console.log(result);
+
+    try {
+      const result = await trigger({
+        token: auth.token!,
+        payload: {
+          title: values.title,
+          content: JSON.stringify(editorRef.current.getEditorState()),
+        },
+      });
+      console.log(result);
+    } catch (err) {
+      console.log(err);
+    }
     // TODO: Handle error
     setOpen(false);
   }

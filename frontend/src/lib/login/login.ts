@@ -2,7 +2,7 @@ import axios from "axios";
 import useSWRMutation from "swr/mutation";
 import { API_URL } from "../constants";
 import { Dispatch } from "react";
-import { AuthAction, AuthActionKind } from "@/components/AuthProvider";
+import { AuthAction, AuthActionKind, User } from "@/components/AuthProvider";
 
 export interface LoginPayload {
   email: string;
@@ -33,16 +33,16 @@ export function useLogin() {
 
 export function login(
   token: string,
-  roles: string,
+  user: User,
   dispatch: Dispatch<AuthAction>
 ) {
   localStorage.setItem("token", token);
-  localStorage.setItem("roles", roles);
-  dispatch({ type: AuthActionKind.Login, token: token, roles: roles });
+  localStorage.setItem("user", JSON.stringify(user));
+  dispatch({ type: AuthActionKind.Login, token: token, user: user });
 }
 
 export function logout(dispatch: Dispatch<AuthAction>) {
   localStorage.removeItem("token");
   localStorage.removeItem("roles");
-  dispatch({ type: AuthActionKind.Logout, token: null, roles: null });
+  dispatch({ type: AuthActionKind.Logout, token: null, user: null });
 }

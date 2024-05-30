@@ -10,11 +10,11 @@ export interface GetResponse<T> {
 }
 
 export interface PostResponse<T> {
-  trigger: TriggerWithArgs<any, any, string, GenericPayload<T>>;
+  trigger: TriggerWithArgs<any, any, string, AuthPayload<T>>;
   isMutating: boolean;
 }
 
-export interface GenericPayload<T> {
+export interface AuthPayload<T> {
   token: string;
   payload: T;
 }
