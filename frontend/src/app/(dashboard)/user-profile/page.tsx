@@ -20,7 +20,7 @@ export default function UserProfile() {
       <Table>
         <TableBody>
           {error || isLoading ? (
-            <Skeleton />
+            <h1>{JSON.stringify(error)}</h1>
           ) : (
             <>
               {/* TODO: Fix src URL (add API_URL) */}
