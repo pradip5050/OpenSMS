@@ -3,7 +3,10 @@
 import NewAnnouncement from "@/components/dashboard/home/NewAnnouncement";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAnnouncements } from "@/lib/dashboard/announcements";
+import {
+  mapAnnouncements,
+  useAnnouncements,
+} from "@/lib/dashboard/announcements";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -49,7 +52,8 @@ export default function Home() {
       ) : (
         <Table>
           <TableBody>
-            {data!.docs.map((element) => {
+            {data!.docs.map((el) => {
+              const element = mapAnnouncements(el);
               return (
                 <TableRow
                   key={element.id}
@@ -58,7 +62,7 @@ export default function Home() {
                   <TableCell>
                     <div className="font-medium text-3xl">{element.title}</div>
                     <div className="text-lg text-muted-foreground md:inline">
-                      Description
+                      {element.createdAt}
                     </div>
                   </TableCell>
                   <TableCell className="flex justify-end h-full items-center">
