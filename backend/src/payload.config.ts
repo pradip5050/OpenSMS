@@ -12,6 +12,7 @@ import Media from "./collections/Media";
 import Courses from "./collections/Courses";
 import { Metadata } from "./globals/Metadata";
 import Announcements from "./collections/Announcements";
+import stripePlugin from "@payloadcms/plugin-stripe";
 
 export default buildConfig({
   admin: {
@@ -29,7 +30,14 @@ export default buildConfig({
   graphQL: {
     schemaOutputFile: path.resolve(__dirname, "generated-schema.graphql"),
   },
-  plugins: [payloadCloud()],
+  plugins: [
+    payloadCloud(),
+    stripePlugin({
+      stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+      rest: true,
+      logs: true,
+    }),
+  ],
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI,
