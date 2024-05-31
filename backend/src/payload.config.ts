@@ -12,6 +12,8 @@ import Media from "./collections/Media";
 import Courses from "./collections/Courses";
 import { Metadata } from "./globals/Metadata";
 import Announcements from "./collections/Announcements";
+import Fees from "./collections/Fees";
+import Attendances from "./collections/Attendances";
 
 export default buildConfig({
   admin: {
@@ -19,9 +21,16 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   cors: "*",
-  // csrf: ["http://127.0.0.1:3000"],
   editor: slateEditor({}),
-  collections: [Users, Announcements, Students, Courses, Media],
+  collections: [
+    Users,
+    Announcements,
+    Attendances,
+    Courses,
+    Fees,
+    Students,
+    Media,
+  ],
   globals: [Metadata],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),

@@ -1,31 +1,30 @@
 import { CollectionConfig } from "payload/types";
 
-const Fees: CollectionConfig = {
-  slug: "fees",
+const Attendances: CollectionConfig = {
+  slug: "attendances",
   access: {},
   admin: {
     useAsTitle: "name",
-    description: "A student fee",
+    description: "A student attendance",
   },
   fields: [
-    { name: "id", type: "number", required: true },
-    { name: "isPresent", type: "checkbox", required: true },
     { name: "date", type: "date", required: true },
+    { name: "isPresent", type: "checkbox", required: true },
     {
-      name: "courses",
+      name: "course",
       type: "relationship",
       relationTo: ["courses"],
       hasMany: false,
       required: true,
     },
     {
-      name: "users",
+      name: "student",
       type: "relationship",
-      relationTo: ["users"],
+      relationTo: ["students"],
       hasMany: false,
       required: true,
     },
   ],
 };
 
-export default Fees;
+export default Attendances;
