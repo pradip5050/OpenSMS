@@ -1,4 +1,5 @@
 import { CollectionConfig } from "payload/types";
+import { createOrder } from "../razorpay";
 
 const Fees: CollectionConfig = {
   slug: "fees",
@@ -28,6 +29,22 @@ const Fees: CollectionConfig = {
       relationTo: ["students"],
       hasMany: false,
       required: true,
+    },
+  ],
+  endpoints: [
+    {
+      // TODO: Move amount to req body
+      path: "/order/create/:amount",
+      method: "get",
+      handler: async (req, res, next) => {
+        const order = await createOrder({ amount: Number(req.params.amount) });
+
+        // if (tracking) {
+        res.status(200).send(order);
+        // } else {
+        //   res.status(404).send({ error: 'not found' })
+        // }
+      },
     },
   ],
 };
