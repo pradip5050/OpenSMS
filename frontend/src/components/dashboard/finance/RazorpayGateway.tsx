@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { MouseEvent, useEffect, useRef } from "react";
 
 export default function RazorpayGateway() {
-  const Razorpay = useRef(null);
+  const Razorpay = useRef<any>(null);
 
   useEffect(() => {
     let options = {
@@ -16,9 +16,9 @@ export default function RazorpayGateway() {
       callback_url: "https://eneqd3r9zrjok.x.pipedream.net/",
       // Customer
       prefill: {
-        name: "Sagar Kumar",
-        email: "ragas5432100@gmail.com",
-        contact: "9035908111",
+        name: "ABC",
+        email: "email@gmail.com",
+        contact: "1111111111",
       },
       notes: {
         address: "MSDC",
@@ -33,7 +33,8 @@ export default function RazorpayGateway() {
     document.body.appendChild(scriptTag);
 
     scriptTag.onload = () => {
-      Razorpay.current = new window.Razorpay(options);
+      // TODO: Find a better way to escape type checks
+      Razorpay.current = new (window as any).Razorpay(options);
     };
   }, [Razorpay]);
 
