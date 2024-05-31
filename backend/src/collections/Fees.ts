@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload/types";
 import { createOrder } from "../razorpay";
+import Razorpay from "razorpay";
 
 const Fees: CollectionConfig = {
   slug: "fees",
@@ -35,15 +36,22 @@ const Fees: CollectionConfig = {
     {
       // TODO: Move amount to req body
       path: "/order/create/:amount",
-      method: "get",
+      method: "post",
       handler: async (req, res, next) => {
-        const order = await createOrder({ amount: Number(req.params.amount) });
+        const razorpay = new Razorpay({
+          key_id: process.env.RAZORPAY_KEY_ID,
+          key_secret: process.env.RAZORPAY_KEY_SECRET,
+        });
 
-        // if (tracking) {
-        res.status(200).send(order);
-        // } else {
-        //   res.status(404).send({ error: 'not found' })
-        // }
+        const order = await createOrder({
+          instance: razorpay,
+          amount: Number(req.params.amount),
+        });
+        if (order.status === "success") {
+          res.status(200).send(order.data);
+        } else {
+          res.status(400).send(order.data);
+        }
       },
     },
   ],

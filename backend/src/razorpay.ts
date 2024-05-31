@@ -1,21 +1,27 @@
-import Razorpay from "razorpay";
 import { Orders } from "razorpay/dist/types/orders";
+import Razorpay from "razorpay";
 
-const instance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+export interface RazorpayResponse<T> {
+  data: T;
+  status: "success" | "failure";
+}
 
 export async function createOrder({
+  instance,
   amount,
 }: {
+  instance: Razorpay;
   amount: number;
-}): Promise<Orders.RazorpayOrder> {
-  const res = await instance.orders.create({
-    amount: amount,
-    currency: "INR",
-    // receipt: "receipt#1",
-  });
+}): Promise<RazorpayResponse<Orders.RazorpayOrder>> {
+  try {
+    const res = await instance.orders.create({
+      amount: amount,
+      currency: "INR",
+      // receipt: "receipt#1",
+    });
 
-  return res;
+    return { data: res, status: "success" };
+  } catch (err) {
+    return { data: err, status: "failure" };
+  }
 }
