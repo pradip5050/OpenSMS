@@ -35,22 +35,23 @@ export default function Home() {
       </div>
       {/* TODO: Handle error */}
       {error || isLoading ? (
-        <ul className="flex flex-col gap-4">
-          {list.map((element) => {
-            return (
-              <li
-                key={element}
-                className="flex flex-row items-center space-x-4 "
-              >
-                <Skeleton className="h-12 w-12 min-w-12 rounded-full" />
-                <div className="flex flex-col w-full space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-[90%]" />
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+        <Table>
+          <TableBody>
+            {list.map((element) => {
+              return (
+                <TableRow
+                  key={element}
+                  className="flex flex-row items-center space-x-4 "
+                >
+                  <TableCell className="flex flex-col w-full space-y-2">
+                    <Skeleton className="h-8 w-[70%]" />
+                    <Skeleton className="h-8 w-[95%]" />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       ) : (
         <Table>
           <TableBody>
