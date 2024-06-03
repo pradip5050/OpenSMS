@@ -19,6 +19,11 @@ export interface Student {
   };
 }
 
+export interface StudentRelation {
+  relationTo: "students";
+  value: Student;
+}
+
 export interface StudentResponse {
   docs: Student[];
 }
