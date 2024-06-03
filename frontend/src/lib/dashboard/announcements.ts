@@ -1,5 +1,5 @@
-import axios from "axios";
-import useSWR, { Fetcher } from "swr";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import useSWR from "swr";
 import { API_URL } from "../constants";
 import { AuthPayload, GetResponse, PostResponse } from "../utils";
 import useSWRMutation from "swr/mutation";
@@ -22,28 +22,20 @@ export interface AnnouncementResponse {
   docs: Announcement[];
 }
 
-const getFetcher: Fetcher<AnnouncementResponse> = (url: string) =>
-  axios.get(url).then((res) => res.data);
-
-const postFetcher = (
-  url: string,
-  { arg }: { arg: AuthPayload<AnnouncementPayload> }
-) =>
-  axios
-    .post(url, JSON.stringify(arg.payload), {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${arg.token}`,
-      },
-    })
-    .then((res) => res.data);
-
-export function useAnnouncements() {
-  const { data, error, isLoading } = useSWR<AnnouncementResponse>(
+export function useAnnouncements(token?: string) {
+  const { data, error, isLoading } = useSWR<AnnouncementResponse, AxiosError>(
     `${API_URL}/api/announcements?draft=false&depth=1`,
-    getFetcher
+    (url: string) =>
+      axios
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res: AxiosResponse<AnnouncementResponse>) => res.data)
   );
 
+  // TODO: Check whether data mapping can be done here
   return {
     data,
     error,
@@ -62,6 +54,19 @@ export function mapAnnouncements(announcement: Announcement): Announcement {
     createdAt: `${date.toDateString()} | ${date.getHours()}:${minutesString}`,
   };
 }
+
+const postFetcher = (
+  url: string,
+  { arg }: { arg: AuthPayload<AnnouncementPayload> }
+) =>
+  axios
+    .post(url, JSON.stringify(arg.payload), {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${arg.token}`,
+      },
+    })
+    .then((res) => res.data);
 
 export function useCreateAnnouncements() {
   const { trigger, isMutating } = useSWRMutation(

@@ -20,7 +20,6 @@ const fetcher = (url: string, { arg }: { arg: LoginPayload }) =>
 
 export function useLogin() {
   const { trigger, isMutating } = useSWRMutation(
-    // `http://10.0.2.2:3002/api/users/login`,
     `${API_URL}/api/users/login`,
     fetcher
   );
@@ -44,5 +43,5 @@ export function login(
 export function logout(dispatch: Dispatch<AuthAction>) {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  dispatch({ type: AuthActionKind.Logout, token: null, user: null });
+  dispatch({ type: AuthActionKind.Logout });
 }

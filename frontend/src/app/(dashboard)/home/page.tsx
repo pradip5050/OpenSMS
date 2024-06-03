@@ -22,10 +22,8 @@ import { isFacultyOrAdmin } from "@/lib/rbac";
 
 export default function Home() {
   const list = [1, 2, 3, 4, 5];
-  const { data, error, isLoading } = useAnnouncements();
-  const { user } = useAuth();
-
-  console.log(user!.roles, isFacultyOrAdmin(user!.roles));
+  const { user, token } = useAuth();
+  const { data, error, isLoading } = useAnnouncements(token);
 
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
@@ -34,7 +32,7 @@ export default function Home() {
         {isFacultyOrAdmin(user!.roles) && <NewAnnouncement />}
       </div>
       {/* TODO: Handle error & move Table/TableBody up */}
-      {error || isLoading ? (
+      {isLoading ? (
         <Table>
           <TableBody>
             {list.map((element) => {
@@ -52,6 +50,11 @@ export default function Home() {
             })}
           </TableBody>
         </Table>
+      ) : error ? (
+        <>
+          <h1>ERROR</h1>
+          <p>{JSON.stringify(error)}</p>
+        </>
       ) : (
         <Table>
           <TableBody>

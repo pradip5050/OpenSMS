@@ -19,17 +19,17 @@ export interface User {
 
 export interface AuthAction {
   type: AuthActionKind;
-  token: string | null;
-  user: User | null;
+  token?: string;
+  user?: User;
 }
 
 export interface AuthState {
-  token: string | null;
+  token?: string;
   loading: boolean;
-  user: User | null;
+  user?: User;
 }
 
-const initialState = { token: null, loading: true, user: null };
+const initialState = { loading: true };
 
 const AuthContext = createContext<AuthState>(initialState);
 export const AuthDispatchContext = createContext<Dispatch<AuthAction>>(
@@ -43,7 +43,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
       return { token: action.token, loading: false, user: action.user };
     }
     case AuthActionKind.Logout: {
-      return { token: null, loading: false, user: action.user };
+      return { loading: false };
     }
     default: {
       return state;
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: any) => {
         user: storedUser,
       });
     } else {
-      dispatch({ type: AuthActionKind.Logout, token: null, user: null });
+      dispatch({ type: AuthActionKind.Logout });
     }
   }, []);
 

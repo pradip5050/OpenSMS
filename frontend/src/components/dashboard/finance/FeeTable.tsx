@@ -4,6 +4,7 @@ import {
   TableHeader,
   TableBody,
   TableCell,
+  TableRow,
 } from "@/components/ui/table";
 import RazorpayGateway from "./RazorpayGateway";
 
@@ -19,22 +20,26 @@ export default function FeeTable({
   return (
     <Table>
       <TableHeader>
-        <TableHead>Due Date</TableHead>
-        <TableHead>Description</TableHead>
-        <TableHead>Amount</TableHead>
-        {hasPaymentButton && <TableHead>Payment</TableHead>}
-        {hasPrintButton && <TableHead>Print</TableHead>}
+        <TableRow>
+          <TableHead>Due Date</TableHead>
+          <TableHead>Description</TableHead>
+          <TableHead>Amount</TableHead>
+          {hasPaymentButton && <TableHead>Payment</TableHead>}
+          {hasPrintButton && <TableHead>Print</TableHead>}
+        </TableRow>
       </TableHeader>
       <TableBody>
-        <TableCell>2-12-2023</TableCell>
-        <TableCell>Course Fees</TableCell>
-        <TableCell>3000</TableCell>
-        {hasPaymentButton && (
-          <TableCell>
-            <RazorpayGateway amount={1000} />
-          </TableCell>
-        )}
-        {hasPrintButton && <TableHead>Icon</TableHead>}
+        <TableRow>
+          <TableCell>2-12-2023</TableCell>
+          <TableCell>Course Fees</TableCell>
+          <TableCell>3000</TableCell>
+          {hasPaymentButton && (
+            <TableCell>
+              <RazorpayGateway amount={1000} />
+            </TableCell>
+          )}
+          {hasPrintButton && <TableHead>Icon</TableHead>}
+        </TableRow>
       </TableBody>
     </Table>
   );
