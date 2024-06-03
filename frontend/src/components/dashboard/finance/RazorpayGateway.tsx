@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { MouseEvent, useEffect, useRef } from "react";
 
-export default function RazorpayGateway() {
+export interface RazorpayGatewayProps {
+  amount: number;
+}
+
+export default function RazorpayGateway({ amount }: RazorpayGatewayProps) {
   // const Razorpay = useRef<any>(null);
   const loaded = useRef<boolean>(false);
 
@@ -18,7 +22,6 @@ export default function RazorpayGateway() {
   async function pay(event: MouseEvent<HTMLElement>) {
     // TODO: Do a basic fetch to fetch order info
     let orderId = "order_OH9Ecja5k9PiK9";
-    let amount = 5000;
 
     if (loaded.current) {
       let options = {

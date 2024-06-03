@@ -21,6 +21,12 @@ export const isFaculty: Access<any, User> = ({ req: { user } }) => {
   return Boolean(user?.roles.includes("faculty"));
 };
 
+export const isAdminOrFaculty: Access<any, User> = ({ req: { user } }) => {
+  return Boolean(
+    user?.roles.includes("faculty") || user?.roles.includes("admin")
+  );
+};
+
 export const isAdminFieldLevel: FieldAccess<{ id: string }, unknown, User> = ({
   req: { user },
 }) => {

@@ -1,7 +1,8 @@
 "use client";
 
+import FeeTable from "@/components/dashboard/finance/FeeTable";
 import RazorpayGateway from "@/components/dashboard/finance/RazorpayGateway";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Finance() {
   return (
@@ -14,20 +15,27 @@ export default function Finance() {
           <CardHeader>
             <CardTitle>Total fee</CardTitle>
           </CardHeader>
+          <CardContent>
+            <FeeTable hasPaymentButton={false} hasPrintButton={false} />
+          </CardContent>
         </Card>
         <Card className="">
           <CardHeader>
             <CardTitle>Payments due</CardTitle>
           </CardHeader>
+          <CardContent>
+            <FeeTable hasPaymentButton={true} hasPrintButton={false} />
+          </CardContent>
         </Card>
         <Card className="">
           <CardHeader>
             <CardTitle>Accepted payments</CardTitle>
           </CardHeader>
+          <CardContent>
+            <FeeTable hasPaymentButton={false} hasPrintButton={true} />
+          </CardContent>
         </Card>
-        <div className="lg:col-span-2 place-self-center">
-          <RazorpayGateway />
-        </div>
+        <div className="lg:col-span-2 place-self-center"></div>
       </div>
     </main>
   );

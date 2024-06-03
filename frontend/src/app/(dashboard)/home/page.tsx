@@ -33,7 +33,7 @@ export default function Home() {
         <h1 className="text-left w-full">Announcements</h1>
         {isFacultyOrAdmin(user!.roles) && <NewAnnouncement />}
       </div>
-      {/* TODO: Handle error */}
+      {/* TODO: Handle error & move Table/TableBody up */}
       {error || isLoading ? (
         <Table>
           <TableBody>
