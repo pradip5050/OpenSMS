@@ -39,8 +39,8 @@ export default function Finance() {
           </Card>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Card className="lg:col-span-2">
+        <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
+          <Card className="2xl:col-span-2">
             <CardHeader>
               <CardTitle>Total fee</CardTitle>
             </CardHeader>
@@ -52,7 +52,7 @@ export default function Finance() {
               />
             </CardContent>
           </Card>
-          <Card className="">
+          <Card>
             <CardHeader>
               <CardTitle>Payments due</CardTitle>
             </CardHeader>
@@ -64,7 +64,7 @@ export default function Finance() {
               />
             </CardContent>
           </Card>
-          <Card className="">
+          <Card>
             <CardHeader>
               <CardTitle>Accepted payments</CardTitle>
             </CardHeader>
@@ -76,7 +76,6 @@ export default function Finance() {
               />
             </CardContent>
           </Card>
-          <div className="lg:col-span-2 place-self-center"></div>
         </div>
       )}
     </main>

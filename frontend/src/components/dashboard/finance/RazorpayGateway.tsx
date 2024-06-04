@@ -57,10 +57,8 @@ export default function RazorpayGateway({ amount }: RazorpayGatewayProps) {
 
   return (
     <>
-      <div>
-        <div id="razorpay"></div>
-        <Button onClick={pay}>Pay</Button>
-      </div>
+      <div id="razorpay"></div>
+      <Button onClick={pay}>Pay</Button>
     </>
   );
 }
