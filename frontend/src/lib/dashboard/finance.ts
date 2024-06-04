@@ -5,7 +5,7 @@ import { GetResponse } from "../utils";
 import { StudentRelation } from "./user-profile";
 
 export interface Fee {
-  id: number;
+  id: string;
   description: string;
   amount: number;
   dueDate: string;
@@ -13,8 +13,9 @@ export interface Fee {
   student: StudentRelation;
 }
 
+// TODO: Find a way to make docs not undefined for mapping
 export interface FeeResponse {
-  docs: Fee[];
+  docs?: Fee[];
 }
 
 export function useFees(token?: string) {
@@ -30,9 +31,14 @@ export function useFees(token?: string) {
         .then((res: AxiosResponse<FeeResponse>) => res.data)
   );
 
-  // TODO: Check whether data mapping can be done here
+  const transformedData: FeeResponse | undefined = {
+    docs: data?.docs?.map((fee) => {
+      return { ...fee, dueDate: new Date(fee.dueDate).toDateString() };
+    }),
+  };
+
   return {
-    data,
+    data: transformedData,
     error,
     isLoading,
   } satisfies GetResponse<FeeResponse | undefined>;

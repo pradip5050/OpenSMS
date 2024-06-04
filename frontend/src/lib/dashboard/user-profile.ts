@@ -6,10 +6,9 @@ import qs from "qs";
 
 // TODO: Change interface and check query
 export interface Student {
-  id: number;
-  name: string;
+  id: string;
+  studentId: number;
   number: number;
-  email: string;
   dob: string;
   courses: string; // TODO: Change to course when implemented
   user: string; // TODO: ...

@@ -7,15 +7,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import RazorpayGateway from "./RazorpayGateway";
+import { Fee } from "@/lib/dashboard/finance";
+import { Button } from "@/components/ui/button";
 
 export interface FeeTableProps {
   hasPaymentButton: boolean;
   hasPrintButton: boolean;
+  fees: Fee[];
 }
 
 export default function FeeTable({
   hasPaymentButton,
   hasPrintButton,
+  fees,
 }: FeeTableProps) {
   return (
     <Table>
@@ -29,17 +33,22 @@ export default function FeeTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell>2-12-2023</TableCell>
-          <TableCell>Course Fees</TableCell>
-          <TableCell>3000</TableCell>
-          {hasPaymentButton && (
-            <TableCell>
-              <RazorpayGateway amount={1000} />
-            </TableCell>
-          )}
-          {hasPrintButton && <TableHead>Icon</TableHead>}
-        </TableRow>
+        {fees.map((fee) => {
+          return (
+            <TableRow key={fee.id}>
+              <TableCell>{fee.dueDate}</TableCell>
+              <TableCell>{fee.description}</TableCell>
+              <TableCell>{fee.amount}</TableCell>
+              {hasPaymentButton && (
+                <TableCell>
+                  {/* Amount in paise */}
+                  <RazorpayGateway amount={fee.amount * 100} />
+                </TableCell>
+              )}
+              {hasPrintButton && <Button>Icon</Button>}
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );
