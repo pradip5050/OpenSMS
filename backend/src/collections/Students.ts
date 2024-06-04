@@ -1,21 +1,34 @@
 import payload from "payload";
 import { CollectionConfig } from "payload/types";
 import qs from "qs";
+import { isAdminOrFaculty } from "../access/isAdmin";
 
 const Students: CollectionConfig = {
   slug: "students",
   access: {
     read: () => true,
+    create: isAdminOrFaculty,
+    update: isAdminOrFaculty,
+    delete: isAdminOrFaculty,
   },
   admin: {
     useAsTitle: "name",
     description: "A student",
   },
   fields: [
-    { name: "studentId", type: "number", required: true },
-    { name: "name", type: "text", required: true },
-    { name: "number", type: "number", max: 10, required: true },
-    { name: "email", type: "email", required: true },
+    { name: "studentId", label: "Student ID", type: "number", required: true },
+    {
+      name: "number",
+      type: "number",
+      validate: (val, {}) => {
+        if (val >= 10000000000) {
+          return "Enter valid mobile number";
+        }
+
+        return true;
+      },
+      required: true,
+    },
     { name: "dob", label: "Date Of Birth", type: "date", required: true },
     {
       name: "user",
