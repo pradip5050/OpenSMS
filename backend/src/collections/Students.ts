@@ -12,7 +12,7 @@ const Students: CollectionConfig = {
     description: "A student",
   },
   fields: [
-    { name: "id", type: "number", required: true },
+    { name: "studentId", type: "number", required: true },
     { name: "name", type: "text", required: true },
     { name: "number", type: "number", max: 10, required: true },
     { name: "email", type: "email", required: true },

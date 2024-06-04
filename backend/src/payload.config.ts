@@ -40,6 +40,7 @@ export default buildConfig({
   },
   plugins: [payloadCloud()],
   db: postgresAdapter({
+    idType: "uuid",
     pool: {
       connectionString: process.env.DATABASE_URI,
     },

@@ -12,7 +12,6 @@ const Fees: CollectionConfig = {
     description: "A student fee",
   },
   fields: [
-    { name: "id", type: "number", required: true },
     { name: "description", type: "text", required: true },
     { name: "amount", type: "number", required: true },
     { name: "dueDate", label: "Due date", type: "date", required: true },

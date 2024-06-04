@@ -10,7 +10,7 @@ const Courses: CollectionConfig = {
     description: "A course",
   },
   fields: [
-    { name: "id", type: "number", required: true },
+    { name: "code", type: "text", required: true },
     { name: "name", type: "text", required: true },
     { name: "credits", type: "number", required: true },
   ],
