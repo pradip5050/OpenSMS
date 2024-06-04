@@ -42,7 +42,10 @@ export default function FeeTable({
               {hasPaymentButton && (
                 <TableCell>
                   {/* Amount in paise */}
-                  <RazorpayGateway amount={fee.amount * 100} />
+                  <RazorpayGateway
+                    amount={fee.amount * 100}
+                    student={fee.student.value}
+                  />
                 </TableCell>
               )}
               {hasPrintButton && <Button className="my-4">Icon</Button>}

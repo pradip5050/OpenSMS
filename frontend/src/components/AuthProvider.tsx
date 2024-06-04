@@ -1,3 +1,4 @@
+import { User } from "@/lib/login/login";
 import {
   createContext,
   useContext,
@@ -9,12 +10,6 @@ import {
 export enum AuthActionKind {
   Login = "LOGIN",
   Logout = "LOGOUT",
-}
-
-export interface User {
-  roles: string;
-  name: string;
-  email: string;
 }
 
 export interface AuthAction {

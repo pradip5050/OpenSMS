@@ -1,13 +1,22 @@
+import { useAuth } from "@/components/AuthProvider";
+import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
+import { useOrder } from "@/lib/dashboard/finance";
+import { Student } from "@/lib/dashboard/user-profile";
 import { MouseEvent, useEffect, useRef } from "react";
 
 export interface RazorpayGatewayProps {
   amount: number;
+  student: Student;
 }
 
-export default function RazorpayGateway({ amount }: RazorpayGatewayProps) {
-  // const Razorpay = useRef<any>(null);
+export default function RazorpayGateway({
+  amount,
+  student,
+}: RazorpayGatewayProps) {
   const loaded = useRef<boolean>(false);
+  const { token } = useAuth();
+  const { data, trigger, isMutating, error } = useOrder(amount);
 
   useEffect(() => {
     const scriptTag = document.createElement("script");
@@ -20,12 +29,17 @@ export default function RazorpayGateway({ amount }: RazorpayGatewayProps) {
   }, []);
 
   async function pay(event: MouseEvent<HTMLElement>) {
-    // TODO: Do a basic fetch to fetch order info
-    let orderId = "order_OH9Ecja5k9PiK9";
+    await trigger({ token: token });
+
+    // TODO: Handle error UI
+    if (error) {
+      return;
+    }
+    let orderId = data!.id;
 
     if (loaded.current) {
       let options = {
-        key_id: "rzp_test_0LGTNFXkqWdoSH",
+        key: "rzp_test_0LGTNFXkqWdoSH",
         amount: amount, // In paise
         currency: "INR",
         name: "MSDC",
@@ -35,9 +49,9 @@ export default function RazorpayGateway({ amount }: RazorpayGatewayProps) {
         callback_url: "https://eneqd3r9zrjok.x.pipedream.net/",
         // Customer
         prefill: {
-          name: "ABC",
-          email: "email@gmail.com",
-          contact: "1111111111",
+          name: student.user.value.name,
+          email: student.user.value.email,
+          contact: student.number,
         },
         notes: {
           address: "MSDC",
@@ -58,7 +72,9 @@ export default function RazorpayGateway({ amount }: RazorpayGatewayProps) {
   return (
     <>
       <div id="razorpay"></div>
-      <Button onClick={pay}>Pay</Button>
+      <Button disabled={isMutating} onClick={pay}>
+        {isMutating ? <Spinner size={"12"} /> : "Pay"}
+      </Button>
     </>
   );
 }

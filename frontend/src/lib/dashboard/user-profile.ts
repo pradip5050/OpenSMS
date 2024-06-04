@@ -3,15 +3,17 @@ import { API_URL } from "../constants";
 import useSWR, { Fetcher } from "swr";
 import { GetResponse } from "../utils";
 import qs from "qs";
+import { UserRelation } from "../login/login";
+import { CourseRelation } from "./courses";
 
-// TODO: Change interface and check query
+// TODO: Check query
 export interface Student {
   id: string;
   studentId: number;
   number: number;
   dob: string;
-  courses: string; // TODO: Change to course when implemented
-  user: string; // TODO: ...
+  courses: CourseRelation[];
+  user: UserRelation;
   photo: {
     alt: string;
     url: string;

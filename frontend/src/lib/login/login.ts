@@ -2,7 +2,19 @@ import axios from "axios";
 import useSWRMutation from "swr/mutation";
 import { API_URL } from "../constants";
 import { Dispatch } from "react";
-import { AuthAction, AuthActionKind, User } from "@/components/AuthProvider";
+import { AuthAction, AuthActionKind } from "@/components/AuthProvider";
+
+export interface User {
+  id: string;
+  roles: string;
+  name: string;
+  email: string;
+  loginAttempts: number;
+}
+export interface UserRelation {
+  relationTo: string;
+  value: User;
+}
 
 export interface LoginPayload {
   email: string;
