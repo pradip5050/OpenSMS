@@ -17,7 +17,6 @@ export interface Announcement {
   createdAt: string;
 }
 
-// TODO: Change to Announcement
 export interface AnnouncementResponse {
   docs: Announcement[];
 }
@@ -77,5 +76,5 @@ export function useCreateAnnouncements() {
   return {
     trigger,
     isMutating,
-  } satisfies PostResponse<AnnouncementPayload>;
+  } satisfies PostResponse<AnnouncementPayload, AxiosError>;
 }

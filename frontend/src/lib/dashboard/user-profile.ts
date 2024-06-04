@@ -1,10 +1,10 @@
 import axios from "axios";
 import { API_URL } from "../constants";
 import useSWR, { Fetcher } from "swr";
-import { GetResponse } from "../utils";
+import { GetResponse, Relation } from "../utils";
 import qs from "qs";
 import { UserRelation } from "../login/login";
-import { CourseRelation } from "./courses";
+import { Course } from "./courses";
 
 // TODO: Check query
 export interface Student {
@@ -12,17 +12,12 @@ export interface Student {
   studentId: number;
   number: number;
   dob: string;
-  courses: CourseRelation[];
+  courses: Relation<Course>[];
   user: UserRelation;
   photo: {
     alt: string;
     url: string;
   };
-}
-
-export interface StudentRelation {
-  relationTo: "students";
-  value: Student;
 }
 
 export interface StudentResponse {

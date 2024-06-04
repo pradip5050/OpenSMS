@@ -1,9 +1,9 @@
 import axios, { Axios, AxiosError, AxiosResponse } from "axios";
 import useSWR, { Key } from "swr";
 import { API_URL } from "../constants";
-import { AuthPayload, GetResponse, PostResponse } from "../utils";
-import { StudentRelation } from "./user-profile";
+import { AuthPayload, GetResponse, PostResponse, Relation } from "../utils";
 import useSWRMutation from "swr/mutation";
+import { Student } from "./user-profile";
 
 export interface Fee {
   id: string;
@@ -11,7 +11,7 @@ export interface Fee {
   amount: number;
   dueDate: string;
   paymentStatus: "unpaid" | "paid" | "delayed";
-  student: StudentRelation;
+  student: Relation<Student>;
 }
 // TODO: Find a way to make docs not undefined for mapping
 export interface FeeResponse {

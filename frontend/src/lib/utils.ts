@@ -22,6 +22,11 @@ export interface AuthPayload<T> {
   payload: T;
 }
 
+export interface Relation<T> {
+  relationTo: string;
+  value: T;
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
