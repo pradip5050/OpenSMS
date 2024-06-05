@@ -11,10 +11,6 @@ export interface User {
   email: string;
   loginAttempts: number;
 }
-export interface UserRelation {
-  relationTo: string;
-  value: User;
-}
 
 export interface LoginPayload {
   email: string;
@@ -44,16 +40,19 @@ export function useLogin() {
 
 export function login(
   token: string,
+  exp: number,
   user: User,
   dispatch: Dispatch<AuthAction>
 ) {
   localStorage.setItem("token", token);
+  localStorage.setItem("exp", JSON.stringify(exp));
   localStorage.setItem("user", JSON.stringify(user));
   dispatch({ type: AuthActionKind.Login, token: token, user: user });
 }
 
 export function logout(dispatch: Dispatch<AuthAction>) {
   localStorage.removeItem("token");
+  localStorage.removeItem("exp");
   localStorage.removeItem("user");
   dispatch({ type: AuthActionKind.Logout });
 }

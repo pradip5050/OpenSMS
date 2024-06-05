@@ -15,11 +15,13 @@ export enum AuthActionKind {
 export interface AuthAction {
   type: AuthActionKind;
   token?: string;
+  exp?: number;
   user?: User;
 }
 
 export interface AuthState {
   token?: string;
+  exp?: number;
   loading: boolean;
   user?: User;
 }
@@ -35,7 +37,12 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   // FIXME: Invoked 4 times in (home)
   switch (action.type) {
     case AuthActionKind.Login: {
-      return { token: action.token, loading: false, user: action.user };
+      return {
+        token: action.token,
+        exp: action.exp,
+        loading: false,
+        user: action.user,
+      };
     }
     case AuthActionKind.Logout: {
       return { loading: false };
@@ -52,10 +59,15 @@ export const AuthProvider = ({ children }: any) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+    const storedExp = localStorage.getItem("exp");
     const storedUser: User = JSON.parse(localStorage.getItem("user")!);
-    if (storedToken) {
+    const isExpired = new Date(Number(storedExp ?? "0") * 1000) < new Date();
+    // TODO: Implement refresh if user is active
+
+    if (storedToken && storedExp && storedToken && !isExpired) {
       dispatch({
         type: AuthActionKind.Login,
+        exp: Number(storedExp),
         token: storedToken,
         user: storedUser,
       });
