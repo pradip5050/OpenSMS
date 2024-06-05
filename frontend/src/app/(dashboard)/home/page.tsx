@@ -60,7 +60,7 @@ export default function Home() {
           <TableBody>
             {data!.docs.length === 0 ? (
               <div className="flex h-full items-center justify-center">
-                <h1 className="text-3xl">No data to show</h1>
+                <h1 className="text-3xl">No announcements yet!</h1>
               </div>
             ) : (
               data!.docs.map((el) => {
