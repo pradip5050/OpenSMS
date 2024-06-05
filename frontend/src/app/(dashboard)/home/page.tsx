@@ -58,43 +58,51 @@ export default function Home() {
       ) : (
         <Table>
           <TableBody>
-            {data!.docs.map((el) => {
-              const element = mapAnnouncements(el);
-              return (
-                <TableRow
-                  key={element.id}
-                  className="flex flex-row items-center justify-between"
-                >
-                  <TableCell>
-                    <div className="font-medium text-3xl">{element.title}</div>
-                    <div className="text-lg text-muted-foreground md:inline">
-                      {element.createdAt}
-                    </div>
-                  </TableCell>
-                  <TableCell className="flex justify-end h-full items-center">
-                    <Sheet>
-                      <SheetTrigger>
-                        <Button>Open</Button>
-                      </SheetTrigger>
-                      <SheetContent
-                        className="overflow-y-scroll h-[80%] max-h-[80%]"
-                        side={"bottom"}
-                      >
-                        <SheetHeader>
-                          <SheetTitle>{element.title}</SheetTitle>
-                        </SheetHeader>
-                        <div
-                          className="pt-8 lexical"
-                          dangerouslySetInnerHTML={{
-                            __html: element.contentHtml,
-                          }}
-                        ></div>
-                      </SheetContent>
-                    </Sheet>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {data!.docs.length === 0 ? (
+              <div className="flex h-full items-center justify-center">
+                <h1 className="text-3xl">No data to show</h1>
+              </div>
+            ) : (
+              data!.docs.map((el) => {
+                const element = mapAnnouncements(el);
+                return (
+                  <TableRow
+                    key={element.id}
+                    className="flex flex-row items-center justify-between"
+                  >
+                    <TableCell>
+                      <div className="font-medium text-3xl">
+                        {element.title}
+                      </div>
+                      <div className="text-lg text-muted-foreground md:inline">
+                        {element.createdAt}
+                      </div>
+                    </TableCell>
+                    <TableCell className="flex justify-end h-full items-center">
+                      <Sheet>
+                        <SheetTrigger>
+                          <Button>Open</Button>
+                        </SheetTrigger>
+                        <SheetContent
+                          className="overflow-y-scroll h-[80%] max-h-[80%]"
+                          side={"bottom"}
+                        >
+                          <SheetHeader>
+                            <SheetTitle>{element.title}</SheetTitle>
+                          </SheetHeader>
+                          <div
+                            className="pt-8 lexical"
+                            dangerouslySetInnerHTML={{
+                              __html: element.contentHtml,
+                            }}
+                          ></div>
+                        </SheetContent>
+                      </Sheet>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
         </Table>
       )}

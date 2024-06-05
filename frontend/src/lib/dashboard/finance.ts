@@ -73,7 +73,8 @@ const postFetcher = (url: string, { arg }: { arg: AuthPayload<string> }) =>
         Authorization: `Bearer ${arg.token}`,
       },
     })
-    .then((res: AxiosResponse<OrderResponse>) => res.data);
+    .then((res: AxiosResponse<OrderResponse>) => res.data)
+    .catch((err) => err);
 
 export function useOrder(amount: number) {
   const { data, trigger, isMutating, error } = useSWRMutation<

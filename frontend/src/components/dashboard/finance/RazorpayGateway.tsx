@@ -1,6 +1,7 @@
 import { useAuth } from "@/components/AuthProvider";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { useOrder } from "@/lib/dashboard/finance";
 import { Student } from "@/lib/dashboard/user-profile";
 import { MouseEvent, useEffect, useRef } from "react";
@@ -17,6 +18,7 @@ export default function RazorpayGateway({
   const loaded = useRef<boolean>(false);
   const { token } = useAuth();
   const { data, trigger, isMutating, error } = useOrder(amount);
+  const { toast } = useToast();
 
   useEffect(() => {
     const scriptTag = document.createElement("script");
@@ -33,6 +35,11 @@ export default function RazorpayGateway({
 
     // TODO: Handle error UI
     if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Failed to create the payment",
+      });
       return;
     }
     let orderId = data!.id;
