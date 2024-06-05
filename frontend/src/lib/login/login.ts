@@ -6,7 +6,7 @@ import { AuthAction, AuthActionKind } from "@/components/AuthProvider";
 
 export interface User {
   id: string;
-  roles: string;
+  roles: "admin" | "faculty" | "student";
   name: string;
   email: string;
   loginAttempts: number;
