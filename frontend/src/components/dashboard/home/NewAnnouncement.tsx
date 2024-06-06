@@ -17,6 +17,14 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
+import {
+  Controller,
+  type ControllerProps,
+  type FieldPath,
+  type FieldValue,
+  FormProvider,
+  useFormContext,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
@@ -39,6 +47,7 @@ export default function NewAnnouncement() {
   const [open, setOpen] = useState(false);
   const auth = useAuth();
 
+  // FIXME: Page reloads on submit and request is not executed
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(JSON.stringify(editorRef.current.getEditorState()));
 
@@ -108,6 +117,7 @@ export default function NewAnnouncement() {
               <LexicalEditor ref={editorRef} />
             </div>
             <SheetFooter>
+              {/* TODO: Add loader */}
               <Button disabled={isMutating} type="submit">
                 Submit
               </Button>

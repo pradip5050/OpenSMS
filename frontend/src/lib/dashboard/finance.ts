@@ -17,6 +17,13 @@ export interface Fee {
 export interface FeeResponse {
   docs?: Fee[];
 }
+export interface FeePayload {
+  description: string;
+  amount: number;
+  dueDate: string;
+  paymentStatus: string;
+  student: Relation<string>; // string here is the student ID
+}
 
 export function useFees(token?: string): GetResponse<FeeResponse | undefined> {
   const { data, error, isLoading } = useSWR<FeeResponse, AxiosError>(
@@ -44,6 +51,45 @@ export function useFees(token?: string): GetResponse<FeeResponse | undefined> {
   } satisfies GetResponse<FeeResponse | undefined>;
 }
 
+const postFeeFetcher = (
+  url: string,
+  { arg }: { arg: AuthPayload<FeePayload> }
+) =>
+  axios
+    .post(url, JSON.stringify(arg.payload), {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${arg.token}`,
+      },
+    })
+    .then((res: AxiosResponse<FeePayload>) => res.data)
+    .catch((err) => err);
+
+export function useCreateFee() {
+  const { data, trigger, isMutating, error } = useSWRMutation<
+    FeeResponse,
+    AxiosError,
+    Key,
+    AuthPayload<FeePayload>,
+    any
+  >(`${API_URL}/api/fees`, postFeeFetcher);
+
+  // const transformedData: Partial<OrderResponse> | undefined = {
+  //   ...data,
+  //   amountDue: data?.["amount_due"],
+  //   amountPaid: data?.["amount_paid"],
+  //   createdAt: data?.["created_at"],
+  //   offerId: data?.["offer_id"],
+  // };
+
+  return {
+    data,
+    error,
+    trigger,
+    isMutating,
+  } satisfies PostResponse<FeeResponse, AxiosError>;
+}
+
 export interface Order {
   amount: number;
   amountDue: number;
@@ -59,13 +105,14 @@ export interface Order {
   status: string;
 }
 interface OrderResponse extends Order {
+  // TODO: amountDue and 3 others are undefined here
   amount_due: number;
   amount_paid: number;
   created_at: string;
   offer_id?: string;
 }
 
-const postFetcher = (url: string, { arg }: { arg: AuthPayload<string> }) =>
+const postOrderFetcher = (url: string, { arg }: { arg: AuthPayload<string> }) =>
   axios
     .post(url, JSON.stringify(arg.payload), {
       headers: {
@@ -83,7 +130,7 @@ export function useOrder(amount: number) {
     Key,
     any,
     any
-  >(`${API_URL}/api/fees/order/create/${amount}`, postFetcher);
+  >(`${API_URL}/api/fees/order/create/${amount}`, postOrderFetcher);
   // TODO: Consider returning a callback fn instead of using Partial
   const transformedData: Partial<OrderResponse> | undefined = {
     ...data,

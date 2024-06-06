@@ -6,6 +6,9 @@ const Fees: CollectionConfig = {
   slug: "fees",
   access: {
     read: () => true,
+    create: () => true,
+    update: () => true,
+    delete: () => true
   },
   admin: {
     useAsTitle: "name",

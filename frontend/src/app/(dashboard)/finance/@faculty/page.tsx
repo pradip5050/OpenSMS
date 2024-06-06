@@ -57,9 +57,18 @@ export default function Finance() {
   const [value, setValue] = React.useState("");
 
   const students = data?.docs?.map((val) => val.student.value);
-  const studentsOptions = students?.map((val) => {
-    return { value: val.id, label: val.user.value.name };
-  });
+
+  // TODO: Remove duplicates and include all students here
+  // This impl does not work
+  const studentsOptions =
+    // [
+    // ...new Set(
+    students?.map((val) => {
+      return { value: val.id, label: val.user.value.name };
+    });
+  // ),
+  // ];
+
   const studentData = data?.docs?.filter(
     (val) => val.student.value.id === value
   );
@@ -79,7 +88,10 @@ export default function Finance() {
             state={{ value: value, setValue: setValue }}
           />
           <DataTable columns={columns} data={studentData!} />
-          <AddFeeDialog />
+          {/* TODO: Fetch all students and include all of them here */}
+          <AddFeeDialog
+            student={students?.filter((val) => val.id === value)[0]}
+          />
         </div>
       )}
     </main>

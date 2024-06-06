@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -31,20 +33,52 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { Student } from "@/lib/dashboard/user-profile";
+import { useCreateFee } from "@/lib/dashboard/finance";
+import { useAuth } from "@/components/AuthProvider";
+import Spinner from "@/components/Spinner";
+
+export interface AddFeeDialogProps {
+  student?: Student;
+}
 
 const formSchema = z.object({
-  description: z.string().min(5).max(100),
-  amount: z.number().max(100000),
+  description: z.string(),
+  amount: z.number(),
   dueDate: z.date(),
 });
 
-export function AddFeeDialog() {
+export function AddFeeDialog({ student }: AddFeeDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const { trigger, isMutating } = useCreateFee();
+  const { token } = useAuth();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  // console.log(student.id);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (student) {
+      try {
+        const result = await trigger({
+          token: token!,
+          payload: {
+            description: values.description,
+            amount: values.amount,
+            dueDate: values.dueDate.toISOString(),
+            paymentStatus: "unpaid",
+            student: {
+              relationTo: "students",
+              value: student.id,
+            },
+          },
+        });
+        console.log(result);
+      } catch (err) {
+        console.log(err);
+      }
+      // TODO: Handle error
+    }
+    // setOpen(false);
   }
 
   return (
@@ -52,16 +86,15 @@ export function AddFeeDialog() {
       <DialogTrigger asChild>
         <Button variant="outline">Add fee</Button>
       </DialogTrigger>
-      <Form {...form}>
-        <form>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add fee</DialogTitle>
-              <DialogDescription>
-                Add a new fee to the selected student
-              </DialogDescription>
-            </DialogHeader>
-
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add fee</DialogTitle>
+          <DialogDescription>
+            Add a new fee to the selected student
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={() => form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="description"
@@ -82,7 +115,7 @@ export function AddFeeDialog() {
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input type="number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -129,11 +162,14 @@ export function AddFeeDialog() {
             />
 
             <DialogFooter>
-              <Button type="submit">Submit</Button>
+              <Button disabled={isMutating} type="submit">
+                {/* {isMutating ? <Spinner size="12" /> : "Submit"} */}
+                Submit
+              </Button>
             </DialogFooter>
-          </DialogContent>
-        </form>
-      </Form>
+          </form>
+        </Form>
+      </DialogContent>
     </Dialog>
   );
 }
