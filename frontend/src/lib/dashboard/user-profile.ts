@@ -3,8 +3,8 @@ import { API_URL } from "../constants";
 import useSWR, { Fetcher } from "swr";
 import { GetResponse, Relation } from "../utils";
 import qs from "qs";
-import { UserRelation } from "../login/login";
 import { Course } from "./courses";
+import { User } from "../login/login";
 
 // TODO: Check query
 export interface Student {
@@ -13,7 +13,7 @@ export interface Student {
   number: number;
   dob: string;
   courses: Relation<Course>[];
-  user: UserRelation;
+  user: Relation<User>;
   photo: {
     alt: string;
     url: string;
