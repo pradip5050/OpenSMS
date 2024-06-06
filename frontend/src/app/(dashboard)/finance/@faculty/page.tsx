@@ -13,6 +13,7 @@ import { Fee } from "@/lib/dashboard/finance";
 import Spinner from "@/components/Spinner";
 import { Combobox } from "@/components/dashboard/Combobox";
 import React from "react";
+import { AddFeeDialog } from "@/components/dashboard/finance/AddFeeDialog";
 
 export default function Finance() {
   const columns: ColumnDef<Fee>[] = [
@@ -78,6 +79,7 @@ export default function Finance() {
             state={{ value: value, setValue: setValue }}
           />
           <DataTable columns={columns} data={studentData!} />
+          <AddFeeDialog />
         </div>
       )}
     </main>
