@@ -85,7 +85,7 @@ export function AddFeeDialog({ student }: AddFeeDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Add fee</Button>
+        <Button>Add fee</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

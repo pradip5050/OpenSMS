@@ -91,18 +91,20 @@ export default function Finance() {
       {feeIsLoading || feeError || studentIsLoading || studentError ? (
         <Spinner size="32" />
       ) : (
-        <div className="flex flex-col gap-3">
-          <Combobox
-            options={studentsOptions!}
-            label="student"
-            state={{ value: value, setValue: setValue }}
-          />
-          <DataTable columns={columns} data={studentFeeData!} />
-          {value !== "" && (
-            <AddFeeDialog
-              student={students?.filter((val) => val.id === value)[0]}
+        <div className="flex flex-col gap-3 overflow-y-auto">
+          <div className="flex justify-between">
+            <Combobox
+              options={studentsOptions!}
+              label="student"
+              state={{ value: value, setValue: setValue }}
             />
-          )}
+            {value !== "" && (
+              <AddFeeDialog
+                student={students?.filter((val) => val.id === value)[0]}
+              />
+            )}
+          </div>
+          <DataTable columns={columns} data={studentFeeData!} />
         </div>
       )}
     </main>
