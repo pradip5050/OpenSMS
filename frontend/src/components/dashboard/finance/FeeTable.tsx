@@ -36,7 +36,7 @@ export default function FeeTable({
         {fees.map((fee) => {
           return (
             <TableRow key={fee.id}>
-              <TableCell>{fee.dueDate}</TableCell>
+              <TableCell>{fee.dueDate.toDateString()}</TableCell>
               <TableCell>{fee.description}</TableCell>
               <TableCell>{fee.amount}</TableCell>
               {hasPaymentButton && (

@@ -38,7 +38,7 @@ const Students: CollectionConfig = {
       required: true,
     },
     {
-      name: "course",
+      name: "courses",
       type: "relationship",
       relationTo: ["courses"],
       // filterOptions: async ({ data, siblingData }) => {

@@ -18,7 +18,7 @@ export default function Finance() {
   const duePayments = payments?.filter((val) => val.paymentStatus !== "paid");
 
   return (
-    <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
+    <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen ">
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Finance</h1>
       </div>
@@ -39,7 +39,7 @@ export default function Finance() {
           </Card>
         </div>
       ) : (
-        <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4 overflow-y-auto">
           <Card className="2xl:col-span-2">
             <CardHeader>
               <CardTitle>Total fee</CardTitle>

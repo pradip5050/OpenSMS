@@ -4,14 +4,20 @@ import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
-import { Course, useCourses } from "@/lib/dashboard/courses";
+import { Course } from "@/lib/dashboard/courses";
+import { useStudents } from "@/lib/dashboard/user-profile";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 export default function Courses() {
-  const { token } = useAuth();
-  const { data, isLoading, error } = useCourses(token);
-  // TODO: Filter data by student & get student data -> course instead of directly from course
+  const { user, token } = useAuth();
+  const { data, isLoading, error } = useStudents(token);
+
+  // TODO: Get student by id directly instead of filters
+  const student = data?.docs?.filter(
+    (val) => val.user.value.email === user!.email
+  )[0];
+  const courses = student?.courses?.map((val) => val.value);
 
   const columns: ColumnDef<Course>[] = [
     {
@@ -55,7 +61,7 @@ export default function Courses() {
           <Spinner size="32" />
         </>
       ) : (
-        <DataTable columns={columns} data={data!.docs!} />
+        <DataTable columns={columns} data={courses!} />
       )}
     </main>
   );
