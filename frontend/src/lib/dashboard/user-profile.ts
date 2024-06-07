@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { API_URL } from "../constants";
 import useSWR, { Fetcher } from "swr";
 import { GetResponse, Relation } from "../utils";
@@ -27,7 +27,29 @@ export interface StudentResponse {
 const fetcher: Fetcher<StudentResponse> = (url: string) =>
   axios.get(url).then((res) => res.data);
 
-export function useStudent(email: string) {
+export function useStudents(
+  token?: string
+): GetResponse<StudentResponse | undefined> {
+  const { data, error, isLoading } = useSWR<StudentResponse, AxiosError>(
+    `${API_URL}/api/students?draft=false&depth=2`,
+    (url: string) =>
+      axios
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res: AxiosResponse<StudentResponse>) => res.data)
+  );
+
+  return {
+    data,
+    error,
+    isLoading,
+  } satisfies GetResponse<StudentResponse | undefined>;
+}
+
+export function useStudentByEmail(email: string) {
   const query = qs.stringify(
     {
       where: {

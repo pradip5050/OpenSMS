@@ -37,6 +37,7 @@ import { Student } from "@/lib/dashboard/user-profile";
 import { useCreateFee } from "@/lib/dashboard/finance";
 import { useAuth } from "@/components/AuthProvider";
 import Spinner from "@/components/Spinner";
+import { useState } from "react";
 
 export interface AddFeeDialogProps {
   student?: Student;
@@ -44,7 +45,7 @@ export interface AddFeeDialogProps {
 
 const formSchema = z.object({
   description: z.string(),
-  amount: z.number(),
+  amount: z.string(), // FIXME: Convert to number
   dueDate: z.date(),
 });
 
@@ -52,10 +53,10 @@ export function AddFeeDialog({ student }: AddFeeDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const [open, setOpen] = useState(false);
   const { trigger, isMutating } = useCreateFee();
   const { token } = useAuth();
 
-  // console.log(student.id);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (student) {
       try {
@@ -63,7 +64,7 @@ export function AddFeeDialog({ student }: AddFeeDialogProps) {
           token: token!,
           payload: {
             description: values.description,
-            amount: values.amount,
+            amount: Number(values.amount),
             dueDate: values.dueDate.toISOString(),
             paymentStatus: "unpaid",
             student: {
@@ -78,11 +79,11 @@ export function AddFeeDialog({ student }: AddFeeDialogProps) {
       }
       // TODO: Handle error
     }
-    // setOpen(false);
+    setOpen(false);
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Add fee</Button>
       </DialogTrigger>
@@ -94,7 +95,7 @@ export function AddFeeDialog({ student }: AddFeeDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={() => form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="description"
@@ -163,8 +164,7 @@ export function AddFeeDialog({ student }: AddFeeDialogProps) {
 
             <DialogFooter>
               <Button disabled={isMutating} type="submit">
-                {/* {isMutating ? <Spinner size="12" /> : "Submit"} */}
-                Submit
+                {isMutating ? <Spinner size="12" /> : "Submit"}
               </Button>
             </DialogFooter>
           </form>

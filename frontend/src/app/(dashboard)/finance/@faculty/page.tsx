@@ -14,6 +14,7 @@ import Spinner from "@/components/Spinner";
 import { Combobox } from "@/components/dashboard/Combobox";
 import React from "react";
 import { AddFeeDialog } from "@/components/dashboard/finance/AddFeeDialog";
+import { useStudents } from "@/lib/dashboard/user-profile";
 
 export default function Finance() {
   const columns: ColumnDef<Fee>[] = [
@@ -53,23 +54,25 @@ export default function Finance() {
   ];
 
   const { token } = useAuth();
-  const { data, error, isLoading } = useFees(token);
+  // TODO: Use multiple req instead https://github.com/vercel/swr/discussions/786
+  const {
+    data: feeData,
+    error: feeError,
+    isLoading: feeIsLoading,
+  } = useFees(token);
+  const {
+    data: studentData,
+    error: studentError,
+    isLoading: studentIsLoading,
+  } = useStudents(token);
   const [value, setValue] = React.useState("");
 
-  const students = data?.docs?.map((val) => val.student.value);
+  const students = studentData?.docs;
+  const studentsOptions = students?.map((val) => {
+    return { value: val.id, label: val.user.value.name };
+  });
 
-  // TODO: Remove duplicates and include all students here
-  // This impl does not work
-  const studentsOptions =
-    // [
-    // ...new Set(
-    students?.map((val) => {
-      return { value: val.id, label: val.user.value.name };
-    });
-  // ),
-  // ];
-
-  const studentData = data?.docs?.filter(
+  const studentFeeData = feeData?.docs?.filter(
     (val) => val.student.value.id === value
   );
 
@@ -78,7 +81,7 @@ export default function Finance() {
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Finance</h1>
       </div>
-      {isLoading || error ? (
+      {feeIsLoading || feeError || studentIsLoading || studentError ? (
         <Spinner size="32" />
       ) : (
         <div className="flex flex-col gap-3">
@@ -87,11 +90,12 @@ export default function Finance() {
             label="student"
             state={{ value: value, setValue: setValue }}
           />
-          <DataTable columns={columns} data={studentData!} />
-          {/* TODO: Fetch all students and include all of them here */}
-          <AddFeeDialog
-            student={students?.filter((val) => val.id === value)[0]}
-          />
+          <DataTable columns={columns} data={studentFeeData!} />
+          {value !== "" && (
+            <AddFeeDialog
+              student={students?.filter((val) => val.id === value)[0]}
+            />
+          )}
         </div>
       )}
     </main>
