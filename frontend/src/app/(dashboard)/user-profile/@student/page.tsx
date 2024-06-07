@@ -3,14 +3,17 @@
 import { useAuth } from "@/components/AuthProvider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
-import { mapStudent, useStudent } from "@/lib/dashboard/user-profile";
+import { mapStudent, useStudents } from "@/lib/dashboard/user-profile";
 import Image from "next/image";
 
 export default function UserProfile() {
   const { user, token } = useAuth();
-  const { data, error, isLoading } = useStudent(user!.email);
+  const { data, error, isLoading } = useStudents(token);
 
-  const student = mapStudent(data?.docs[0]);
+  // TODO: Query by ID instead of filtering
+  const student = mapStudent(
+    data?.docs.filter((val) => val.user.value.email === user?.email)[0]
+  );
 
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
@@ -23,8 +26,7 @@ export default function UserProfile() {
             <h1>{JSON.stringify(error)}</h1>
           ) : (
             <>
-              {/* TODO: Fix src URL (add API_URL) */}
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center pb-5">
                 <Image
                   className="rounded-full w-72 aspect-square"
                   src={student!.photo.url}
@@ -37,7 +39,15 @@ export default function UserProfile() {
                 <TableCell>
                   <div className="font-medium text-3xl">Name</div>
                   <div className="text-lg text-muted-foreground md:inline">
-                    {student!.name}
+                    {student!.user.value.name}
+                  </div>
+                </TableCell>
+              </TableRow>
+              <TableRow className="flex flex-row items-center justify-between">
+                <TableCell>
+                  <div className="font-medium text-3xl">Student ID</div>
+                  <div className="text-lg text-muted-foreground md:inline">
+                    {student!.studentId}
                   </div>
                 </TableCell>
               </TableRow>
@@ -45,7 +55,7 @@ export default function UserProfile() {
                 <TableCell>
                   <div className="font-medium text-3xl">Email</div>
                   <div className="text-lg text-muted-foreground md:inline">
-                    {student!.email}
+                    {student!.user.value.email}
                   </div>
                 </TableCell>
               </TableRow>
@@ -65,24 +75,8 @@ export default function UserProfile() {
                   </div>
                 </TableCell>
               </TableRow>
-              <TableRow className="flex flex-row items-center justify-between">
-                <TableCell>
-                  <div className="font-medium text-3xl">Student ID</div>
-                  <div className="text-lg text-muted-foreground md:inline">
-                    {student!.id}
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow className="flex flex-row items-center justify-between">
-                <TableCell>
-                  <div className="font-medium text-3xl">Courses</div>
-                  <div className="text-lg text-muted-foreground md:inline">
-                    {student!.courses}
-                  </div>
-                </TableCell>
-              </TableRow>
             </>
-          )}{" "}
+          )}
         </TableBody>
       </Table>
     </main>
