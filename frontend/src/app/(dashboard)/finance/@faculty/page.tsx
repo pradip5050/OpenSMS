@@ -2,10 +2,7 @@
 
 import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
-import FeeTable from "@/components/dashboard/finance/FeeTable";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useFees } from "@/lib/dashboard/finance";
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
@@ -48,6 +45,16 @@ export default function Finance() {
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
+      },
+      sortingFn: (rowA, rowB, columnId) => {
+        return rowA.original.dueDate > rowB.original.dueDate
+          ? 1
+          : rowA.original.dueDate < rowB.original.dueDate
+          ? -1
+          : 0;
+      },
+      cell: ({ row }) => {
+        return row.original.dueDate.toDateString();
       },
     },
     { accessorKey: "paymentStatus", header: "Payment status" },

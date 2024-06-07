@@ -9,7 +9,7 @@ export interface Fee {
   id: string;
   description: string;
   amount: number;
-  dueDate: string;
+  dueDate: Date;
   paymentStatus: "unpaid" | "paid" | "delayed";
   student: Relation<Student>;
 }
@@ -40,7 +40,7 @@ export function useFees(token?: string): GetResponse<FeeResponse | undefined> {
 
   const transformedData: FeeResponse | undefined = {
     docs: data?.docs?.map((fee) => {
-      return { ...fee, dueDate: new Date(fee.dueDate).toDateString() };
+      return { ...fee, dueDate: new Date(fee.dueDate) };
     }),
   };
 
