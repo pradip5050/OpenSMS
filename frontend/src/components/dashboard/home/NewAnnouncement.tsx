@@ -74,7 +74,7 @@ export default function NewAnnouncement() {
       <SheetTrigger>
         <Button variant={"secondary"}>New</Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent side={"bottom"}>
         <SheetHeader>
           <SheetTitle>New announcement</SheetTitle>
         </SheetHeader>
@@ -112,7 +112,7 @@ export default function NewAnnouncement() {
                 </FormItem>
               )}
             ></FormField> */}
-            <div className="flex flex-col gap-3 min-h-20">
+            <div className="flex flex-col gap-3">
               <FormLabel htmlFor="content">Content</FormLabel>
               <LexicalEditor ref={editorRef} />
             </div>

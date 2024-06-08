@@ -8,10 +8,18 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { TRANSFORMERS } from "@lexical/markdown";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { CodeNode } from "@lexical/code";
+import { LinkNode } from "@lexical/link";
+import { ListNode, ListItemNode } from "@lexical/list";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 
 const theme = {};
 
 function onError(error: any) {
+  // TODO: trigger popup
   console.error(error);
 }
 
@@ -31,12 +39,18 @@ const EditorCapturePlugin = React.forwardRef((props: any, ref: any) => {
   return null;
 });
 
-// TODO: Fix the broken rich text
-// https://codesandbox.io/p/sandbox/purple-water-xf50bi?file=%2Fsrc%2FApp.tsx
 const LexicalEditor = React.forwardRef((props, ref) => {
   const initialConfig = {
     namespace: "MyEditor",
-    // editorState,
+    nodes: [
+      HeadingNode,
+      QuoteNode,
+      HorizontalRuleNode,
+      ListItemNode,
+      ListNode,
+      LinkNode,
+      CodeNode,
+    ],
     theme,
     onError,
   };
@@ -45,12 +59,15 @@ const LexicalEditor = React.forwardRef((props, ref) => {
     <div className="border border-1">
       <LexicalComposer initialConfig={initialConfig}>
         <RichTextPlugin
-          contentEditable={<ContentEditable />}
+          contentEditable={
+            <ContentEditable className="lexical p-2 min-h-[25rem]" />
+          }
           placeholder={<></>}
           ErrorBoundary={LexicalErrorBoundary}
         />
         <EditorCapturePlugin ref={ref} />
         <HistoryPlugin />
+        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
         <AutoFocusPlugin />
       </LexicalComposer>
     </div>
