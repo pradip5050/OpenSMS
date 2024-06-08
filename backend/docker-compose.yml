@@ -1,7 +1,7 @@
 services:
   payload:
     container_name: payload
-    # image:  TODO:
+    image: ghcr.io/dhzdhd/opensms:latest
     env_file:
       - .env
     volumes:
