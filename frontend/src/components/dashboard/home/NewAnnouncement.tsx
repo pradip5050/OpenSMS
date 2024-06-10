@@ -28,10 +28,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
-import { useCreateAnnouncements } from "@/lib/dashboard/announcements";
+import {
+  AnnouncementResponse,
+  useCreateAnnouncements,
+} from "@/lib/dashboard/announcements";
 import { useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import LexicalEditor from "../LexicalEditor";
+import { KeyedMutator } from "swr";
 
 const formSchema = z.object({
   title: z.string().max(50, {
@@ -39,7 +43,11 @@ const formSchema = z.object({
   }),
 });
 
-export default function NewAnnouncement() {
+export interface NewAnnouncementProps {
+  mutate: KeyedMutator<AnnouncementResponse>;
+}
+
+export default function NewAnnouncement({ mutate }: NewAnnouncementProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -47,7 +55,6 @@ export default function NewAnnouncement() {
   const [open, setOpen] = useState(false);
   const auth = useAuth();
 
-  // FIXME: Page reloads on submit and request is not executed
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(JSON.stringify(editorRef.current.getEditorState()));
 
@@ -64,6 +71,7 @@ export default function NewAnnouncement() {
       console.log(err);
     }
     // TODO: Handle error
+    mutate();
     setOpen(false);
   }
 

@@ -10,7 +10,7 @@ export interface AnnouncementPayload {
 }
 
 export interface Announcement {
-  id: number;
+  id: string;
   title: string;
   content: any;
   contentHtml: string;
@@ -20,6 +20,8 @@ export interface Announcement {
 export interface AnnouncementResponse {
   docs: Announcement[];
 }
+
+export const announcementsUrl = `${API_URL}/api/announcements`;
 
 export function useAnnouncements(token?: string) {
   const { data, error, isLoading, isValidating, mutate } = useSWR<
@@ -80,4 +82,22 @@ export function useCreateAnnouncements() {
     trigger,
     isMutating,
   } satisfies PostResponse<AnnouncementPayload, AxiosError>;
+}
+
+export async function deleteAnnouncements(
+  url: string,
+  token?: string,
+  id?: string
+): Promise<{ result?: AxiosResponse; error?: AxiosError }> {
+  try {
+    const result = await axios.delete(`${url}/${id ?? ""}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return { result };
+  } catch (error) {
+    return { error: error as AxiosError };
+  }
 }

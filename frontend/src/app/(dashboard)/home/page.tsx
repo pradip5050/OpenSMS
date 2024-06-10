@@ -4,6 +4,8 @@ import NewAnnouncement from "@/components/dashboard/home/NewAnnouncement";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  announcementsUrl,
+  deleteAnnouncements,
   mapAnnouncements,
   useAnnouncements,
 } from "@/lib/dashboard/announcements";
@@ -19,17 +21,31 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "@/components/AuthProvider";
 import { isFacultyOrAdmin } from "@/lib/rbac";
+import { Delete, Trash2 } from "lucide-react";
 
 export default function Home() {
   const list = [1, 2, 3, 4, 5];
   const { user, token } = useAuth();
-  const { data, error, isLoading } = useAnnouncements(token);
+  const { data, error, isLoading, mutate } = useAnnouncements(token);
+
+  async function deleteAnnouncementById(id: string) {
+    const { result, error } = await deleteAnnouncements(
+      announcementsUrl,
+      token,
+      id
+    );
+
+    // TODO: Handle popups
+    console.log(result);
+    console.log(error);
+    mutate();
+  }
 
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Announcements</h1>
-        {isFacultyOrAdmin(user!.roles) && <NewAnnouncement />}
+        {isFacultyOrAdmin(user!.roles) && <NewAnnouncement mutate={mutate} />}
       </div>
       {/* TODO: Handle error & move Table/TableBody up */}
       {isLoading ? (
@@ -78,7 +94,16 @@ export default function Home() {
                         {element.createdAt}
                       </div>
                     </TableCell>
-                    <TableCell className="flex justify-end h-full items-center">
+                    <TableCell className="flex justify-end h-full items-center gap-2">
+                      {isFacultyOrAdmin(user!.roles) && (
+                        <Button
+                          onClick={() => deleteAnnouncementById(element.id)}
+                          variant={"destructive"}
+                          size={"icon"}
+                        >
+                          <Trash2 />
+                        </Button>
+                      )}
                       <Sheet>
                         <SheetTrigger>
                           <Button>Open</Button>

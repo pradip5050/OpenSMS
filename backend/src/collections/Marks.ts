@@ -9,6 +9,7 @@ const Marks: CollectionConfig = {
     useAsTitle: "amount",
   },
   fields: [
+    { name: "testType", type: "text", required: true },
     { name: "amount", type: "number", min: 0, max: 100, required: true },
     {
       name: "student",
