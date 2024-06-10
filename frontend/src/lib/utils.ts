@@ -1,13 +1,15 @@
 import { AxiosError } from "axios";
 import { type ClassValue, clsx } from "clsx";
-import { Key } from "swr";
+import { Key, KeyedMutator } from "swr";
 import { TriggerWithArgs } from "swr/dist/mutation";
 import { twMerge } from "tailwind-merge";
 
 export interface GetResponse<T> {
-  data: T;
+  data: T | undefined;
   error: AxiosError | undefined;
   isLoading: boolean;
+  isValidating: boolean;
+  mutate: KeyedMutator<T>;
 }
 
 export interface PostResponse<T, E> {

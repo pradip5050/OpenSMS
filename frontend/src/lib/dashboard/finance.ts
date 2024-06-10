@@ -25,17 +25,18 @@ export interface FeePayload {
   student: Relation<string>; // string here is the student ID
 }
 
-export function useFees(token?: string): GetResponse<FeeResponse | undefined> {
-  const { data, error, isLoading } = useSWR<FeeResponse, AxiosError>(
-    `${API_URL}/api/fees?draft=false&depth=2`,
-    (url: string) =>
-      axios
-        .get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res: AxiosResponse<FeeResponse>) => res.data)
+export function useFees(token?: string): GetResponse<FeeResponse> {
+  const { data, error, isLoading, isValidating, mutate } = useSWR<
+    FeeResponse,
+    AxiosError
+  >(`${API_URL}/api/fees?draft=false&depth=2`, (url: string) =>
+    axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res: AxiosResponse<FeeResponse>) => res.data)
   );
 
   const transformedData: FeeResponse | undefined = {
@@ -48,7 +49,9 @@ export function useFees(token?: string): GetResponse<FeeResponse | undefined> {
     data: transformedData,
     error,
     isLoading,
-  } satisfies GetResponse<FeeResponse | undefined>;
+    isValidating,
+    mutate,
+  } satisfies GetResponse<FeeResponse>;
 }
 
 const postFeeFetcher = (

@@ -27,26 +27,27 @@ export interface StudentResponse {
 const fetcher: Fetcher<StudentResponse> = (url: string) =>
   axios.get(url).then((res) => res.data);
 
-export function useStudents(
-  token?: string
-): GetResponse<StudentResponse | undefined> {
-  const { data, error, isLoading } = useSWR<StudentResponse, AxiosError>(
-    `${API_URL}/api/students?draft=false&depth=2`,
-    (url: string) =>
-      axios
-        .get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res: AxiosResponse<StudentResponse>) => res.data)
+export function useStudents(token?: string): GetResponse<StudentResponse> {
+  const { data, error, isLoading, isValidating, mutate } = useSWR<
+    StudentResponse,
+    AxiosError
+  >(`${API_URL}/api/students?draft=false&depth=2`, (url: string) =>
+    axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res: AxiosResponse<StudentResponse>) => res.data)
   );
 
   return {
     data,
     error,
     isLoading,
-  } satisfies GetResponse<StudentResponse | undefined>;
+    isValidating,
+    mutate,
+  } satisfies GetResponse<StudentResponse>;
 }
 
 export function useStudentByEmail(email: string) {
@@ -61,16 +62,16 @@ export function useStudentByEmail(email: string) {
     { addQueryPrefix: true }
   );
 
-  const { data, error, isLoading } = useSWR<StudentResponse>(
-    `${API_URL}/api/students${query}`,
-    fetcher
-  );
+  const { data, error, isLoading, isValidating, mutate } =
+    useSWR<StudentResponse>(`${API_URL}/api/students${query}`, fetcher);
 
   return {
     data,
     error,
     isLoading,
-  } satisfies GetResponse<StudentResponse | undefined>;
+    isValidating,
+    mutate,
+  } satisfies GetResponse<StudentResponse>;
 }
 
 export function mapStudent(student: Student | undefined): Student | undefined {

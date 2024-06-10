@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@/components/AuthProvider";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { mapStudent, useStudents } from "@/lib/dashboard/user-profile";
 import Image from "next/image";

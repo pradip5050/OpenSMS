@@ -18,17 +18,18 @@ export interface AttendanceResponse {
 
 export function useAttendances(
   token?: string
-): GetResponse<AttendanceResponse | undefined> {
-  const { data, error, isLoading } = useSWR<AttendanceResponse, AxiosError>(
-    `${API_URL}/api/attendances?draft=false&depth=2`,
-    (url: string) =>
-      axios
-        .get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res: AxiosResponse<AttendanceResponse>) => res.data)
+): GetResponse<AttendanceResponse> {
+  const { data, error, isLoading, isValidating, mutate } = useSWR<
+    AttendanceResponse,
+    AxiosError
+  >(`${API_URL}/api/attendances?draft=false&depth=2`, (url: string) =>
+    axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res: AxiosResponse<AttendanceResponse>) => res.data)
   );
 
   //   const transformedData: AttendanceResponse | undefined = {
@@ -41,5 +42,7 @@ export function useAttendances(
     data,
     error,
     isLoading,
-  } satisfies GetResponse<AttendanceResponse | undefined>;
+    isValidating,
+    mutate,
+  } satisfies GetResponse<AttendanceResponse>;
 }

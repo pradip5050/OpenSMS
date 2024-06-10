@@ -13,19 +13,18 @@ export interface CourseResponse {
   docs?: Course[];
 }
 
-export function useCourses(
-  token?: string
-): GetResponse<CourseResponse | undefined> {
-  const { data, error, isLoading } = useSWR<CourseResponse, AxiosError>(
-    `${API_URL}/api/courses?draft=false&depth=2`,
-    (url: string) =>
-      axios
-        .get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res: AxiosResponse<CourseResponse>) => res.data)
+export function useCourses(token?: string): GetResponse<CourseResponse> {
+  const { data, error, isLoading, isValidating, mutate } = useSWR<
+    CourseResponse,
+    AxiosError
+  >(`${API_URL}/api/courses?draft=false&depth=2`, (url: string) =>
+    axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res: AxiosResponse<CourseResponse>) => res.data)
   );
 
   //   const transformedData: AttendanceResponse | undefined = {
@@ -38,5 +37,7 @@ export function useCourses(
     data,
     error,
     isLoading,
-  } satisfies GetResponse<CourseResponse | undefined>;
+    isValidating,
+    mutate,
+  } satisfies GetResponse<CourseResponse>;
 }
