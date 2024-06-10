@@ -82,7 +82,7 @@ export default function NewAnnouncement({ mutate }: NewAnnouncementProps) {
       <SheetTrigger>
         <Button variant={"secondary"}>New</Button>
       </SheetTrigger>
-      <SheetContent side={"bottom"}>
+      <SheetContent side={"bottom"} className="max-h-[80%]">
         <SheetHeader>
           <SheetTitle>New announcement</SheetTitle>
         </SheetHeader>

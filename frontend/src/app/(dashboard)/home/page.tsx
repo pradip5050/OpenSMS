@@ -97,6 +97,7 @@ export default function Home() {
                     <TableCell className="flex justify-end h-full items-center gap-2">
                       {isFacultyOrAdmin(user!.roles) && (
                         <Button
+                          // TODO: Show warning dialog
                           onClick={() => deleteAnnouncementById(element.id)}
                           variant={"destructive"}
                           size={"icon"}

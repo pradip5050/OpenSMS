@@ -56,11 +56,11 @@ const LexicalEditor = React.forwardRef((props, ref) => {
   };
 
   return (
-    <div className="border border-1">
+    <div className="border border-1 overflow-scroll">
       <LexicalComposer initialConfig={initialConfig}>
         <RichTextPlugin
           contentEditable={
-            <ContentEditable className="lexical p-2 min-h-[25rem]" />
+            <ContentEditable className="lexical p-2 min-h-[25rem] overflow-scroll" />
           }
           placeholder={<></>}
           ErrorBoundary={LexicalErrorBoundary}
