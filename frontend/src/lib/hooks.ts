@@ -1,20 +1,21 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import useSWR, { Key } from "swr";
 import qs from "qs";
-import { GetResponse } from "./utils";
+import { AuthPayload, GetResponse, PostResponse } from "./utils";
+import useSWRMutation from "swr/mutation";
 
-export function useGetCollection<T>( // T is of type XYZResponse
+export function useGetCollection<TResponse>(
   url: Key | string,
   token?: string,
   query?: Record<string, any>,
-  transformer?: (data?: T) => T | undefined
-): GetResponse<T> {
+  transformer?: (data?: TResponse) => TResponse | undefined
+): GetResponse<TResponse> {
   const stringifiedQuery = query
     ? qs.stringify(query, { addQueryPrefix: true })
     : undefined;
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<
-    T,
+    TResponse,
     AxiosError
   >(url, (url: string) =>
     axios
@@ -23,7 +24,7 @@ export function useGetCollection<T>( // T is of type XYZResponse
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((res: AxiosResponse<T>) => res.data)
+      .then((res: AxiosResponse<TResponse>) => res.data)
   );
 
   return {
@@ -32,5 +33,48 @@ export function useGetCollection<T>( // T is of type XYZResponse
     isLoading,
     isValidating,
     mutate,
-  } satisfies GetResponse<T>;
+  } satisfies GetResponse<TResponse>;
+}
+
+export function useMutateCollection<TData, TResponse, TPayload>(
+  url: Key | string,
+  method: string,
+  id?: string,
+  populateCache?: (result: TData, currentData?: TResponse) => TResponse,
+  transformer?: (data?: TData) => TData | undefined
+) {
+  const { data, trigger, isMutating, error } = useSWRMutation<
+    TData,
+    AxiosError,
+    Key | string,
+    AuthPayload<TPayload>,
+    TResponse
+  >(
+    url,
+    async (url: string, { arg }: { arg: AuthPayload<TPayload> }) => {
+      return axios
+        .request({
+          url: `${url}/${id ?? ""}`,
+          method: method,
+          data: JSON.stringify(arg.payload),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${arg.token}`,
+          },
+        })
+        .then((res: AxiosResponse<TData>) => res.data)
+        .catch((err) => err);
+    },
+    {
+      populateCache: populateCache,
+      revalidate: !!populateCache,
+    }
+  );
+
+  return {
+    data: transformer ? transformer(data) : data,
+    error,
+    trigger,
+    isMutating,
+  } satisfies PostResponse<TData, AxiosError>;
 }
