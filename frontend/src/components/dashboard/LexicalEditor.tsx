@@ -24,11 +24,12 @@ function onError(error: any) {
 }
 
 export interface LexicalEditorProps {
-  editorState: string;
+  editorState?: string;
 }
 
-const EditorCapturePlugin = React.forwardRef((props: any, ref: any) => {
+const EditorCapturePlugin = React.forwardRef((props, ref: any) => {
   const [editor] = useLexicalComposerContext();
+
   useEffect(() => {
     ref.current = editor;
     return () => {
@@ -39,9 +40,11 @@ const EditorCapturePlugin = React.forwardRef((props: any, ref: any) => {
   return null;
 });
 
-const LexicalEditor = React.forwardRef((props, ref) => {
+const LexicalEditor = React.forwardRef((props: LexicalEditorProps, ref) => {
   const initialConfig = {
     namespace: "MyEditor",
+    // FIXME: TypeError: editorState.isEmpty is not a function
+    // editorState: props.editorState,
     nodes: [
       HeadingNode,
       QuoteNode,
@@ -56,11 +59,12 @@ const LexicalEditor = React.forwardRef((props, ref) => {
   };
 
   return (
-    <div className="border border-1 overflow-scroll">
+    <div className="border border-1">
       <LexicalComposer initialConfig={initialConfig}>
         <RichTextPlugin
           contentEditable={
-            <ContentEditable className="lexical p-2 min-h-[25rem] overflow-scroll" />
+            // TODO: Find alternative to max-h
+            <ContentEditable className="lexical p-2 max-h-[30rem] min-h-[25rem] overflow-y-scroll" />
           }
           placeholder={<></>}
           ErrorBoundary={LexicalErrorBoundary}

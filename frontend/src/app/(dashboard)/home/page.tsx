@@ -4,10 +4,10 @@ import NewAnnouncement from "@/components/dashboard/home/NewAnnouncement";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  AnnouncementResponse,
   announcementsUrl,
   deleteAnnouncements,
   mapAnnouncements,
-  useAnnouncements,
 } from "@/lib/dashboard/announcements";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -21,12 +21,19 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "@/components/AuthProvider";
 import { isFacultyOrAdmin } from "@/lib/rbac";
-import { Delete, Trash2 } from "lucide-react";
+import { Delete, Edit2, SheetIcon, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useGetCollection } from "@/lib/hooks";
 
 export default function Home() {
   const list = [1, 2, 3, 4, 5];
   const { user, token } = useAuth();
-  const { data, error, isLoading, mutate } = useAnnouncements(token);
+  const { data, error, isLoading, mutate } =
+    useGetCollection<AnnouncementResponse>(announcementsUrl, token, {
+      draft: false,
+      depth: 2,
+    });
+  const [open, setOpen] = useState(false);
 
   async function deleteAnnouncementById(id: string) {
     const { result, error } = await deleteAnnouncements(
@@ -105,7 +112,7 @@ export default function Home() {
                           <Trash2 />
                         </Button>
                       )}
-                      <Sheet>
+                      <Sheet open={open} onOpenChange={setOpen}>
                         <SheetTrigger>
                           <Button>Open</Button>
                         </SheetTrigger>
@@ -113,8 +120,16 @@ export default function Home() {
                           className="overflow-y-scroll h-[80%] max-h-[80%]"
                           side={"bottom"}
                         >
-                          <SheetHeader>
+                          <SheetHeader className="flex flex-row justify-between">
                             <SheetTitle>{element.title}</SheetTitle>
+                            <NewAnnouncement
+                              mutate={mutate}
+                              editPayload={{
+                                content: element.content,
+                                id: element.id,
+                                title: element.title,
+                              }}
+                            />
                           </SheetHeader>
                           <div
                             className="pt-8 lexical"

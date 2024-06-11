@@ -36,6 +36,7 @@ import { useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import LexicalEditor from "../LexicalEditor";
 import { KeyedMutator } from "swr";
+import { LexicalEditor as LE } from "lexical";
 
 const formSchema = z.object({
   title: z.string().max(50, {
@@ -45,18 +46,31 @@ const formSchema = z.object({
 
 export interface NewAnnouncementProps {
   mutate: KeyedMutator<AnnouncementResponse>;
+  editPayload?: {
+    id: string;
+    content: string;
+    title: string;
+  };
 }
 
-export default function NewAnnouncement({ mutate }: NewAnnouncementProps) {
+export default function NewAnnouncement({
+  mutate,
+  editPayload,
+}: NewAnnouncementProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: editPayload?.title,
+    },
   });
+
+  const editorRef: any = useRef<LE | undefined>();
   const { trigger, isMutating } = useCreateAnnouncements();
   const [open, setOpen] = useState(false);
   const auth = useAuth();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(JSON.stringify(editorRef.current.getEditorState()));
+    console.log(JSON.stringify(editorRef.current!.getEditorState()));
 
     try {
       const result = await trigger({
@@ -75,12 +89,14 @@ export default function NewAnnouncement({ mutate }: NewAnnouncementProps) {
     setOpen(false);
   }
 
-  const editorRef: any = useRef();
+  async function editAnnouncement(id: string) {
+    setOpen(false);
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button variant={"secondary"}>New</Button>
+        <Button variant={"secondary"}>{editPayload ? "Edit" : "New"}</Button>
       </SheetTrigger>
       <SheetContent side={"bottom"} className="max-h-[80%]">
         <SheetHeader>
@@ -122,7 +138,10 @@ export default function NewAnnouncement({ mutate }: NewAnnouncementProps) {
             ></FormField> */}
             <div className="flex flex-col gap-3">
               <FormLabel htmlFor="content">Content</FormLabel>
-              <LexicalEditor ref={editorRef} />
+              <LexicalEditor
+                ref={editorRef}
+                editorState={editPayload?.content}
+              />
             </div>
             <SheetFooter>
               {/* TODO: Add loader */}

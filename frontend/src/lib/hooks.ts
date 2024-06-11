@@ -6,18 +6,11 @@ import { GetResponse } from "./utils";
 export function useGetCollection<T>( // T is of type XYZResponse
   url: Key | string,
   token?: string,
-  transformer?: (data?: T) => T | undefined,
-  query?: Record<string, any>
+  query?: Record<string, any>,
+  transformer?: (data?: T) => T | undefined
 ): GetResponse<T> {
   const stringifiedQuery = query
-    ? qs.stringify(
-        {
-          where: {
-            query,
-          },
-        },
-        { addQueryPrefix: true }
-      )
+    ? qs.stringify(query, { addQueryPrefix: true })
     : undefined;
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<

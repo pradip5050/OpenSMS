@@ -23,29 +23,29 @@ export interface AnnouncementResponse {
 
 export const announcementsUrl = `${API_URL}/api/announcements`;
 
-export function useAnnouncements(token?: string) {
-  const { data, error, isLoading, isValidating, mutate } = useSWR<
-    AnnouncementResponse,
-    AxiosError
-  >(`${API_URL}/api/announcements?draft=false&depth=1`, (url: string) =>
-    axios
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res: AxiosResponse<AnnouncementResponse>) => res.data)
-  );
+// export function useAnnouncements(token?: string) {
+//   const { data, error, isLoading, isValidating, mutate } = useSWR<
+//     AnnouncementResponse,
+//     AxiosError
+//   >(`${API_URL}/api/announcements?draft=false&depth=1`, (url: string) =>
+//     axios
+//       .get(url, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       })
+//       .then((res: AxiosResponse<AnnouncementResponse>) => res.data)
+//   );
 
-  // TODO: Check whether data mapping can be done here
-  return {
-    data,
-    error,
-    isLoading,
-    isValidating,
-    mutate,
-  } satisfies GetResponse<AnnouncementResponse>;
-}
+//   // TODO: Check whether data mapping can be done here
+//   return {
+//     data,
+//     error,
+//     isLoading,
+//     isValidating,
+//     mutate,
+//   } satisfies GetResponse<AnnouncementResponse>;
+// }
 
 export function mapAnnouncements(announcement: Announcement): Announcement {
   const date = new Date(`${announcement.createdAt}`);
