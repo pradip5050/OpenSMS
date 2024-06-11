@@ -4,7 +4,7 @@ import qs from "qs";
 import { AuthPayload, GetResponse, PostResponse } from "./utils";
 import useSWRMutation from "swr/mutation";
 
-export function useGetCollection<TResponse>(
+export function useFetchCollection<TResponse>(
   url: Key | string,
   token?: string,
   query?: Record<string, any>,

@@ -7,12 +7,12 @@ import {
   facultyTransformer,
   facultyUrl,
 } from "@/lib/dashboard/faculties";
-import { useGetCollection } from "@/lib/hooks";
+import { useFetchCollection } from "@/lib/hooks";
 import Image from "next/image";
 
 export default function UserProfile() {
   const { user, token } = useAuth();
-  const { data, error, isLoading } = useGetCollection<FacultyResponse>(
+  const { data, error, isLoading } = useFetchCollection<FacultyResponse>(
     facultyUrl,
     token,
     facultyTransformer

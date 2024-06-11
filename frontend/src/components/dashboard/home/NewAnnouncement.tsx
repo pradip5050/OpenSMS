@@ -17,19 +17,14 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
-import {
-  Controller,
-  type ControllerProps,
-  type FieldPath,
-  type FieldValue,
-  FormProvider,
-  useFormContext,
-} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
 import {
+  Announcement,
+  AnnouncementPayload,
   AnnouncementResponse,
+  announcementsUrl,
   useCreateAnnouncements,
 } from "@/lib/dashboard/announcements";
 import { useRef, useState } from "react";
@@ -37,6 +32,7 @@ import { useAuth } from "@/components/AuthProvider";
 import LexicalEditor from "../LexicalEditor";
 import { KeyedMutator } from "swr";
 import { LexicalEditor as LE } from "lexical";
+import { useMutateCollection } from "@/lib/hooks";
 
 const formSchema = z.object({
   title: z.string().max(50, {
@@ -45,7 +41,7 @@ const formSchema = z.object({
 });
 
 export interface NewAnnouncementProps {
-  mutate: KeyedMutator<AnnouncementResponse>;
+  // mutate: KeyedMutator<AnnouncementResponse>;
   editPayload?: {
     id: string;
     content: string;
@@ -54,7 +50,7 @@ export interface NewAnnouncementProps {
 }
 
 export default function NewAnnouncement({
-  mutate,
+  // mutate,
   editPayload,
 }: NewAnnouncementProps) {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -65,7 +61,20 @@ export default function NewAnnouncement({
   });
 
   const editorRef: any = useRef<LE | undefined>();
-  const { trigger, isMutating } = useCreateAnnouncements();
+  const { trigger, isMutating } = useMutateCollection<
+    Announcement,
+    AnnouncementResponse,
+    AnnouncementPayload
+  >(
+    announcementsUrl,
+    "POST",
+    undefined,
+    (result, currentData) => {
+      return { docs: [...currentData!.docs, result] };
+      // return currentData!;
+    },
+    (data) => data
+  );
   const [open, setOpen] = useState(false);
   const auth = useAuth();
 
@@ -85,7 +94,7 @@ export default function NewAnnouncement({
       console.log(err);
     }
     // TODO: Handle error
-    mutate();
+    // mutate();
     setOpen(false);
   }
 

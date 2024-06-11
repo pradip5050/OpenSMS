@@ -23,13 +23,13 @@ import { useAuth } from "@/components/AuthProvider";
 import { isFacultyOrAdmin } from "@/lib/rbac";
 import { Delete, Edit2, SheetIcon, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useGetCollection } from "@/lib/hooks";
+import { useFetchCollection } from "@/lib/hooks";
 
 export default function Home() {
   const list = [1, 2, 3, 4, 5];
   const { user, token } = useAuth();
   const { data, error, isLoading, mutate } =
-    useGetCollection<AnnouncementResponse>(announcementsUrl, token, {
+    useFetchCollection<AnnouncementResponse>(announcementsUrl, token, {
       draft: false,
       depth: 2,
     });
@@ -52,7 +52,7 @@ export default function Home() {
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Announcements</h1>
-        {isFacultyOrAdmin(user!.roles) && <NewAnnouncement mutate={mutate} />}
+        {isFacultyOrAdmin(user!.roles) && <NewAnnouncement />}
       </div>
       {/* TODO: Handle error & move Table/TableBody up */}
       {isLoading ? (
@@ -88,6 +88,7 @@ export default function Home() {
             ) : (
               data!.docs.map((el) => {
                 const element = mapAnnouncements(el);
+                console.log(element);
                 return (
                   <TableRow
                     key={element.id}
@@ -112,6 +113,7 @@ export default function Home() {
                           <Trash2 />
                         </Button>
                       )}
+                      {/* FIXME: Sheet showing wrong data but table is correct */}
                       <Sheet open={open} onOpenChange={setOpen}>
                         <SheetTrigger>
                           <Button>Open</Button>
@@ -123,7 +125,7 @@ export default function Home() {
                           <SheetHeader className="flex flex-row justify-between">
                             <SheetTitle>{element.title}</SheetTitle>
                             <NewAnnouncement
-                              mutate={mutate}
+                              // mutate={mutate}
                               editPayload={{
                                 content: element.content,
                                 id: element.id,
