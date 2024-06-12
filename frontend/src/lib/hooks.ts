@@ -38,7 +38,7 @@ export function useFetchCollection<TResponse>(
 
 export function useMutateCollection<TData, TResponse, TPayload>(
   url: Key | string,
-  method: string,
+  method: "POST" | "PATCH" | "DELETE",
   id?: string,
   populateCache?: (result: TData, currentData?: TResponse) => TResponse,
   transformer?: (data?: TData) => TData | undefined
@@ -47,11 +47,12 @@ export function useMutateCollection<TData, TResponse, TPayload>(
     TData,
     AxiosError,
     Key | string,
-    AuthPayload<TPayload>,
+    AuthPayload<Partial<TPayload>>,
     TResponse
   >(
     url,
-    async (url: string, { arg }: { arg: AuthPayload<TPayload> }) => {
+    // TODO: Test partial payload
+    async (url: string, { arg }: { arg: AuthPayload<Partial<TPayload>> }) => {
       return axios
         .request({
           url: `${url}/${id ?? ""}`,

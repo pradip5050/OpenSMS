@@ -5,7 +5,7 @@ import { DataTable } from "@/components/dashboard/DataTable";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/lib/dashboard/courses";
-import { FacultyResponse, facultyUrl } from "@/lib/dashboard/faculties";
+import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
 import { useStudents } from "@/lib/dashboard/user-profile";
 import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
@@ -14,7 +14,7 @@ import { ArrowUpDown } from "lucide-react";
 export default function FacultyCourses() {
   const { user, token } = useAuth();
   const { data, isLoading, error } = useFetchCollection<FacultyResponse>(
-    facultyUrl,
+    facultiesUrl,
     token
   );
 

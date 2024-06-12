@@ -12,5 +12,6 @@ export default function ParallelLayout({
 }) {
   const { user } = useAuth();
 
+  // TODO: Use RBAC util function
   return <>{user!.roles === "student" ? student : faculty}</>;
 }

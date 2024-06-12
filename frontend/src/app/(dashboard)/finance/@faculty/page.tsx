@@ -3,7 +3,22 @@
 import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
 import { Button } from "@/components/ui/button";
-import { useFees } from "@/lib/dashboard/finance";
+import {
+  FeePayload,
+  FeeResponse,
+  feesUrl,
+  feeTransformer,
+} from "@/lib/dashboard/finance";
+import { MoreHorizontal } from "lucide-react";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Fee } from "@/lib/dashboard/finance";
@@ -11,9 +26,41 @@ import Spinner from "@/components/Spinner";
 import { Combobox } from "@/components/dashboard/Combobox";
 import React from "react";
 import { AddFeeDialog } from "@/components/dashboard/finance/AddFeeDialog";
-import { useStudents } from "@/lib/dashboard/user-profile";
+import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
+import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 
 export default function Finance() {
+  const { token } = useAuth();
+  const {
+    data: feeData,
+    error: feeError,
+    isLoading: feeIsLoading,
+  } = useFetchCollection<FeeResponse>(
+    feesUrl,
+    token,
+    {
+      depth: 2,
+      draft: false,
+    },
+    feeTransformer
+  );
+  const {
+    trigger: deleteTrigger,
+    isMutating: deleteIsMutating,
+    error: deleteError,
+  } = useMutateCollection<Fee, FeeResponse, FeePayload>(feesUrl, "DELETE");
+
+  const {
+    data: studentData,
+    error: studentError,
+    isLoading: studentIsLoading,
+  } = useFetchCollection<StudentResponse>(studentsUrl, token, {
+    depth: 2,
+    draft: false,
+  });
+
+  const [value, setValue] = React.useState("");
+
   const columns: ColumnDef<Fee>[] = [
     {
       accessorKey: "description",
@@ -58,21 +105,43 @@ export default function Finance() {
       },
     },
     { accessorKey: "paymentStatus", header: "Payment status" },
-  ];
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const payment = row.original;
 
-  const { token } = useAuth();
-  // TODO: Use multiple req instead https://github.com/vercel/swr/discussions/786
-  const {
-    data: feeData,
-    error: feeError,
-    isLoading: feeIsLoading,
-  } = useFees(token);
-  const {
-    data: studentData,
-    error: studentError,
-    isLoading: studentIsLoading,
-  } = useStudents(token);
-  const [value, setValue] = React.useState("");
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => {
+                  const result = deleteTrigger({
+                    token: token!,
+                    payload: {
+                      description: "",
+                    },
+                  });
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(payment.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
 
   const students = studentData?.docs;
   const studentsOptions = students?.map((val) => {
@@ -88,6 +157,7 @@ export default function Finance() {
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Finance</h1>
       </div>
+      {/* TODO: Handle error */}
       {feeIsLoading || feeError || studentIsLoading || studentError ? (
         <Spinner size="32" />
       ) : (

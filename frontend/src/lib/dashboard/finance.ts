@@ -25,6 +25,16 @@ export interface FeePayload {
   student: Relation<string>; // string here is the student ID
 }
 
+export const feesUrl = `${API_URL}/api/fees`;
+
+export function feeTransformer(data?: FeeResponse): FeeResponse | undefined {
+  return {
+    docs: data?.docs?.map((fee) => {
+      return { ...fee, dueDate: new Date(fee.dueDate) };
+    }),
+  };
+}
+
 export function useFees(token?: string): GetResponse<FeeResponse> {
   const { data, error, isLoading, isValidating, mutate } = useSWR<
     FeeResponse,
