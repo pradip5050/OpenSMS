@@ -113,8 +113,8 @@ export default function Home() {
                           <Trash2 />
                         </Button>
                       )}
-                      {/* FIXME: Sheet showing wrong data but table is correct */}
-                      <Sheet open={open} onOpenChange={setOpen}>
+                      {/* FIXME: Sheet open & openChanged cause stale content, make a list of open instead */}
+                      <Sheet>
                         <SheetTrigger>
                           <Button>Open</Button>
                         </SheetTrigger>

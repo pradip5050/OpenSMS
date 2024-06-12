@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useMetadata } from "@/lib/login/metadata";
 import Spinner from "@/components/Spinner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -83,6 +84,7 @@ export default function RootLayout({
             <Template key="dashboard">{children}</Template>
           </AuthProvider>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );

@@ -14,7 +14,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetFooter,
-  SheetClose,
 } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,14 +24,13 @@ import {
   AnnouncementPayload,
   AnnouncementResponse,
   announcementsUrl,
-  useCreateAnnouncements,
 } from "@/lib/dashboard/announcements";
 import { useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import LexicalEditor from "../LexicalEditor";
-import { KeyedMutator } from "swr";
 import { LexicalEditor as LE } from "lexical";
 import { useMutateCollection } from "@/lib/hooks";
+import { toast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   title: z.string().max(50, {
@@ -41,7 +39,6 @@ const formSchema = z.object({
 });
 
 export interface NewAnnouncementProps {
-  // mutate: KeyedMutator<AnnouncementResponse>;
   editPayload?: {
     id: string;
     content: string;
@@ -49,10 +46,7 @@ export interface NewAnnouncementProps {
   };
 }
 
-export default function NewAnnouncement({
-  // mutate,
-  editPayload,
-}: NewAnnouncementProps) {
+export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,20 +55,35 @@ export default function NewAnnouncement({
   });
 
   const editorRef: any = useRef<LE | undefined>();
-  const { trigger, isMutating } = useMutateCollection<
-    Announcement,
-    AnnouncementResponse,
-    AnnouncementPayload
-  >(
-    announcementsUrl,
-    "POST",
-    undefined,
-    (result, currentData) => {
-      return { docs: [...currentData!.docs, result] };
-      // return currentData!;
-    },
-    (data) => data
-  );
+  const { trigger: createTrigger, isMutating: createIsMutating } =
+    useMutateCollection<
+      Announcement,
+      AnnouncementResponse,
+      AnnouncementPayload
+    >(
+      announcementsUrl,
+      "POST",
+      undefined,
+      (result, currentData) => {
+        return { docs: [...currentData!.docs, result] };
+        // return currentData!;
+      },
+      (data) => data
+    );
+  const { trigger: updateTrigger, isMutating: updateIsMutating } =
+    useMutateCollection<
+      Announcement,
+      AnnouncementResponse,
+      AnnouncementPayload
+    >(
+      announcementsUrl,
+      "PATCH",
+      editPayload?.id,
+      (result, currentData) => {
+        return { docs: [...currentData!.docs, result] };
+      },
+      (data) => data
+    );
   const [open, setOpen] = useState(false);
   const auth = useAuth();
 
@@ -82,19 +91,43 @@ export default function NewAnnouncement({
     console.log(JSON.stringify(editorRef.current!.getEditorState()));
 
     try {
-      const result = await trigger({
-        token: auth.token!,
-        payload: {
-          title: values.title,
-          content: JSON.stringify(editorRef.current.getEditorState()),
-        },
+      if (editPayload) {
+        const result = await updateTrigger({
+          token: auth.token!,
+          payload: {
+            title: values.title,
+            content: JSON.stringify(editorRef.current.getEditorState()),
+          },
+        });
+        console.log(result);
+      } else {
+        const result = await createTrigger({
+          token: auth.token!,
+          payload: {
+            title: values.title,
+            content: JSON.stringify(editorRef.current.getEditorState()),
+          },
+        });
+        console.log(result);
+      }
+
+      toast({
+        title: "Success",
+        variant: "constructive",
+        description: `${editPayload ? "Edited" : "Created"} announcement`,
+        duration: 1000,
       });
-      console.log(result);
     } catch (err) {
       console.log(err);
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: `Could not ${
+          editPayload ? "edit" : "create"
+        } announcement`,
+        duration: 1000,
+      });
     }
-    // TODO: Handle error
-    // mutate();
     setOpen(false);
   }
 
@@ -109,7 +142,7 @@ export default function NewAnnouncement({
       </SheetTrigger>
       <SheetContent side={"bottom"} className="max-h-[80%]">
         <SheetHeader>
-          <SheetTitle>New announcement</SheetTitle>
+          <SheetTitle>{editPayload ? "Edit" : "New"} announcement</SheetTitle>
         </SheetHeader>
         <Form {...form}>
           <form
@@ -128,23 +161,6 @@ export default function NewAnnouncement({
                 </FormItem>
               )}
             ></FormField>
-            {/* <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="content">Content</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      draggable={false}
-                      id="content"
-                      required
-                    ></Textarea>
-                  </FormControl>
-                </FormItem>
-              )}
-            ></FormField> */}
             <div className="flex flex-col gap-3">
               <FormLabel htmlFor="content">Content</FormLabel>
               <LexicalEditor
@@ -154,7 +170,10 @@ export default function NewAnnouncement({
             </div>
             <SheetFooter>
               {/* TODO: Add loader */}
-              <Button disabled={isMutating} type="submit">
+              <Button
+                disabled={createIsMutating || updateIsMutating}
+                type="submit"
+              >
                 Submit
               </Button>
             </SheetFooter>
