@@ -18,26 +18,24 @@ export interface Faculty {
 export interface FacultyResponse {
   docs?: Faculty[];
 }
-export const facultyUrl = `${API_URL}/api/faculties?draft=false&depth=2`;
+export const facultiesUrl = `${API_URL}/api/faculties`;
 // TODO: Remove ?draft... from url
 
 export function facultyTransformer(
   data?: FacultyResponse
 ): FacultyResponse | undefined {
-  if (data) {
-    return {
-      docs: data.docs?.map((faculty) => {
-        const dob = new Date(`${faculty.dob}`);
+  return {
+    docs: data?.docs?.map((faculty) => {
+      const dob = new Date(`${faculty.dob}`);
 
-        return {
-          ...faculty,
-          photo: {
-            ...faculty.photo,
-            url: `${API_URL}${faculty.photo.url}`,
-          },
-          dob: dob.toDateString(),
-        };
-      }),
-    };
-  }
+      return {
+        ...faculty,
+        photo: {
+          ...faculty.photo,
+          url: `${API_URL}${faculty.photo.url}`,
+        },
+        dob: dob.toDateString(),
+      };
+    }),
+  };
 }

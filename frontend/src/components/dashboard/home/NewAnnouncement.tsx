@@ -30,7 +30,8 @@ import { useAuth } from "@/components/AuthProvider";
 import LexicalEditor from "../LexicalEditor";
 import { LexicalEditor as LE } from "lexical";
 import { useMutateCollection } from "@/lib/hooks";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
+import { constructiveToast, destructiveToast } from "@/lib/utils";
 
 const formSchema = z.object({
   title: z.string().max(50, {
@@ -86,6 +87,7 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
     );
   const [open, setOpen] = useState(false);
   const auth = useAuth();
+  const { toast } = useToast();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(JSON.stringify(editorRef.current!.getEditorState()));
@@ -111,27 +113,19 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
         console.log(result);
       }
 
-      toast({
-        title: "Success",
-        variant: "constructive",
-        description: `${editPayload ? "Edited" : "Created"} announcement`,
-        duration: 1000,
-      });
+      constructiveToast(
+        toast,
+        "Success",
+        `${editPayload ? "Edited" : "Created"} announcement`
+      )();
     } catch (err) {
       console.log(err);
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: `Could not ${
-          editPayload ? "edit" : "create"
-        } announcement`,
-        duration: 1000,
-      });
+      destructiveToast(
+        toast,
+        "Error",
+        `Could not ${editPayload ? "edit" : "create"} announcement`
+      )();
     }
-    setOpen(false);
-  }
-
-  async function editAnnouncement(id: string) {
     setOpen(false);
   }
 

@@ -21,7 +21,28 @@ export interface Student {
 }
 
 export interface StudentResponse {
-  docs: Student[];
+  docs?: Student[];
+}
+
+export const studentsUrl = `${API_URL}/api/students`;
+
+export function studentTransformer(
+  data?: StudentResponse
+): StudentResponse | undefined {
+  return {
+    docs: data?.docs!.map((student) => {
+      const dob = new Date(`${student.dob}`);
+
+      return {
+        ...student,
+        photo: {
+          ...student.photo,
+          url: `${API_URL}${student.photo.url}`,
+        },
+        dob: dob.toDateString(),
+      };
+    }),
+  };
 }
 
 const fetcher: Fetcher<StudentResponse> = (url: string) =>

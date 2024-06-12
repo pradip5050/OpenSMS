@@ -1,3 +1,4 @@
+import { toast } from "@/components/ui/use-toast";
 import { AxiosError } from "axios";
 import { type ClassValue, clsx } from "clsx";
 import { Key, KeyedMutator } from "swr";
@@ -31,4 +32,32 @@ export interface Relation<T> {
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function destructiveToast(
+  toast: any,
+  title: string,
+  description: string
+) {
+  return () =>
+    toast({
+      title,
+      description,
+      variant: "destructive",
+      duration: 1000,
+    });
+}
+
+export function constructiveToast(
+  toast: any,
+  title: string,
+  description: string
+) {
+  return () =>
+    toast({
+      title,
+      description,
+      variant: "constructive",
+      duration: 1000,
+    });
 }

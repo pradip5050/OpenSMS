@@ -2,17 +2,29 @@
 
 import { useAuth } from "@/components/AuthProvider";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
-import { mapStudent, useStudents } from "@/lib/dashboard/user-profile";
+import {
+  mapStudent,
+  StudentResponse,
+  studentsUrl,
+  studentTransformer,
+  useStudents,
+} from "@/lib/dashboard/user-profile";
+import { useFetchCollection } from "@/lib/hooks";
 import Image from "next/image";
 
 export default function UserProfile() {
   const { user, token } = useAuth();
-  const { data, error, isLoading } = useStudents(token);
+  const { data, error, isLoading } = useFetchCollection<StudentResponse>(
+    studentsUrl,
+    token,
+    { draft: false, depth: 2 },
+    studentTransformer
+  );
 
   // TODO: Query by ID instead of filtering
-  const student = mapStudent(
-    data?.docs.filter((val) => val.user.value.email === user?.email)[0]
-  );
+  const student = data?.docs?.filter(
+    (val) => val.user.value.email === user?.email
+  )[0];
 
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">

@@ -3,9 +3,9 @@
 import { useAuth } from "@/components/AuthProvider";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import {
+  facultiesUrl,
   FacultyResponse,
   facultyTransformer,
-  facultyUrl,
 } from "@/lib/dashboard/faculties";
 import { useFetchCollection } from "@/lib/hooks";
 import Image from "next/image";
@@ -13,8 +13,9 @@ import Image from "next/image";
 export default function UserProfile() {
   const { user, token } = useAuth();
   const { data, error, isLoading } = useFetchCollection<FacultyResponse>(
-    facultyUrl,
+    facultiesUrl,
     token,
+    { draft: false, depth: 2 },
     facultyTransformer
   );
 
