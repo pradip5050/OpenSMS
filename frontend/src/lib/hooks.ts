@@ -43,16 +43,27 @@ export function useMutateCollection<TData, TResponse, TPayload>(
   populateCache?: (result: TData, currentData?: TResponse) => TResponse,
   transformer?: (data?: TData) => TData | undefined
 ) {
+  type Payload<TMethod> = TMethod extends "POST"
+    ? AuthPayload<TPayload>
+    : AuthPayload<Partial<TPayload>>;
+
   const { data, trigger, isMutating, error } = useSWRMutation<
     TData,
     AxiosError,
     Key | string,
-    AuthPayload<Partial<TPayload>>,
+    Payload<typeof method>,
     TResponse
   >(
     url,
-    // TODO: Test partial payload
-    async (url: string, { arg }: { arg: AuthPayload<Partial<TPayload>> }) => {
+    // FIXME: Fix conditional type and test partial payload
+    async (
+      url: string,
+      {
+        arg,
+      }: {
+        arg: Payload<typeof method>;
+      }
+    ) => {
       return axios
         .request({
           url: `${url}/${id ?? ""}`,

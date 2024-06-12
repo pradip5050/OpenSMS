@@ -48,7 +48,7 @@ export default function Finance() {
     trigger: deleteTrigger,
     isMutating: deleteIsMutating,
     error: deleteError,
-  } = useMutateCollection<Fee, FeeResponse, FeePayload>(feesUrl, "DELETE");
+  } = useMutateCollection<Fee, FeeResponse, FeePayload>(feesUrl, "POST");
 
   const {
     data: studentData,
