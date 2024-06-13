@@ -14,7 +14,7 @@ import { Metadata } from "./globals/Metadata";
 import Announcements from "./collections/Announcements";
 import Fees from "./collections/Fees";
 import Attendances from "./collections/Attendances";
-import Marks from "./collections/Marks";
+import Grades from "./collections/Grades";
 import Faculties from "./collections/Faculties";
 
 export default buildConfig({
@@ -31,7 +31,7 @@ export default buildConfig({
     Courses,
     Faculties,
     Fees,
-    Marks,
+    Grades,
     Students,
     Media,
   ],

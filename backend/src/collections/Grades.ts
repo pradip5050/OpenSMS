@@ -1,7 +1,7 @@
 import { CollectionConfig } from "payload/types";
 
-const Marks: CollectionConfig = {
-  slug: "marks",
+const Grades: CollectionConfig = {
+  slug: "grades",
   access: {
     read: () => true,
   },
@@ -10,7 +10,8 @@ const Marks: CollectionConfig = {
   },
   fields: [
     { name: "testType", type: "text", required: true },
-    { name: "amount", type: "number", min: 0, max: 100, required: true },
+    { name: "marks", type: "number", min: 0, max: 100, required: true },
+    { name: "maxMarks", type: "number", min: 0, max: 100, required: true },
     {
       name: "student",
       type: "relationship",
@@ -28,4 +29,4 @@ const Marks: CollectionConfig = {
   ],
 };
 
-export default Marks;
+export default Grades;
