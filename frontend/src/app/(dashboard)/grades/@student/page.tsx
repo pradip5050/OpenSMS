@@ -22,6 +22,9 @@ export default function StudentGrades() {
     draft: false,
     depth: 2,
   });
+  const studentGradesData = gradesData?.docs?.filter(
+    (grade) => grade.student.value.user.value.email === user!.email
+  );
 
   const columns: ColumnDef<Grade>[] = [
     { accessorKey: "testType", header: "Test Type" },
@@ -40,24 +43,20 @@ export default function StudentGrades() {
       },
     },
     { accessorKey: "maxMarks", header: "Max Marks" },
-    {
-      accessorKey: "student",
-      header: "Student",
-    },
-    { accessorKey: "course", header: "Course" },
   ];
 
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
       <div className="flex flex-row justify-between items-center pb-4">
-        <h1 className="text-left w-full">Courses</h1>
+        <h1 className="text-left w-full">Grades</h1>
       </div>
       {gradesIsLoading || gradesError ? (
         <>
           <Spinner size="32" />
         </>
       ) : (
-        <DataTable columns={columns} data={gradesData!.docs!} />
+        // TODO: Create collapsible datatables per course
+        <DataTable columns={columns} data={studentGradesData!} />
       )}
     </main>
   );
