@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/AuthProvider";
+import { isStudent } from "@/lib/rbac";
 import React from "react";
 
 export default function ParallelLayout({
@@ -13,5 +14,5 @@ export default function ParallelLayout({
   const { user } = useAuth();
 
   // TODO: Use RBAC util function
-  return <>{user!.roles === "student" ? student : faculty}</>;
+  return <>{isStudent(user!.roles) ? student : faculty}</>;
 }

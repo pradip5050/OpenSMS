@@ -13,5 +13,7 @@
 			"path": "backend-directus"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"ansible.python.interpreterPath": "c:\\Users\\ragas\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+	}
 }

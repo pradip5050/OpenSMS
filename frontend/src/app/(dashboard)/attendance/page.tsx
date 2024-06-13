@@ -98,7 +98,6 @@ export default function Attendance() {
                         <DialogHeader>
                           <DialogTitle>Daily attendance calendar</DialogTitle>
                         </DialogHeader>
-                        {/* TODO: Add daily attendance with https://react-day-picker.js.org/advanced-guides/custom-modifiers#custom-modifiers */}
                         <div className="flex items-center justify-center">
                           <Calendar
                             modifiers={{
@@ -106,6 +105,7 @@ export default function Attendance() {
                               absent: absentList!,
                             }}
                             modifiersClassNames={{
+                              // TODO: Make constructive class
                               present: "bg-green-600",
                               absent: "bg-destructive",
                             }}

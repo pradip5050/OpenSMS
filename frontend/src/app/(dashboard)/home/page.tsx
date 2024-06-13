@@ -7,7 +7,7 @@ import {
   AnnouncementResponse,
   announcementsUrl,
   deleteAnnouncements,
-  mapAnnouncements,
+  getFormattedDatetime,
 } from "@/lib/dashboard/announcements";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -21,8 +21,7 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "@/components/AuthProvider";
 import { isFacultyOrAdmin } from "@/lib/rbac";
-import { Delete, Edit2, SheetIcon, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Trash2 } from "lucide-react";
 import { useFetchCollection } from "@/lib/hooks";
 
 export default function Home() {
@@ -33,7 +32,16 @@ export default function Home() {
       draft: false,
       depth: 2,
     });
-  const [open, setOpen] = useState(false);
+  // TODO: Sort data during fetch
+  const dataWithDate = data?.docs
+    ?.map((announcement) => {
+      return {
+        ...announcement,
+        createdAt: new Date(announcement.createdAt),
+        updatedAt: new Date(announcement.updatedAt),
+      };
+    })
+    .toSorted((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1));
 
   async function deleteAnnouncementById(id: string) {
     const { result, error } = await deleteAnnouncements(
@@ -81,14 +89,13 @@ export default function Home() {
       ) : (
         <Table>
           <TableBody>
-            {data!.docs.length === 0 ? (
+            {dataWithDate!.length === 0 ? (
               <div className="flex h-full items-center justify-center">
                 <h1 className="text-3xl">No announcements yet!</h1>
               </div>
             ) : (
-              data!.docs.map((el) => {
-                const element = mapAnnouncements(el);
-                console.log(element);
+              dataWithDate!.map((element) => {
+                const updatedAt = getFormattedDatetime(element.updatedAt);
                 return (
                   <TableRow
                     key={element.id}
@@ -99,7 +106,7 @@ export default function Home() {
                         {element.title}
                       </div>
                       <div className="text-lg text-muted-foreground md:inline">
-                        {element.createdAt}
+                        {`${updatedAt.date} | ${updatedAt.hours}:${updatedAt.minutes}`}
                       </div>
                     </TableCell>
                     <TableCell className="flex justify-end h-full items-center gap-2">

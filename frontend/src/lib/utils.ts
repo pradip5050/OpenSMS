@@ -44,7 +44,7 @@ export function destructiveToast(
       title,
       description,
       variant: "destructive",
-      duration: 1000,
+      duration: 2000,
     });
 }
 
@@ -58,6 +58,6 @@ export function constructiveToast(
       title,
       description,
       variant: "constructive",
-      duration: 1000,
+      duration: 2000,
     });
 }

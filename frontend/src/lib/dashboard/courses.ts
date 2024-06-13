@@ -13,6 +13,8 @@ export interface CourseResponse {
   docs?: Course[];
 }
 
+export const coursesUrl = `${API_URL}/api/courses`;
+
 export function useCourses(token?: string): GetResponse<CourseResponse> {
   const { data, error, isLoading, isValidating, mutate } = useSWR<
     CourseResponse,

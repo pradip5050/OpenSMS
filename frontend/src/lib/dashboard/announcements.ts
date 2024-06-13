@@ -1,7 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import useSWR from "swr";
 import { API_URL } from "../constants";
-import { AuthPayload, GetResponse, PostResponse } from "../utils";
+import { AuthPayload, PostResponse } from "../utils";
 import useSWRMutation from "swr/mutation";
 
 export interface AnnouncementPayload {
@@ -15,10 +14,11 @@ export interface Announcement {
   content: any;
   contentHtml: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface AnnouncementResponse {
-  docs: Announcement[];
+  docs?: Announcement[];
 }
 
 export const announcementsUrl = `${API_URL}/api/announcements`;
@@ -47,17 +47,30 @@ export const announcementsUrl = `${API_URL}/api/announcements`;
 //   } satisfies GetResponse<AnnouncementResponse>;
 // }
 
-export function mapAnnouncements(announcement: Announcement): Announcement {
-  const date = new Date(`${announcement.createdAt}`);
-
+export function getFormattedDatetime(date: Date): {
+  date: string;
+  hours: string;
+  minutes: string;
+} {
   const minutes = date.getMinutes();
   const minutesString = minutes < 10 ? `0${minutes}` : `${minutes}`;
 
   return {
-    ...announcement,
-    createdAt: `${date.toDateString()} | ${date.getHours()}:${minutesString}`,
+    date: date.toDateString(),
+    hours: date.getHours().toString(),
+    minutes: minutesString,
   };
 }
+
+// export function announcementTransformer(
+//   data?: AnnouncementResponse
+// ): AnnouncementResponse | undefined {
+//   return {
+//     docs: data?.docs?.map((announcement) => {
+//       return { ...announcement };
+//     }),
+//   } satisfies AnnouncementResponse | undefined;
+// }
 
 const postFetcher = (
   url: string,
