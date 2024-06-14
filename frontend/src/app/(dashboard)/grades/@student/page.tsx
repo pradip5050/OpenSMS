@@ -70,7 +70,7 @@ export default function StudentGrades() {
         <div className="flex flex-col gap-2 overflow-y-auto">
           {Object.entries(groupedCourses!).map(([course, grades]) => {
             return (
-              <Collapsible>
+              <Collapsible key={course}>
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex justify-between items-center">
