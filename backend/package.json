@@ -19,6 +19,7 @@
     "payload:prod": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js payload"
   },
   "dependencies": {
+    "@payloadcms/bundler-vite": "^0.1.7",
     "@payloadcms/bundler-webpack": "^1.0.0",
     "@payloadcms/db-postgres": "^0.x",
     "@payloadcms/plugin-cloud": "^3.0.0",
