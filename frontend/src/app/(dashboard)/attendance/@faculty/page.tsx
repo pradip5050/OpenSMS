@@ -11,7 +11,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAttendances } from "@/lib/dashboard/attendance";
 import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
 import { useFetchCollection } from "@/lib/hooks";
 import { cn, groupBy } from "@/lib/utils";
@@ -19,18 +18,27 @@ import { CalendarIcon } from "lucide-react";
 import React from "react";
 import { DateRange } from "react-day-picker";
 import { addDays, format, differenceInDays } from "date-fns";
+import { ColumnDef } from "@tanstack/react-table";
+import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
 
 // FIXME: Copied from student page
 // Iterate through courses, make a table of attendances wherein row = student, column = date
 export default function Attendance() {
   const { token, user } = useAuth();
-  const { data, isLoading, error } = useAttendances(token);
 
   const {
     data: facultyData,
     isLoading: facultyIsLoading,
     error: facultyError,
   } = useFetchCollection<FacultyResponse>(facultiesUrl, token, {
+    draft: false,
+    depth: 2,
+  });
+  const {
+    data: studentData,
+    isLoading: studentIsLoading,
+    error: studentError,
+  } = useFetchCollection<StudentResponse>(studentsUrl, token, {
     draft: false,
     depth: 2,
   });
@@ -44,12 +52,24 @@ export default function Attendance() {
   const facultyCourseOptions = faculty?.courses.map((val) => {
     return { value: val.value.id, label: val.value.name };
   });
+  const studentByCourse = studentData?.docs?.filter(
+    // TODO: Make value = course.code
+    (student) => value in student.courses.map((course) => course.value.code)
+  );
 
-  const columns = Array.from(
-    { length: differenceInDays(date.from!, date.to!) },
+  const dates = Array.from(
+    // FIXME: Errors out when from is undefined
+    { length: differenceInDays(date.to!, date.from!) },
     (_, i) => addDays(date.from!, i)
   );
-  console.log(columns);
+
+  // TODO: memoize with useMemo
+  // https://tanstack.com/table/latest/docs/guide/data#give-data-a-stable-reference
+  // const columns: ColumnDef<{ date: Date }>[] = dates.map((date) => {
+  //   return { accessorKey: date, header: date.getDate() } satisfies ColumnDef<{
+  //     date: Date;
+  //   }>;
+  // });
 
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col">
@@ -63,6 +83,7 @@ export default function Attendance() {
       ) : (
         <div className="flex flex-col gap-3 overflow-y-auto">
           <div className="flex justify-between">
+            {/* TODO: Make value = course object or course code for filtering*/}
             <Combobox
               options={facultyCourseOptions!}
               label="course"
@@ -102,7 +123,7 @@ export default function Attendance() {
                     selected={date}
                     onSelect={(range) => setDate(range!)}
                     numberOfMonths={2}
-                    min={2}
+                    min={3}
                     max={10}
                   />
                 </PopoverContent>
