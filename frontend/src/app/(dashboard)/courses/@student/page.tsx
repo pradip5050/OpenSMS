@@ -5,19 +5,30 @@ import { DataTable } from "@/components/dashboard/DataTable";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/lib/dashboard/courses";
-import { useStudents } from "@/lib/dashboard/user-profile";
+import {
+  StudentResponse,
+  studentsUrl,
+  useStudents,
+} from "@/lib/dashboard/user-profile";
+import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
 export default function Courses() {
   const { user, token } = useAuth();
-  const { data, isLoading, error } = useStudents(token);
+  const { data, isLoading, error } = useFetchCollection<StudentResponse>(
+    studentsUrl,
+    token,
+    { draft: false, depth: 2 }
+  );
 
   // TODO: Get student by id directly instead of filters
+  // FIXME: Student user existing but collection not existing causes errors
   const student = data?.docs?.filter(
     (val) => val.user.value.email === user!.email
   )[0];
   const courses = student?.courses?.map((val) => val.value);
+  console.log(courses);
 
   const columns: ColumnDef<Course>[] = [
     {

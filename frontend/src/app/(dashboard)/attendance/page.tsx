@@ -19,21 +19,8 @@ import {
   TableHead,
 } from "@/components/ui/table";
 import { useAttendances } from "@/lib/dashboard/attendance";
+import { groupBy } from "@/lib/utils";
 import { PiCalendarBlankBold } from "react-icons/pi";
-
-function groupBy<T>(
-  keys: string[],
-  data?: T[]
-): Record<string, T[]> | undefined {
-  return data?.reduce((acc: Record<string, T[]>, val: T) => {
-    // TODO: Improve types
-    const group: any = keys.reduce((objAcc, key) => (objAcc as any)[key], val);
-    acc[group] = acc[group] || [];
-    acc[group].push(val);
-
-    return acc;
-  }, {});
-}
 
 export default function Attendance() {
   const { token, user } = useAuth();

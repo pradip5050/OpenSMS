@@ -19,7 +19,6 @@ export interface FacultyResponse {
   docs?: Faculty[];
 }
 export const facultiesUrl = `${API_URL}/api/faculties`;
-// TODO: Remove ?draft... from url
 
 export function facultyTransformer(
   data?: FacultyResponse

@@ -34,6 +34,20 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function groupBy<T>(
+  keys: string[],
+  data?: T[]
+): Record<string, T[]> | undefined {
+  return data?.reduce((acc: Record<string, T[]>, val: T) => {
+    // TODO: Improve types
+    const group: any = keys.reduce((objAcc, key) => (objAcc as any)[key], val);
+    acc[group] = acc[group] || [];
+    acc[group].push(val);
+
+    return acc;
+  }, {});
+}
+
 export function destructiveToast(
   toast: any,
   title: string,

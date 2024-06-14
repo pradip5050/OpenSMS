@@ -4,13 +4,18 @@ import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
-import { Course, CourseResponse, coursesUrl } from "@/lib/dashboard/courses";
-import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
 import { Grade, GradeResponse, gradesUrl } from "@/lib/dashboard/grades";
 import { useFetchCollection } from "@/lib/hooks";
-import { isAdmin } from "@/lib/rbac";
+import { groupBy } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, ChevronsUpDown } from "lucide-react";
+import React from "react";
 
 export default function StudentGrades() {
   const { user, token } = useAuth();
@@ -22,9 +27,16 @@ export default function StudentGrades() {
     draft: false,
     depth: 2,
   });
+
   const studentGradesData = gradesData?.docs?.filter(
     (grade) => grade.student.value.user.value.email === user!.email
   );
+
+  const groupedCourses = groupBy(
+    ["course", "value", "name"],
+    studentGradesData
+  );
+  console.log(groupedCourses);
 
   const columns: ColumnDef<Grade>[] = [
     { accessorKey: "testType", header: "Test Type" },
@@ -36,7 +48,7 @@ export default function StudentGrades() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Code
+            Marks
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -55,8 +67,30 @@ export default function StudentGrades() {
           <Spinner size="32" />
         </>
       ) : (
-        // TODO: Create collapsible datatables per course
-        <DataTable columns={columns} data={studentGradesData!} />
+        <div className="flex flex-col gap-2 overflow-y-auto">
+          {Object.entries(groupedCourses!).map(([course, grades]) => {
+            return (
+              <Collapsible>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex justify-between items-center">
+                      <span>{course}</span>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" className="w-9 p-0">
+                          <ChevronsUpDown className="h-4 w-4" />
+                          <span className="sr-only">Toggle</span>
+                        </Button>
+                      </CollapsibleTrigger>
+                    </CardTitle>
+                  </CardHeader>
+                  <CollapsibleContent className="space-y-2">
+                    <DataTable columns={columns} data={grades!} />
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+            );
+          })}
+        </div>
       )}
     </main>
   );
