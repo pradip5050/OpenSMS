@@ -66,7 +66,7 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
       "POST",
       undefined,
       (result, currentData) => {
-        return { docs: [...currentData!.docs, result] };
+        return { docs: [...currentData!.docs!, result] };
         // return currentData!;
       },
       (data) => data
@@ -81,7 +81,7 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
       "PATCH",
       editPayload?.id,
       (result, currentData) => {
-        return { docs: [...currentData!.docs, result] };
+        return { docs: [...currentData!.docs!, result] };
       },
       (data) => data
     );
