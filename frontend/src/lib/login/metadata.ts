@@ -22,7 +22,7 @@ export const placeholderUrl =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/991px-Placeholder_view_vector.svg.png";
 
 export function useMetadata() {
-  const { data, error, isLoading } = useSWR<Metadata>(
+  const { data, error, isLoading, isValidating, mutate } = useSWR<Metadata>(
     `${API_URL}/api/globals/metadata?locale=undefined&draft=false&depth=1`,
     fetcher,
     { revalidateIfStale: false }
@@ -32,7 +32,9 @@ export function useMetadata() {
     data,
     error,
     isLoading,
-  } satisfies GetResponse<Metadata | undefined>;
+    isValidating,
+    mutate,
+  } satisfies GetResponse<Metadata>;
 }
 
 export function mapMetadata(metadata: Metadata): Metadata {
