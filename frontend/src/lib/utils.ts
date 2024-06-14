@@ -42,7 +42,7 @@ export function groupBy<T>(
     // TODO: Improve types
     const group: any = keys.reduce((objAcc, key) => (objAcc as any)[key], val);
     acc[group] = acc[group] || [];
-    acc[group].push(val);
+    acc[group]!.push(val);
 
     return acc;
   }, {});
