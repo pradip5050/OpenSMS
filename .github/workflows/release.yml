@@ -53,7 +53,14 @@ jobs:
     - name: Setup rust
       run: rustup toolchain install stable --profile minimal
 
-    - name: Install packages
+    - name: Install packages (Windows)
+      if: ${{ matrix.os == 'windows-latest' }}
+      # Resolve terminate batch job prompts
+      shell: cmd
+      run: npm install
+
+    - name: Install packages (Unix)
+      if: ${{ matrix.os != 'windows-latest' }}
       run: npm install
 
     - name: Build app
