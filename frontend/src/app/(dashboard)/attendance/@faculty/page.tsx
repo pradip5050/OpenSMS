@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/components/AuthProvider";
 import { Combobox } from "@/components/dashboard/Combobox";
-import { DataTable } from "@/components/dashboard/DataTable";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -13,12 +12,11 @@ import {
 } from "@/components/ui/popover";
 import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
-import { cn, groupBy } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import React from "react";
 import { DateRange } from "react-day-picker";
 import { addDays, format, differenceInDays } from "date-fns";
-import { ColumnDef } from "@tanstack/react-table";
 import {
   Student,
   StudentResponse,
@@ -32,8 +30,7 @@ import {
   TableRow,
   TableBody,
 } from "@/components/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Check, X } from "lucide-react";
+import { Check } from "lucide-react";
 import {
   Attendance,
   AttendancePayload,
@@ -126,7 +123,7 @@ export default function FacultyAttendancePage() {
         student: { relationTo: "students", value: student.id },
       },
     });
-
+    // TODO: Handle states
     console.log(res);
   }
   // FIXME: Prevent multiple POST's if attendance already exists

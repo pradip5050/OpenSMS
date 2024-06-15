@@ -3,11 +3,9 @@
 import { useAuth } from "@/components/AuthProvider";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import {
-  mapStudent,
   StudentResponse,
   studentsUrl,
   studentTransformer,
-  useStudents,
 } from "@/lib/dashboard/user-profile";
 import { useFetchCollection } from "@/lib/hooks";
 import Image from "next/image";

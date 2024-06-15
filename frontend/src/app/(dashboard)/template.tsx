@@ -1,9 +1,8 @@
 "use client";
 
 import AuthError from "@/components/AuthError";
-import { AuthProvider, AuthState, useAuth } from "@/components/AuthProvider";
+import { useAuth } from "@/components/AuthProvider";
 import Spinner from "@/components/Spinner";
-import { useEffect, useState } from "react";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const auth = useAuth();

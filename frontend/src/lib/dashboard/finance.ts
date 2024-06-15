@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import useSWR, { Key } from "swr";
 import { API_URL } from "../constants";
 import { AuthPayload, GetResponse, PostResponse, Relation } from "../utils";

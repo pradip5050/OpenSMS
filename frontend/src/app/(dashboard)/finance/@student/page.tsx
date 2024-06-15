@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/components/AuthProvider";
 import FeeTable from "@/components/dashboard/finance/FeeTable";
-import RazorpayGateway from "@/components/dashboard/finance/RazorpayGateway";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFees } from "@/lib/dashboard/finance";

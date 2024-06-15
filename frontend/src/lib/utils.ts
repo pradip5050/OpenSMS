@@ -1,8 +1,6 @@
-import { toast } from "@/components/ui/use-toast";
 import { AxiosError } from "axios";
 import { type ClassValue, clsx } from "clsx";
-import { Key, KeyedMutator } from "swr";
-import { TriggerWithArgs } from "swr/dist/mutation";
+import { KeyedMutator } from "swr";
 import { twMerge } from "tailwind-merge";
 
 export interface GetResponse<T> {

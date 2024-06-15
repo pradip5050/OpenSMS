@@ -1,7 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { API_URL } from "../constants";
-import { AuthPayload, PostResponse } from "../utils";
-import useSWRMutation from "swr/mutation";
 
 export interface AnnouncementPayload {
   title: string;
@@ -23,30 +21,6 @@ export interface AnnouncementResponse {
 
 export const announcementsUrl = `${API_URL}/api/announcements`;
 
-// export function useAnnouncements(token?: string) {
-//   const { data, error, isLoading, isValidating, mutate } = useSWR<
-//     AnnouncementResponse,
-//     AxiosError
-//   >(`${API_URL}/api/announcements?draft=false&depth=1`, (url: string) =>
-//     axios
-//       .get(url, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       })
-//       .then((res: AxiosResponse<AnnouncementResponse>) => res.data)
-//   );
-
-//   // TODO: Check whether data mapping can be done here
-//   return {
-//     data,
-//     error,
-//     isLoading,
-//     isValidating,
-//     mutate,
-//   } satisfies GetResponse<AnnouncementResponse>;
-// }
-
 export function getFormattedDatetime(date: Date): {
   date: string;
   hours: string;
@@ -60,41 +34,6 @@ export function getFormattedDatetime(date: Date): {
     hours: date.getHours().toString(),
     minutes: minutesString,
   };
-}
-
-// export function announcementTransformer(
-//   data?: AnnouncementResponse
-// ): AnnouncementResponse | undefined {
-//   return {
-//     docs: data?.docs?.map((announcement) => {
-//       return { ...announcement };
-//     }),
-//   } satisfies AnnouncementResponse | undefined;
-// }
-
-const postFetcher = (
-  url: string,
-  { arg }: { arg: AuthPayload<AnnouncementPayload> }
-) =>
-  axios
-    .post(url, JSON.stringify(arg.payload), {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${arg.token}`,
-      },
-    })
-    .then((res) => res.data);
-
-export function useCreateAnnouncements() {
-  const { trigger, isMutating } = useSWRMutation(
-    `${API_URL}/api/announcements`,
-    postFetcher
-  );
-
-  return {
-    trigger,
-    isMutating,
-  } satisfies PostResponse<AnnouncementPayload, AxiosError>;
 }
 
 export async function deleteAnnouncements(

@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/AuthProvider";
-import { isFaculty, isStudent } from "@/lib/rbac";
+import { isStudent } from "@/lib/rbac";
 import React from "react";
 
 export default function ParallelLayout({

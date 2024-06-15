@@ -6,7 +6,6 @@ import qs from "qs";
 import { Course } from "./courses";
 import { User } from "../login/login";
 
-// TODO: Check query
 export interface Student {
   id: string;
   studentId: number;

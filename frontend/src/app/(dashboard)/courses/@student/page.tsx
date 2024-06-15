@@ -5,11 +5,7 @@ import { DataTable } from "@/components/dashboard/DataTable";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/lib/dashboard/courses";
-import {
-  StudentResponse,
-  studentsUrl,
-  useStudents,
-} from "@/lib/dashboard/user-profile";
+import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
 import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";

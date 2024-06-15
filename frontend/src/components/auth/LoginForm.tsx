@@ -18,7 +18,6 @@ import Spinner from "../Spinner";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useAuthDispatch } from "../AuthProvider";
-import { AxiosError } from "axios";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter valid email address" }),

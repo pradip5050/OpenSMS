@@ -18,13 +18,18 @@ import {
   TableCell,
   TableHead,
 } from "@/components/ui/table";
-import { useAttendances } from "@/lib/dashboard/attendance";
+import { AttendanceResponse, attendancesUrl } from "@/lib/dashboard/attendance";
+import { useFetchCollection } from "@/lib/hooks";
 import { groupBy } from "@/lib/utils";
 import { PiCalendarBlankBold } from "react-icons/pi";
 
 export default function Attendance() {
   const { token, user } = useAuth();
-  const { data, isLoading, error } = useAttendances(token);
+  const { data, isLoading, error } = useFetchCollection<AttendanceResponse>(
+    attendancesUrl,
+    token,
+    { depth: 2, draft: false }
+  );
 
   const courseGrouped = groupBy(["course", "value", "name"], data?.docs);
   const courseGroupedList = courseGrouped
