@@ -12,14 +12,18 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
-import { useFetchCollection } from "@/lib/hooks";
+import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 import { cn, groupBy } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import React from "react";
 import { DateRange } from "react-day-picker";
 import { addDays, format, differenceInDays } from "date-fns";
 import { ColumnDef } from "@tanstack/react-table";
-import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
+import {
+  Student,
+  StudentResponse,
+  studentsUrl,
+} from "@/lib/dashboard/user-profile";
 import {
   Table,
   TableHeader,
@@ -30,10 +34,15 @@ import {
 } from "@/components/ui/table";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Check, X } from "lucide-react";
-import { AttendanceResponse, attendancesUrl } from "@/lib/dashboard/attendance";
+import {
+  Attendance,
+  AttendancePayload,
+  AttendanceResponse,
+  attendancesUrl,
+} from "@/lib/dashboard/attendance";
 import { Toggle } from "@/components/ui/toggle";
 
-export default function Attendance() {
+export default function FacultyAttendancePage() {
   const { token, user } = useAuth();
 
   const {
@@ -93,8 +102,35 @@ export default function Attendance() {
   //   }>;
   // });
 
-  function markPresent() {}
-  function markAbsent() {}
+  const {
+    trigger: attendanceCreateTrigger,
+    error: attendanceCreateError,
+    isMutating: attendanceCreateIsMutating,
+  } = useMutateCollection<Attendance, AttendanceResponse, AttendancePayload>(
+    attendancesUrl,
+    "POST",
+    undefined
+  );
+
+  async function togglePresent(
+    date: Date,
+    student: Student,
+    isPresent: boolean
+  ) {
+    const res = await attendanceCreateTrigger({
+      token: token!,
+      payload: {
+        date: date.toISOString(),
+        isPresent: !isPresent,
+        course: { relationTo: "courses", value: value },
+        student: { relationTo: "students", value: student.id },
+      },
+    });
+
+    console.log(res);
+  }
+  // FIXME: Prevent multiple POST's if attendance already exists
+  // That is, get attendance id for that day,student,course and make a PATCH request
 
   const isLoading = attendanceIsLoading || studentIsLoading || facultyIsLoading;
   const isError = !!attendanceError || !!studentError || !!facultyError;
@@ -174,7 +210,7 @@ export default function Attendance() {
                 <TableRow key={student.id}>
                   <TableCell>{student.user.value.name}</TableCell>
                   {dates.map((date) => {
-                    const currentAttendance = attendanceData!.docs!.filter(
+                    const currentAttendances = attendanceData!.docs!.filter(
                       (attendance) => {
                         return (
                           attendance.course.value.id === value &&
@@ -183,8 +219,10 @@ export default function Attendance() {
                             date.toDateString()
                         );
                       }
-                    )[0]?.isPresent;
-                    // console.log(currentAttendance);
+                    );
+                    const currentAttendance =
+                      currentAttendances[currentAttendances.length - 1]
+                        ?.isPresent;
 
                     return (
                       <TableCell key={date.toISOString()}>
@@ -195,7 +233,9 @@ export default function Attendance() {
                             currentAttendance && "bg-constructive",
                             "data-[state=on]:bg-constructive",
                           ])}
-                          onClick={markPresent}
+                          onClick={() =>
+                            togglePresent(date, student, !!currentAttendance)
+                          }
                         >
                           <Check className="h-4 w-4" />
                         </Toggle>

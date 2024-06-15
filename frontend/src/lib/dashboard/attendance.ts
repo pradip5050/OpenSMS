@@ -15,6 +15,13 @@ export interface Attendance {
 export interface AttendanceResponse {
   docs?: Attendance[];
 }
+export interface AttendancePayload {
+  date: string;
+  isPresent: boolean;
+  student: Relation<string>; // student ID
+  course: Relation<string>; // course ID
+}
+
 export const attendancesUrl = `${API_URL}/api/attendances`;
 
 // TODO: Make transformer return new type/modified type
