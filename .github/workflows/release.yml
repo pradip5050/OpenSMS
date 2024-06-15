@@ -1,4 +1,4 @@
-name: Build and release Tauri Windows app
+name: Build and release Tauri desktop app
 
 on:
   push:
@@ -13,5 +13,70 @@ permissions:
   contents: read
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: frontend
+        sparse-checkout-cone-mode: false
+
+    - name: Move frontend files to root
+      run: |
+        ls -lah
+        shopt -s dotglob
+        mv frontend/* .
+        rm -rf frontend
+        ls -lah
+
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Setup rust
+      run: rustup toolchain install stable --profile minimal
+
+    - name: Install packages
+      run: npm install
+
+    - name: Build app
+      run: npm run tauri build
+
+    - name: Save package
+      uses: actions/upload-artifact@v4
+      with:
+        path: src-tauri/target/**/*
+
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get all build outputs
+        uses: actions/download-artifact@v3
+        with:
+          path: outputs
+
+      - name: Debug outputs folder
+        run: tree outputs
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: OpenSMS
+          body_path: CHANGELOG.txt
+          repository: dhzdhd/OpenSMS
+          prerelease: true
+          generate_release_notes: true
+          files: outputs/*
+          token: ${{ secrets.GITHUB_TOKEN }}
