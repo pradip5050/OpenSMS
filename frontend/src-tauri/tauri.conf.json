@@ -1,6 +1,6 @@
 {
   "productName": "sms-frontend",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "identifier": "com.dhzdhd.opensms",
   "build": {
     "beforeDevCommand": "npm run dev",
