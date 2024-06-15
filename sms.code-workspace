@@ -1,19 +1,22 @@
 {
-	"folders": [
-		{
-			"path": "backend"
-		},
-		{
-			"path": "frontend"
-		},
-		{
-			"path": "frontend-ps"
-		},
-		{
-			"path": "backend-directus"
-		}
-	],
-	"settings": {
-		"ansible.python.interpreterPath": "c:\\Users\\ragas\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
-	}
+  "folders": [
+    {
+      "path": "backend"
+    },
+    {
+      "path": "frontend"
+    },
+    {
+      "path": "frontend-ps"
+    },
+    {
+      "path": "backend-directus"
+    },
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "ansible.python.interpreterPath": "c:\\Users\\ragas\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+  }
 }
