@@ -15,6 +15,9 @@ export interface Attendance {
 export interface AttendanceResponse {
   docs?: Attendance[];
 }
+export const attendancesUrl = `${API_URL}/api/attendances`;
+
+// TODO: Make transformer return new type/modified type
 
 export function useAttendances(
   token?: string

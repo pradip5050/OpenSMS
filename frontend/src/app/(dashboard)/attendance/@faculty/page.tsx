@@ -20,12 +20,30 @@ import { DateRange } from "react-day-picker";
 import { addDays, format, differenceInDays } from "date-fns";
 import { ColumnDef } from "@tanstack/react-table";
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
+import {
+  Table,
+  TableHeader,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableBody,
+} from "@/components/ui/table";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Check, X } from "lucide-react";
+import { AttendanceResponse, attendancesUrl } from "@/lib/dashboard/attendance";
+import { Toggle } from "@/components/ui/toggle";
 
-// FIXME: Copied from student page
-// Iterate through courses, make a table of attendances wherein row = student, column = date
 export default function Attendance() {
   const { token, user } = useAuth();
 
+  const {
+    data: attendanceData,
+    isLoading: attendanceIsLoading,
+    error: attendanceError,
+  } = useFetchCollection<AttendanceResponse>(attendancesUrl, token, {
+    draft: false,
+    depth: 2,
+  });
   const {
     data: facultyData,
     isLoading: facultyIsLoading,
@@ -52,15 +70,19 @@ export default function Attendance() {
   const facultyCourseOptions = faculty?.courses.map((val) => {
     return { value: val.value.id, label: val.value.name };
   });
-  const studentByCourse = studentData?.docs?.filter(
-    // TODO: Make value = course.code
-    (student) => value in student.courses.map((course) => course.value.code)
+  const studentsByCourse = studentData?.docs?.filter((student) =>
+    student.courses.map((course) => course.value.id).some((id) => id === value)
   );
 
   const dates = Array.from(
-    // FIXME: Errors out when from is undefined
-    { length: differenceInDays(date.to!, date.from!) },
-    (_, i) => addDays(date.from!, i)
+    {
+      length:
+        differenceInDays(
+          date?.to ?? addDays(Date.now(), 3),
+          date?.from ?? Date.now()
+        ) + 1,
+    },
+    (_, i) => addDays(date?.from ?? Date.now(), i)
   );
 
   // TODO: memoize with useMemo
@@ -71,19 +93,24 @@ export default function Attendance() {
   //   }>;
   // });
 
+  function markPresent() {}
+  function markAbsent() {}
+
+  const isLoading = attendanceIsLoading || studentIsLoading || facultyIsLoading;
+  const isError = !!attendanceError || !!studentError || !!facultyError;
+
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col">
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Attendance</h1>
       </div>
-      {facultyIsLoading || facultyError ? (
+      {isLoading || isError ? (
         <div>
           <Spinner size="32" />
         </div>
       ) : (
         <div className="flex flex-col gap-3 overflow-y-auto">
           <div className="flex justify-between">
-            {/* TODO: Make value = course object or course code for filtering*/}
             <Combobox
               options={facultyCourseOptions!}
               label="course"
@@ -130,8 +157,55 @@ export default function Attendance() {
               </Popover>
             )}
           </div>
-          <div>content</div>
           {/* <DataTable columns={columns} data={studentFeeData!} /> */}
+          <Table className="block md:max-w-[calc(100vw-16rem)] overflow-auto">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Student</TableHead>
+                {dates.map((date) => (
+                  <TableHead key={date.toISOString()}>
+                    {`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {studentsByCourse?.map((student) => (
+                <TableRow key={student.id}>
+                  <TableCell>{student.user.value.name}</TableCell>
+                  {dates.map((date) => {
+                    const currentAttendance = attendanceData!.docs!.filter(
+                      (attendance) => {
+                        return (
+                          attendance.course.value.id === value &&
+                          attendance.student.value.id === student.id &&
+                          new Date(attendance.date).toDateString() ===
+                            date.toDateString()
+                        );
+                      }
+                    )[0]?.isPresent;
+                    // console.log(currentAttendance);
+
+                    return (
+                      <TableCell key={date.toISOString()}>
+                        <Toggle
+                          value="bold"
+                          aria-label="Toggle present"
+                          className={cn([
+                            currentAttendance && "bg-constructive",
+                            "data-[state=on]:bg-constructive",
+                          ])}
+                          onClick={markPresent}
+                        >
+                          <Check className="h-4 w-4" />
+                        </Toggle>
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       )}
     </main>
