@@ -18,8 +18,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        sparse-checkout: |
-          frontend
+        path: .
+        sparse-checkout: frontend
+        sparse-checkout-cone-mode: false
     
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
