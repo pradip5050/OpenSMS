@@ -50,10 +50,17 @@ jobs:
     - name: Build app
       run: npm run tauri build
 
+    - name: Debug target folder
+      run: tree src-tauri/target
+
     - name: Save package
       uses: actions/upload-artifact@v4
       with:
-        path: src-tauri/target/**/*
+        # Do not use wildcard because directory structure is preserved
+        if-no-files-found: warn
+        path: |
+          src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*
+          src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*
 
   release:
     runs-on: ubuntu-latest
