@@ -21,6 +21,9 @@ jobs:
         path: .
         sparse-checkout: frontend
         sparse-checkout-cone-mode: false
+
+    - name: Debug
+      run: tree .
     
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
