@@ -27,7 +27,16 @@ jobs:
         sparse-checkout: frontend
         sparse-checkout-cone-mode: false
 
-    - name: Move frontend files to root
+    - name: Move frontend files to root (Windows)
+      if: ${{ matrix.os == 'windows' }}
+      run: |
+        Get-ChildItem -Force -File | Format-List
+        Move-Item -Path 'frontend\*' -Destination .
+        Remove-Item -Recurse -Force -Path 'frontend'
+        Get-ChildItem -Force -File | Format-List
+
+    - name: Move frontend files to root (Unix)
+      if: ${{ matrix.os != 'windows' }}
       run: |
         ls -lah
         shopt -s dotglob
