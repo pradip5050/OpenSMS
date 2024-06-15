@@ -36,7 +36,7 @@ jobs:
         Get-ChildItem -Force -File | Format-List
 
     - name: Move frontend files to root (Unix)
-      if: ${{ matrix.os != 'windows' }}
+      if: ${{ matrix.os != 'windows-latest' }}
       run: |
         ls -lah
         shopt -s dotglob
