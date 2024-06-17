@@ -124,7 +124,6 @@ export default function FacultyAttendancePage() {
     attendancesUrl,
     "PATCH",
     (attendance, data) => {
-      // FIXME: If already present, does not repopulate cache on updation
       return {
         docs: [
           ...data!.docs!.filter((val) => val.id === attendance.id),
@@ -190,6 +189,7 @@ export default function FacultyAttendancePage() {
       {isLoading || isError ? (
         <div>
           <Spinner size="32" />
+          {JSON.stringify(attendanceError)}
         </div>
       ) : (
         <div className="flex flex-col gap-3 overflow-y-auto">
@@ -277,9 +277,11 @@ export default function FacultyAttendancePage() {
                           <Toggle
                             value="bold"
                             aria-label="Toggle present"
+                            variant="outline"
                             className={cn([
+                              // FIXME: constructive not displaying properly
+                              "data-[state=on]:bg-inherit bg-inherit w-10 aspect-square",
                               currentAttendance && "bg-constructive",
-                              "data-[state=on]:bg-constructive",
                             ])}
                             onClick={() => {
                               if (!isMutating) {
@@ -291,7 +293,7 @@ export default function FacultyAttendancePage() {
                               }
                             }}
                           >
-                            <Check className="h-4 w-4" />
+                            {currentAttendance && <Check className="h-4 w-4" />}
                           </Toggle>
                         </TableCell>
                       );

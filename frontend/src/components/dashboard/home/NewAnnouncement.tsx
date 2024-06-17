@@ -64,7 +64,6 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
     >(
       announcementsUrl,
       "POST",
-      undefined,
       (result, currentData) => {
         return { docs: [...currentData!.docs!, result] };
         // return currentData!;
@@ -79,7 +78,6 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
     >(
       announcementsUrl,
       "PATCH",
-      editPayload?.id,
       (result, currentData) => {
         return { docs: [...currentData!.docs!, result] };
       },
@@ -96,6 +94,7 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
       if (editPayload) {
         const result = await updateTrigger({
           token: auth.token!,
+          id: editPayload?.id,
           payload: {
             title: values.title,
             content: JSON.stringify(editorRef.current.getEditorState()),
