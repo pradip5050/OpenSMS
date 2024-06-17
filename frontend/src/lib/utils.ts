@@ -20,6 +20,8 @@ export interface PostResponse<T, E> {
 
 export interface AuthPayload<T> {
   token: string;
+  id?: string;
+  query?: Record<string, any>;
   payload: T;
 }
 

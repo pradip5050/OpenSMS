@@ -39,7 +39,6 @@ export function useFetchCollection<TResponse>(
 export function useMutateCollection<TData, TResponse, TPayload>(
   url: Key | string,
   method: "POST" | "PATCH" | "DELETE",
-  id?: string,
   populateCache?: (result: TData, currentData?: TResponse) => TResponse,
   transformer?: (data?: TData) => TData | undefined
 ) {
@@ -64,9 +63,15 @@ export function useMutateCollection<TData, TResponse, TPayload>(
         arg: Payload<typeof method>;
       }
     ) => {
+      const stringifiedQuery = arg.query
+        ? qs.stringify(arg.query, { addQueryPrefix: true })
+        : undefined;
+      const aggUrl = `${url}/${arg.id ?? ""}${stringifiedQuery ?? ""}`;
+      console.log(aggUrl);
+
       return axios
         .request({
-          url: `${url}/${id ?? ""}`,
+          url: aggUrl,
           method: method,
           data: JSON.stringify(arg.payload),
           headers: {

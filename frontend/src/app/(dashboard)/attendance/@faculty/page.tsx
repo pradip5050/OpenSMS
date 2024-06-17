@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
-import { cn } from "@/lib/utils";
+import { cn, constructiveToast, destructiveToast } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import React from "react";
 import { DateRange } from "react-day-picker";
@@ -38,6 +38,7 @@ import {
   attendancesUrl,
 } from "@/lib/dashboard/attendance";
 import { Toggle } from "@/components/ui/toggle";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function FacultyAttendancePage() {
   const { token, user } = useAuth();
@@ -71,6 +72,7 @@ export default function FacultyAttendancePage() {
     from: new Date(),
     to: addDays(new Date(), 10),
   });
+  const { toast } = useToast();
 
   const faculty = facultyData?.docs?.at(0);
   const facultyCourseOptions = faculty?.courses.map((val) => {
@@ -106,7 +108,30 @@ export default function FacultyAttendancePage() {
   } = useMutateCollection<Attendance, AttendanceResponse, AttendancePayload>(
     attendancesUrl,
     "POST",
-    undefined
+    (attendance, data) => {
+      console.log(attendance);
+      return {
+        // FIXME: Do not use any and fix hook types
+        docs: [...data!.docs!, (attendance as any).doc],
+      };
+    }
+  );
+  const {
+    trigger: attendanceUpdateTrigger,
+    error: attendanceUpdateError,
+    isMutating: attendanceUpdateIsMutating,
+  } = useMutateCollection<Attendance, AttendanceResponse, AttendancePayload>(
+    attendancesUrl,
+    "PATCH",
+    (attendance, data) => {
+      // FIXME: If already present, does not repopulate cache on updation
+      return {
+        docs: [
+          ...data!.docs!.filter((val) => val.id === attendance.id),
+          (attendance as any).doc,
+        ],
+      };
+    }
   );
 
   async function togglePresent(
@@ -114,23 +139,48 @@ export default function FacultyAttendancePage() {
     student: Student,
     isPresent: boolean
   ) {
-    const res = await attendanceCreateTrigger({
-      token: token!,
-      payload: {
-        date: date.toISOString(),
-        isPresent: !isPresent,
-        course: { relationTo: "courses", value: value },
-        student: { relationTo: "students", value: student.id },
-      },
-    });
-    // TODO: Handle states
-    console.log(res);
+    const existingAttendance = attendanceData!.docs!.filter(
+      (attendance) =>
+        attendance.course.value.id === value &&
+        attendance.student.value.id === student.id &&
+        new Date(attendance.date).getDate() === date.getDate()
+    )[0]?.id;
+
+    if (existingAttendance) {
+      await attendanceUpdateTrigger({
+        token: token!,
+        id: existingAttendance,
+        query: { depth: 2 },
+        payload: {
+          date: date.toISOString(),
+          isPresent: !isPresent,
+          course: { relationTo: "courses", value: value },
+          student: { relationTo: "students", value: student.id },
+        },
+      });
+    } else {
+      await attendanceCreateTrigger({
+        token: token!,
+        query: { depth: 2 },
+        payload: {
+          date: date.toISOString(),
+          isPresent: !isPresent,
+          course: { relationTo: "courses", value: value },
+          student: { relationTo: "students", value: student.id },
+        },
+      });
+    }
+
+    if (attendanceCreateError || attendanceUpdateError) {
+      destructiveToast(toast, "Error", "Failed to update attendance")();
+    } else {
+      constructiveToast(toast, "Success", "Updated attendance")();
+    }
   }
-  // FIXME: Prevent multiple POST's if attendance already exists
-  // That is, get attendance id for that day,student,course and make a PATCH request
 
   const isLoading = attendanceIsLoading || studentIsLoading || facultyIsLoading;
   const isError = !!attendanceError || !!studentError || !!facultyError;
+  const isMutating = attendanceCreateIsMutating || attendanceUpdateIsMutating;
 
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col">
@@ -191,58 +241,66 @@ export default function FacultyAttendancePage() {
             )}
           </div>
           {/* <DataTable columns={columns} data={studentFeeData!} /> */}
-          <Table className="block md:max-w-[calc(100vw-16rem)] overflow-auto">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Student</TableHead>
-                {dates.map((date) => (
-                  <TableHead key={date.toISOString()}>
-                    {`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {studentsByCourse?.map((student) => (
-                <TableRow key={student.id}>
-                  <TableCell>{student.user.value.name}</TableCell>
-                  {dates.map((date) => {
-                    const currentAttendances = attendanceData!.docs!.filter(
-                      (attendance) => {
-                        return (
-                          attendance.course.value.id === value &&
-                          attendance.student.value.id === student.id &&
-                          new Date(attendance.date).toDateString() ===
-                            date.toDateString()
-                        );
-                      }
-                    );
-                    const currentAttendance =
-                      currentAttendances[currentAttendances.length - 1]
-                        ?.isPresent;
-
-                    return (
-                      <TableCell key={date.toISOString()}>
-                        <Toggle
-                          value="bold"
-                          aria-label="Toggle present"
-                          className={cn([
-                            currentAttendance && "bg-constructive",
-                            "data-[state=on]:bg-constructive",
-                          ])}
-                          onClick={() =>
-                            togglePresent(date, student, !!currentAttendance)
-                          }
-                        >
-                          <Check className="h-4 w-4" />
-                        </Toggle>
-                      </TableCell>
-                    );
-                  })}
+          {value !== "" && (
+            <Table className="block md:max-w-[calc(100vw-16rem)] overflow-auto">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Student</TableHead>
+                  {dates.map((date) => (
+                    <TableHead key={date.toISOString()}>
+                      {`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`}
+                    </TableHead>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {studentsByCourse?.map((student) => (
+                  <TableRow key={student.id}>
+                    <TableCell>{student.user.value.name}</TableCell>
+                    {dates.map((date) => {
+                      const currentAttendances = attendanceData!.docs!.filter(
+                        (attendance) => {
+                          return (
+                            attendance.course.value.id === value &&
+                            attendance.student.value.id === student.id &&
+                            new Date(attendance.date).toDateString() ===
+                              date.toDateString()
+                          );
+                        }
+                      );
+                      const currentAttendance =
+                        currentAttendances[currentAttendances.length - 1]
+                          ?.isPresent;
+
+                      return (
+                        <TableCell key={date.toISOString()}>
+                          <Toggle
+                            value="bold"
+                            aria-label="Toggle present"
+                            className={cn([
+                              currentAttendance && "bg-constructive",
+                              "data-[state=on]:bg-constructive",
+                            ])}
+                            onClick={() => {
+                              if (!isMutating) {
+                                togglePresent(
+                                  date,
+                                  student,
+                                  !!currentAttendance
+                                );
+                              }
+                            }}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Toggle>
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </div>
       )}
     </main>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/AuthProvider";
+import { Toaster } from "@/components/ui/toaster";
 import { isStudent } from "@/lib/rbac";
 import React from "react";
 
