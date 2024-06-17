@@ -34,7 +34,7 @@ export const AuthDispatchContext = createContext<Dispatch<AuthAction>>(
 );
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
-  // FIXME: Invoked 4 times in (home)
+  // FIXME: Invoked 2x2 times in (home)
   switch (action.type) {
     case AuthActionKind.Login: {
       return {
@@ -45,7 +45,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
       };
     }
     case AuthActionKind.Logout: {
-      return { loading: false };
+      return { loading: true };
     }
     default: {
       return state;

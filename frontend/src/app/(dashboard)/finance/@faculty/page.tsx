@@ -15,8 +15,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown } from "lucide-react";
@@ -97,8 +95,8 @@ export default function Finance() {
         return rowA.original.dueDate > rowB.original.dueDate
           ? 1
           : rowA.original.dueDate < rowB.original.dueDate
-          ? -1
-          : 0;
+            ? -1
+            : 0;
       },
       cell: ({ row }) => {
         return row.original.dueDate.toDateString();
