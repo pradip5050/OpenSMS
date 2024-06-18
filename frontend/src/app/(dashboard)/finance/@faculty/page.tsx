@@ -26,6 +26,8 @@ import React from "react";
 import { AddFeeDialog } from "@/components/dashboard/finance/AddFeeDialog";
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
+import { useToast } from "@/components/ui/use-toast";
+import { constructiveToast, destructiveToast } from "@/lib/utils";
 
 export default function Finance() {
   const { token } = useAuth();
@@ -43,10 +45,30 @@ export default function Finance() {
     feeTransformer
   );
   const {
-    trigger: deleteTrigger,
-    isMutating: deleteIsMutating,
-    error: deleteError,
-  } = useMutateCollection<Fee, FeeResponse, FeePayload>(feesUrl, "POST");
+    trigger: deleteFeeTrigger,
+    isMutating: deleteFeeIsMutating,
+    error: deleteFeeError,
+  } = useMutateCollection<Fee, FeeResponse, FeePayload>(
+    feesUrl,
+    "DELETE",
+    (result, data) => {
+      return { docs: data!.docs!.filter((val) => val.id !== result.id) };
+    }
+  );
+  const {
+    trigger: updateFeeTrigger,
+    isMutating: updateFeeIsMutating,
+    error: updateFeeError,
+  } = useMutateCollection<Fee, FeeResponse, FeePayload>(
+    feesUrl,
+    "PATCH",
+    (result, data) => {
+      console.log(result);
+      return {
+        docs: [...data!.docs!.filter((val) => val.id !== result.id), result],
+      };
+    }
+  );
 
   const {
     data: studentData,
@@ -58,6 +80,7 @@ export default function Finance() {
   });
 
   const [value, setValue] = React.useState("");
+  const { toast } = useToast();
 
   const columns: ColumnDef<Fee>[] = [
     {
@@ -106,7 +129,7 @@ export default function Finance() {
     {
       id: "actions",
       cell: ({ row }) => {
-        const payment = row.original;
+        const fee = row.original;
 
         return (
           <DropdownMenu>
@@ -118,19 +141,41 @@ export default function Finance() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => {
-                  const result = deleteTrigger({
+                disabled={isMutating}
+                onClick={async () => {
+                  await updateFeeTrigger({
                     token: token!,
+                    id: fee.id,
                     payload: {
                       description: "",
                     },
                   });
+
+                  if (deleteFeeError) {
+                    destructiveToast(toast, "Error", "Failed to update fee")();
+                  } else {
+                    constructiveToast(toast, "Success", "Updated fee")();
+                  }
                 }}
               >
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
+                className="bg-destructive"
+                disabled={isMutating}
+                onClick={async () => {
+                  await deleteFeeTrigger({
+                    token: token!,
+                    id: fee.id,
+                    payload: {},
+                  });
+
+                  if (deleteFeeError) {
+                    destructiveToast(toast, "Error", "Failed to delete fee")();
+                  } else {
+                    constructiveToast(toast, "Success", "Deleted fee")();
+                  }
+                }}
               >
                 Delete
               </DropdownMenuItem>
@@ -150,31 +195,33 @@ export default function Finance() {
     (val) => val.student.value.id === value
   );
 
+  const isLoading = feeIsLoading || studentIsLoading;
+  const isError = !!feeError || !!studentError;
+  const isMutating = deleteFeeIsMutating || updateFeeIsMutating;
+
+  if (isLoading) {
+    return <Spinner size="32" />;
+  }
+
+  if (isError) {
+    return <div>Could not load data</div>;
+  }
+
   return (
-    <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
-      <div className="flex flex-row justify-between items-center pb-4">
-        <h1 className="text-left w-full">Finance</h1>
+    <div className="flex flex-col gap-3 overflow-y-auto">
+      <div className="flex justify-between">
+        <Combobox
+          options={studentsOptions!}
+          label="student"
+          state={{ value: value, setValue: setValue }}
+        />
+        {value !== "" && (
+          <AddFeeDialog
+            student={students?.filter((val) => val.id === value)[0]}
+          />
+        )}
       </div>
-      {/* TODO: Handle error */}
-      {feeIsLoading || feeError || studentIsLoading || studentError ? (
-        <Spinner size="32" />
-      ) : (
-        <div className="flex flex-col gap-3 overflow-y-auto">
-          <div className="flex justify-between">
-            <Combobox
-              options={studentsOptions!}
-              label="student"
-              state={{ value: value, setValue: setValue }}
-            />
-            {value !== "" && (
-              <AddFeeDialog
-                student={students?.filter((val) => val.id === value)[0]}
-              />
-            )}
-          </div>
-          <DataTable columns={columns} data={studentFeeData!} />
-        </div>
-      )}
-    </main>
+      <DataTable columns={columns} data={studentFeeData!} />
+    </div>
   );
 }

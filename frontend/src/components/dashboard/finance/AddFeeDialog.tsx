@@ -98,7 +98,7 @@ export function AddFeeDialog({ student }: AddFeeDialogProps) {
               control={form.control}
               name="description"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="pb-3">
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Input {...field} />
@@ -111,7 +111,7 @@ export function AddFeeDialog({ student }: AddFeeDialogProps) {
               control={form.control}
               name="amount"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="pb-3">
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <Input type="number" {...field} />
