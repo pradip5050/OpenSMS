@@ -14,6 +14,7 @@ export enum AuthActionKind {
 
 export interface AuthAction {
   type: AuthActionKind;
+  loading?: boolean;
   token?: string;
   exp?: number;
   user?: User;
@@ -45,7 +46,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
       };
     }
     case AuthActionKind.Logout: {
-      return { loading: true };
+      return { loading: action.loading ?? true };
     }
     default: {
       return state;
@@ -71,7 +72,7 @@ export const AuthProvider = ({ children }: any) => {
         user: storedUser,
       });
     } else {
-      dispatch({ type: AuthActionKind.Logout });
+      dispatch({ type: AuthActionKind.Logout, loading: false });
     }
   }, []);
 

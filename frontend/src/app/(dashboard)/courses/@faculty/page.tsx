@@ -4,6 +4,15 @@ import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Course, CourseResponse, coursesUrl } from "@/lib/dashboard/courses";
 import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
 import { useFetchCollection } from "@/lib/hooks";
@@ -65,18 +74,50 @@ export default function FacultyCourses() {
     { accessorKey: "credits", header: "Credits" },
   ];
 
-  return (
-    <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
-      <div className="flex flex-row justify-between items-center pb-4">
-        <h1 className="text-left w-full">Courses</h1>
+  const isLoading = facultyIsLoading || courseIsLoading;
+  const isError = !!facultyError || !!courseError;
+
+  if (isLoading) {
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              <Skeleton className="h-10" />
+            </TableHead>
+            <TableHead>
+              <Skeleton className="h-10" />
+            </TableHead>
+            <TableHead>
+              <Skeleton className="h-10" />
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from(
+            {
+              length: 10,
+            },
+            (_, i) => (
+              <TableRow key={i}>
+                <TableCell colSpan={3}>
+                  <Skeleton className="h-8 col-span-3" />
+                </TableCell>
+              </TableRow>
+            )
+          )}
+        </TableBody>
+      </Table>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div>
+        <h1>Unable to load data</h1>
       </div>
-      {facultyIsLoading || facultyError || courseIsLoading || courseError ? (
-        <>
-          <Spinner size="32" />
-        </>
-      ) : (
-        <DataTable columns={columns} data={courses!} />
-      )}
-    </main>
-  );
+    );
+  }
+
+  return <DataTable columns={columns} data={courses!} />;
 }
