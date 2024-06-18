@@ -57,41 +57,42 @@ export default function StudentGrades() {
     { accessorKey: "maxMarks", header: "Max Marks" },
   ];
 
+  if (gradesIsLoading) {
+    return (
+      <>
+        <Spinner size="32" />
+      </>
+    );
+  }
+
+  if (gradesError) {
+    return <div>Failed to load data</div>;
+  }
+
   return (
-    <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
-      <div className="flex flex-row justify-between items-center pb-4">
-        <h1 className="text-left w-full">Grades</h1>
-      </div>
-      {gradesIsLoading || gradesError ? (
-        <>
-          <Spinner size="32" />
-        </>
-      ) : (
-        <div className="flex flex-col gap-2 overflow-y-auto">
-          {Object.entries(groupedCourses!).map(([course, grades]) => {
-            return (
-              <Collapsible key={course}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex justify-between items-center">
-                      <span>{course}</span>
-                      <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="w-9 p-0">
-                          <ChevronsUpDown className="h-4 w-4" />
-                          <span className="sr-only">Toggle</span>
-                        </Button>
-                      </CollapsibleTrigger>
-                    </CardTitle>
-                  </CardHeader>
-                  <CollapsibleContent className="space-y-2">
-                    <DataTable columns={columns} data={grades!} />
-                  </CollapsibleContent>
-                </Card>
-              </Collapsible>
-            );
-          })}
-        </div>
-      )}
-    </main>
+    <div className="flex flex-col gap-2 overflow-y-auto">
+      {Object.entries(groupedCourses!).map(([course, grades]) => {
+        return (
+          <Collapsible key={course}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex justify-between items-center">
+                  <span>{course}</span>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-9 p-0">
+                      <ChevronsUpDown className="h-4 w-4" />
+                      <span className="sr-only">Toggle</span>
+                    </Button>
+                  </CollapsibleTrigger>
+                </CardTitle>
+              </CardHeader>
+              <CollapsibleContent className="space-y-2">
+                <DataTable columns={columns} data={grades!} />
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+        );
+      })}
+    </div>
   );
 }
