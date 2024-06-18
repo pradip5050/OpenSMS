@@ -16,67 +16,67 @@ export default function Finance() {
   );
   const duePayments = payments?.filter((val) => val.paymentStatus !== "paid");
 
-  return (
-    <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen ">
-      <div className="flex flex-row justify-between items-center pb-4">
-        <h1 className="text-left w-full">Finance</h1>
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-screen">
+        <Card className="flex flex-col gap-4 lg:col-span-2 p-5">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-full" />
+        </Card>
+        <Card className="flex flex-col gap-4 p-5">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-full" />
+        </Card>
+        <Card className="flex flex-col gap-4 p-5">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-full" />
+        </Card>
       </div>
+    );
+  }
 
-      {isLoading ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-screen">
-          <Card className="flex flex-col gap-4 lg:col-span-2 p-5">
-            <Skeleton className="h-10 w-64" />
-            <Skeleton className="h-full" />
-          </Card>
-          <Card className="flex flex-col gap-4 p-5">
-            <Skeleton className="h-10 w-64" />
-            <Skeleton className="h-full" />
-          </Card>
-          <Card className="flex flex-col gap-4 p-5">
-            <Skeleton className="h-10 w-64" />
-            <Skeleton className="h-full" />
-          </Card>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4 overflow-y-auto">
-          <Card className="2xl:col-span-2">
-            <CardHeader>
-              <CardTitle>Total fee</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <FeeTable
-                hasPaymentButton={false}
-                hasPrintButton={false}
-                fees={payments!}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Payments due</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <FeeTable
-                hasPaymentButton={true}
-                hasPrintButton={false}
-                fees={duePayments!}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Accepted payments</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <FeeTable
-                hasPaymentButton={false}
-                hasPrintButton={true}
-                fees={acceptedPayments!}
-              />
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    </main>
+  if (!!error) {
+    return <div>Failed to load data</div>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4 overflow-y-auto">
+      <Card className="2xl:col-span-2">
+        <CardHeader>
+          <CardTitle>Total fee</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FeeTable
+            hasPaymentButton={false}
+            hasPrintButton={false}
+            fees={payments!}
+          />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Payments due</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FeeTable
+            hasPaymentButton={true}
+            hasPrintButton={false}
+            fees={duePayments!}
+          />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Accepted payments</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FeeTable
+            hasPaymentButton={false}
+            hasPrintButton={true}
+            fees={acceptedPayments!}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
 }

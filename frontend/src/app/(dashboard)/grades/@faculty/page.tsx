@@ -25,6 +25,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { GradeDialog } from "@/components/dashboard/grades/GradeDialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 export default function StudentGrades() {
   const { user, token } = useAuth();
@@ -45,6 +47,7 @@ export default function StudentGrades() {
     draft: false,
   });
   const [value, setValue] = React.useState("");
+  const [open, setOpen] = React.useState(false);
 
   const studentGradesData = gradesData?.docs?.filter(
     (grade) => grade.student.value.id === value
@@ -81,18 +84,28 @@ export default function StudentGrades() {
       id: "actions",
       cell: ({ row }) => {
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => {}}>Edit</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => {}}>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DialogTrigger asChild>
+                  <DropdownMenuItem onClick={() => {}}>Edit</DropdownMenuItem>
+                </DialogTrigger>
+                <DropdownMenuItem className="bg-destructive" onClick={() => {}}>
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <GradeDialog
+              student={row.original.student.value.id}
+              course={row.original.course.value.id}
+            />
+          </Dialog>
         );
       },
     },
@@ -115,7 +128,14 @@ export default function StudentGrades() {
               label="student"
               state={{ value: value, setValue: setValue }}
             />
-            {value != "" && <Button>Add new</Button>}
+            {value != "" && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>Add new</Button>
+                </DialogTrigger>
+                <GradeDialog />
+              </Dialog>
+            )}
           </div>
           {Object.entries(groupedCourses!).map(([course, grades]) => {
             return (
