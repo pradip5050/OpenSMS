@@ -126,7 +126,7 @@ export default function Home() {
                           <Button>Open</Button>
                         </SheetTrigger>
                         <SheetContent
-                          className="overflow-y-scroll h-[80%] max-h-[80%]"
+                          className="overflow-y-auto h-[80%] max-h-[80%]"
                           side={"bottom"}
                         >
                           <SheetHeader className="flex flex-row justify-between">

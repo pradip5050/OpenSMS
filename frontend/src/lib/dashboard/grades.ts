@@ -4,6 +4,7 @@ import { Course } from "./courses";
 import { Student } from "./user-profile";
 
 export interface Grade {
+  id: string;
   testType: string;
   marks: number;
   maxMarks: number;
@@ -12,6 +13,13 @@ export interface Grade {
 }
 export interface GradeResponse {
   docs?: Grade[];
+}
+export interface GradePayload {
+  student: Relation<string>;
+  course: Relation<string>;
+  testType: string;
+  maxMarks: number;
+  marks: number;
 }
 
 export const gradesUrl = `${API_URL}/api/grades`;

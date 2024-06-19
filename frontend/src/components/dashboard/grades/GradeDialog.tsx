@@ -3,7 +3,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import React from "react";
+import React, { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -11,55 +11,138 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useFetchCollection } from "@/lib/hooks";
-import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
+import { useMutateCollection } from "@/lib/hooks";
 import { useAuth } from "@/components/AuthProvider";
+import {
+  Grade,
+  GradePayload,
+  GradeResponse,
+  gradesUrl,
+} from "@/lib/dashboard/grades";
+import { Course } from "@/lib/dashboard/courses";
+import { Student } from "@/lib/dashboard/user-profile";
+import { Combobox } from "../Combobox";
 
 export interface GradeDialogProps {
   student?: string;
   course?: string;
+  id?: string;
+  marks?: number;
+  maxMarks?: number;
+  testType?: string;
+  facultyCourses?: Course[];
+  facultyCourseStudents?: Student[];
 }
 
 const formSchema = z.object({
   student: z.string(),
   course: z.string(),
-  testType: z.number(),
-  marks: z.number(),
-  maxMarks: z.number(),
+  testType: z.string(),
+  marks: z.string(),
+  maxMarks: z.string(),
 });
 
-export function GradeDialog({ student, course }: GradeDialogProps) {
-  const isEdit = !!student && !!course;
+export function GradeDialog({
+  student,
+  course,
+  id,
+  marks,
+  maxMarks,
+  testType,
+  facultyCourses,
+}: GradeDialogProps) {
+  const isEdit = !facultyCourses;
+
+  const courseOptions = facultyCourses?.map((val) => {
+    return { value: val.id, label: val.name };
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      maxMarks: 100,
+      maxMarks: maxMarks?.toString() ?? "100",
+      marks: marks?.toString(),
+      testType: testType,
       student: student,
-      course: course,
+      course: course ?? "",
     },
   });
   const { user, token } = useAuth();
+  const [courseValue, setCourseValue] = useState("");
 
-  //  TODO: Move to parent
   const {
-    data: facultyData,
-    isLoading: facultyIsLoading,
-    error: facultyError,
-  } = useFetchCollection<FacultyResponse>(facultiesUrl, token, {
-    depth: 2,
-    draft: false,
-  });
+    trigger: gradeUpdateTrigger,
+    isMutating: gradeUpdateIsMutating,
+    error: gradeUpdateError,
+  } = useMutateCollection<Grade, GradeResponse, GradePayload>(
+    gradesUrl,
+    "PATCH",
+    (result, data) => {
+      // TODO:
+      const grade = (result as any as { doc: Grade }).doc;
+      return {
+        docs: [...data!.docs!.filter((val) => grade.id !== val.id), grade],
+      };
+    }
+  );
+  const {
+    trigger: gradeCreateTrigger,
+    isMutating: gradeCreateIsMutating,
+    error: gradeCreateError,
+  } = useMutateCollection<Grade, GradeResponse, GradePayload>(
+    gradesUrl,
+    "POST",
+    (result, data) => {
+      // TODO:
+      const grade = (result as any as { doc: Grade }).doc;
+      return {
+        docs: [...data!.docs!.filter((val) => grade.id !== val.id), grade],
+      };
+    }
+  );
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    if (isEdit) {
+      await gradeUpdateTrigger({
+        token: token!,
+        id: id,
+        payload: {
+          ...values,
+          marks: Number(values.marks),
+          maxMarks: Number(values.maxMarks),
+          course: { relationTo: "courses", value: values.course },
+          student: { relationTo: "students", value: values.student },
+        },
+      });
+    } else {
+      if (courseValue == "") {
+        return;
+      }
+      await gradeCreateTrigger({
+        token: token!,
+        payload: {
+          ...values,
+          marks: Number(values.marks),
+          maxMarks: Number(values.maxMarks),
+          course: { relationTo: "courses", value: courseValue },
+          student: { relationTo: "students", value: values.student },
+        },
+      });
+
+      if (gradeCreateError) {
+        console.log(gradeCreateError);
+      }
+    }
   }
+
+  const isMutating = gradeUpdateIsMutating || gradeCreateIsMutating;
 
   return (
     <DialogContent>
@@ -67,9 +150,14 @@ export function GradeDialog({ student, course }: GradeDialogProps) {
         <DialogTitle>{isEdit ? "Edit" : "Add"} grade</DialogTitle>
       </DialogHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {/* TODO: Add comboboxes for student, course */}
-          {/* Courses should be limited to those taught by faculty */}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          {!isEdit && (
+            <Combobox
+              options={courseOptions!}
+              label="course"
+              state={{ value: courseValue, setValue: setCourseValue }}
+            />
+          )}
           <FormField
             control={form.control}
             name="testType"
@@ -109,7 +197,9 @@ export function GradeDialog({ student, course }: GradeDialogProps) {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button disabled={isMutating} type="submit">
+            Submit
+          </Button>
         </form>
       </Form>
     </DialogContent>
