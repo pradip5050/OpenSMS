@@ -181,130 +181,126 @@ export default function FacultyAttendancePage() {
   const isError = !!attendanceError || !!studentError || !!facultyError;
   const isMutating = attendanceCreateIsMutating || attendanceUpdateIsMutating;
 
-  return (
-    <main className="min-h-screen w-full p-4 pt-20 flex flex-col">
-      <div className="flex flex-row justify-between items-center pb-4">
-        <h1 className="text-left w-full">Attendance</h1>
+  if (isLoading) {
+    return (
+      <div>
+        <Spinner size="32" />
       </div>
-      {isLoading || isError ? (
-        <div>
-          <Spinner size="32" />
-          {JSON.stringify(attendanceError)}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-3 overflow-y-auto">
-          <div className="flex justify-between">
-            <Combobox
-              options={facultyCourseOptions!}
-              label="course"
-              state={{ value: value, setValue: setValue }}
-            />
-            {value !== "" && (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="date"
-                    variant={"outline"}
-                    className={cn(
-                      "w-[300px] justify-start text-left font-normal",
-                      !date && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date?.from ? (
-                      date.to ? (
-                        <>
-                          {format(date.from, "LLL dd, y")} -{" "}
-                          {format(date.to, "LLL dd, y")}
-                        </>
-                      ) : (
-                        format(date.from, "LLL dd, y")
-                      )
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto py-0 ">
-                  <Calendar
-                    initialFocus
-                    mode="range"
-                    defaultMonth={date?.from}
-                    selected={date}
-                    onSelect={(range) => setDate(range!)}
-                    numberOfMonths={2}
-                    min={3}
-                    max={10}
-                  />
-                </PopoverContent>
-              </Popover>
-            )}
-          </div>
-          {/* <DataTable columns={columns} data={studentFeeData!} /> */}
-          {value !== "" && (
-            <Table className="block md:max-w-[calc(100vw-16rem)] overflow-auto">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Student</TableHead>
-                  {dates.map((date) => (
-                    <TableHead key={date.toISOString()}>
-                      {`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {studentsByCourse?.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell>{student.user.value.name}</TableCell>
-                    {dates.map((date) => {
-                      const currentAttendances = attendanceData!.docs!.filter(
-                        (attendance) => {
-                          return (
-                            attendance.course.value.id === value &&
-                            attendance.student.value.id === student.id &&
-                            new Date(attendance.date).toDateString() ===
-                              date.toDateString()
-                          );
-                        }
-                      );
-                      const currentAttendance =
-                        currentAttendances[currentAttendances.length - 1]
-                          ?.isPresent;
+    );
+  }
 
+  if (isError) {
+    return <div>Failed to load data</div>;
+  }
+
+  return (
+    <div className="flex flex-col gap-3 overflow-y-auto">
+      <div className="flex justify-between">
+        <Combobox
+          options={facultyCourseOptions!}
+          label="course"
+          state={{ value: value, setValue: setValue }}
+        />
+        {value !== "" && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                id="date"
+                variant={"outline"}
+                className={cn(
+                  "w-[300px] justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date?.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, "LLL dd, y")} -{" "}
+                      {format(date.to, "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(date.from, "LLL dd, y")
+                  )
+                ) : (
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto py-0 ">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={(range) => setDate(range!)}
+                numberOfMonths={2}
+                min={3}
+                max={10}
+              />
+            </PopoverContent>
+          </Popover>
+        )}
+      </div>
+      {/* <DataTable columns={columns} data={studentFeeData!} /> */}
+      {value !== "" && (
+        <Table className="block md:max-w-[calc(100vw-16rem)] overflow-auto">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Student</TableHead>
+              {dates.map((date) => (
+                <TableHead key={date.toISOString()}>
+                  {`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {studentsByCourse?.map((student) => (
+              <TableRow key={student.id}>
+                <TableCell>{student.user.value.name}</TableCell>
+                {dates.map((date) => {
+                  const currentAttendances = attendanceData!.docs!.filter(
+                    (attendance) => {
                       return (
-                        <TableCell key={date.toISOString()}>
-                          <Toggle
-                            value="bold"
-                            aria-label="Toggle present"
-                            variant="outline"
-                            className={cn([
-                              // FIXME: constructive not displaying properly
-                              "data-[state=on]:bg-inherit bg-inherit w-10 aspect-square",
-                              currentAttendance && "bg-constructive",
-                            ])}
-                            onClick={() => {
-                              if (!isMutating) {
-                                togglePresent(
-                                  date,
-                                  student,
-                                  !!currentAttendance
-                                );
-                              }
-                            }}
-                          >
-                            {currentAttendance && <Check className="h-4 w-4" />}
-                          </Toggle>
-                        </TableCell>
+                        attendance.course.value.id === value &&
+                        attendance.student.value.id === student.id &&
+                        new Date(attendance.date).toDateString() ===
+                          date.toDateString()
                       );
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </div>
+                    }
+                  );
+                  const currentAttendance =
+                    currentAttendances[currentAttendances.length - 1]
+                      ?.isPresent;
+
+                  return (
+                    <TableCell key={date.toISOString()}>
+                      <Toggle
+                        value="bold"
+                        aria-label="Toggle present"
+                        variant="outline"
+                        className={cn([
+                          // FIXME: constructive not displaying properly
+                          "data-[state=on]:bg-inherit bg-inherit w-10 aspect-square",
+                          currentAttendance && "bg-constructive",
+                        ])}
+                        onClick={() => {
+                          if (!isMutating) {
+                            togglePresent(date, student, !!currentAttendance);
+                          }
+                        }}
+                      >
+                        {currentAttendance && <Check className="h-4 w-4" />}
+                      </Toggle>
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
-    </main>
+    </div>
   );
 }

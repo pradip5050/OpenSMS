@@ -14,5 +14,12 @@ export default function ParallelLayout({
 }) {
   const { user } = useAuth();
 
-  return <>{isStudent(user!.roles) ? student : faculty}</>;
+  return (
+    <main className="min-h-screen w-full p-4 pt-20 flex flex-col">
+      <div className="flex flex-row justify-between items-center pb-4">
+        <h1 className="text-left w-full">Attendance</h1>
+      </div>
+      {isStudent(user!.roles) ? student : faculty}
+    </main>
+  );
 }
