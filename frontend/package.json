@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "npx eslint-config-prettier src/*",
+    "format": "npx eslint-config-prettier 'src/**/*.{js,ts,mjs,cjs,tsx,jsx}'",
     "tauri": "tauri",
     "cap": "cap",
     "storybook": "storybook dev -p 6006",
