@@ -23,7 +23,7 @@ import { Fee } from "@/lib/dashboard/finance";
 import Spinner from "@/components/Spinner";
 import { Combobox } from "@/components/dashboard/Combobox";
 import React from "react";
-import { AddFeeDialog } from "@/components/dashboard/finance/AddFeeDialog";
+import { FeeDialog } from "@/components/dashboard/finance/FeeDialog";
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 import { useToast } from "@/components/ui/use-toast";
@@ -216,9 +216,7 @@ export default function Finance() {
           state={{ value: value, setValue: setValue }}
         />
         {value !== "" && (
-          <AddFeeDialog
-            student={students?.filter((val) => val.id === value)[0]}
-          />
+          <FeeDialog student={students?.filter((val) => val.id === value)[0]} />
         )}
       </div>
       <DataTable columns={columns} data={studentFeeData!} />

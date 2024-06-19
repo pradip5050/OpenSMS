@@ -32,10 +32,17 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Student } from "@/lib/dashboard/user-profile";
-import { useCreateFee } from "@/lib/dashboard/finance";
+import {
+  Fee,
+  FeePayload,
+  FeeResponse,
+  feesUrl,
+  useCreateFee,
+} from "@/lib/dashboard/finance";
 import { useAuth } from "@/components/AuthProvider";
 import Spinner from "@/components/Spinner";
 import { useState } from "react";
+import { useMutateCollection } from "@/lib/hooks";
 
 export interface AddFeeDialogProps {
   student?: Student;
@@ -47,18 +54,28 @@ const formSchema = z.object({
   dueDate: z.date(),
 });
 
-export function AddFeeDialog({ student }: AddFeeDialogProps) {
+export function FeeDialog({ student }: AddFeeDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
   const [open, setOpen] = useState(false);
-  const { trigger, isMutating } = useCreateFee();
+  const { trigger: createFeeTrigger, isMutating: createFeeIsMutating } =
+    useMutateCollection<Fee, FeeResponse, FeePayload>(
+      feesUrl,
+      "POST",
+      (result, data) => {
+        const fee = (result as any as { doc: Fee }).doc;
+        return {
+          docs: [...data!.docs!, fee],
+        };
+      }
+    );
   const { token } = useAuth();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (student) {
       try {
-        const result = await trigger({
+        const result = await createFeeTrigger({
           token: token!,
           payload: {
             description: values.description,
@@ -79,6 +96,8 @@ export function AddFeeDialog({ student }: AddFeeDialogProps) {
     }
     setOpen(false);
   }
+
+  const isMutating = createFeeIsMutating;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

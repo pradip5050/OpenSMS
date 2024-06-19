@@ -102,13 +102,12 @@ export function GradeDialog({
       // TODO:
       const grade = (result as any as { doc: Grade }).doc;
       return {
-        docs: [...data!.docs!.filter((val) => grade.id !== val.id), grade],
+        docs: [...data!.docs!, grade],
       };
     }
   );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     if (isEdit) {
       await gradeUpdateTrigger({
         token: token!,
