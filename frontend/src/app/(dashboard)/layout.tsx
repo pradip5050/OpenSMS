@@ -31,7 +31,7 @@ export default function RootLayout({
       <head>
         <title>{data?.title ?? "OpenSMS"}</title>
         <meta name="description" content="Student Management System" />
-        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <meta httpEquiv="Content-Type" content="text/html;charset=UTF-8" />
       </head>
       <body className={`${inter.className} flex flex-row min-h-screen`}>
         <ThemeProvider
