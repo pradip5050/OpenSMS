@@ -1,13 +1,12 @@
 import { CollectionConfig } from "payload/types";
-import { isAdminOrFaculty } from "../access/isAdmin";
+import { isAdmin } from "../access/isAdmin";
 
 const Faculties: CollectionConfig = {
   slug: "faculties",
   access: {
-    read: () => true,
-    create: isAdminOrFaculty,
-    update: isAdminOrFaculty,
-    delete: isAdminOrFaculty,
+    create: isAdmin,
+    update: isAdmin,
+    delete: isAdmin,
   },
   admin: {
     useAsTitle: "facultyId",

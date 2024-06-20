@@ -6,7 +6,6 @@ import { isAdminOrFaculty } from "../access/isAdmin";
 const Students: CollectionConfig = {
   slug: "students",
   access: {
-    read: () => true,
     create: isAdminOrFaculty,
     update: isAdminOrFaculty,
     delete: isAdminOrFaculty,

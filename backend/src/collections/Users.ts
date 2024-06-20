@@ -10,7 +10,6 @@ const Users: CollectionConfig = {
     disableDuplicate: true,
   },
   access: {
-    read: () => true,
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,

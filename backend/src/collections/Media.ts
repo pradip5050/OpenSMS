@@ -1,9 +1,13 @@
 import { CollectionConfig } from "payload/types";
+import { isAdminOrFaculty } from "../access/isAdmin";
 
 const Students: CollectionConfig = {
   slug: "media",
   access: {
     read: () => true,
+    create: isAdminOrFaculty,
+    update: isAdminOrFaculty,
+    delete: isAdminOrFaculty,
   },
   admin: {
     useAsTitle: "alt",

@@ -1,14 +1,14 @@
 import { CollectionConfig } from "payload/types";
 import { createOrder } from "../razorpay";
 import Razorpay from "razorpay";
+import { isAdminOrFaculty } from "../access/isAdmin";
 
 const Fees: CollectionConfig = {
   slug: "fees",
   access: {
-    read: () => true,
-    create: () => true,
-    update: () => true,
-    delete: () => true
+    create: isAdminOrFaculty,
+    update: isAdminOrFaculty,
+    delete: isAdminOrFaculty,
   },
   admin: {
     useAsTitle: "name",
