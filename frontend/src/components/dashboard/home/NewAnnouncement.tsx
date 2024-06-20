@@ -32,6 +32,7 @@ import { LexicalEditor as LE } from "lexical";
 import { useMutateCollection } from "@/lib/hooks";
 import { useToast } from "@/components/ui/use-toast";
 import { constructiveToast, destructiveToast } from "@/lib/utils";
+import Spinner from "@/components/Spinner";
 
 const formSchema = z.object({
   title: z.string().max(50, {
@@ -66,7 +67,6 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
       "POST",
       (result, currentData) => {
         return { docs: [...currentData!.docs!, result] };
-        // return currentData!;
       },
       (data) => data
     );
@@ -79,7 +79,12 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
       announcementsUrl,
       "PATCH",
       (result, currentData) => {
-        return { docs: [...currentData!.docs!, result] };
+        return {
+          docs: [
+            ...currentData!.docs!.filter((val) => val.id !== result.id),
+            result,
+          ],
+        };
       },
       (data) => data
     );
@@ -92,7 +97,7 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
 
     try {
       if (editPayload) {
-        const result = await updateTrigger({
+        await updateTrigger({
           token: auth.token!,
           id: editPayload?.id,
           payload: {
@@ -100,16 +105,14 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
             content: JSON.stringify(editorRef.current.getEditorState()),
           },
         });
-        console.log(result);
       } else {
-        const result = await createTrigger({
+        await createTrigger({
           token: auth.token!,
           payload: {
             title: values.title,
             content: JSON.stringify(editorRef.current.getEditorState()),
           },
         });
-        console.log(result);
       }
 
       constructiveToast(
@@ -124,9 +127,12 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
         "Error",
         `Could not ${editPayload ? "edit" : "create"} announcement`
       )();
+    } finally {
+      setOpen(false);
     }
-    setOpen(false);
   }
+
+  const isMutating = createIsMutating || updateIsMutating;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -162,12 +168,8 @@ export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
               />
             </div>
             <SheetFooter>
-              {/* TODO: Add loader */}
-              <Button
-                disabled={createIsMutating || updateIsMutating}
-                type="submit"
-              >
-                Submit
+              <Button disabled={isMutating} type="submit">
+                {isMutating ? <Spinner size="12" /> : "Submit"}
               </Button>
             </SheetFooter>
           </form>

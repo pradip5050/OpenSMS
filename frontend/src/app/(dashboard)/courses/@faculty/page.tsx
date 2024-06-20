@@ -33,7 +33,6 @@ export default function FacultyCourses() {
     error: courseError,
   } = useFetchCollection<CourseResponse>(coursesUrl, token);
 
-  // TODO: Get faculty by id directly instead of filters
   const faculty = facultyData?.docs?.filter(
     (val) => val.user.value.email === user!.email
   )[0];

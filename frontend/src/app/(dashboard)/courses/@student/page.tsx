@@ -27,7 +27,6 @@ export default function Courses() {
     { draft: false, depth: 2 }
   );
 
-  // TODO: Get student by id directly instead of filters
   // FIXME: Student user existing but collection not existing causes errors
   const student = data?.docs?.filter(
     (val) => val.user.value.email === user!.email

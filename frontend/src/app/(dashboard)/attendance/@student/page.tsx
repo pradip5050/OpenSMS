@@ -100,8 +100,7 @@ export default function Attendance() {
                           absent: absentList!,
                         }}
                         modifiersClassNames={{
-                          // TODO: Make constructive class
-                          present: "bg-green-600",
+                          present: "bg-constructive",
                           absent: "bg-destructive",
                         }}
                       />

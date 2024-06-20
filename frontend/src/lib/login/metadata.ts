@@ -17,9 +17,7 @@ export interface Metadata {
 const fetcher: Fetcher<Metadata> = (url: string) =>
   axios.get(url).then((res) => res.data);
 
-// TODO: Create local image instead of URL
-export const placeholderUrl =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/991px-Placeholder_view_vector.svg.png";
+export const placeholderUrl = "/placeholder.png";
 
 export function useMetadata() {
   const { data, error, isLoading, isValidating, mutate } = useSWR<Metadata>(

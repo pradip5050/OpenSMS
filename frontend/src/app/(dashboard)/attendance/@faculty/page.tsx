@@ -93,14 +93,6 @@ export default function FacultyAttendancePage() {
     (_, i) => addDays(date?.from ?? Date.now(), i)
   );
 
-  // TODO: memoize with useMemo
-  // https://tanstack.com/table/latest/docs/guide/data#give-data-a-stable-reference
-  // const columns: ColumnDef<{ date: Date }>[] = dates.map((date) => {
-  //   return { accessorKey: date, header: date.getDate() } satisfies ColumnDef<{
-  //     date: Date;
-  //   }>;
-  // });
-
   const {
     trigger: attendanceCreateTrigger,
     error: attendanceCreateError,
