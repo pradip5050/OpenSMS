@@ -28,6 +28,7 @@ import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 import { useToast } from "@/components/ui/use-toast";
 import { constructiveToast, destructiveToast } from "@/lib/utils";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 export default function Finance() {
   const { token } = useAuth();
@@ -82,6 +83,7 @@ export default function Finance() {
   const [value, setValue] = React.useState("");
   const { toast } = useToast();
 
+  // TODO: useMemo
   const columns: ColumnDef<Fee>[] = [
     {
       accessorKey: "description",
@@ -132,55 +134,52 @@ export default function Finance() {
         const fee = row.original;
 
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                disabled={isMutating}
-                onClick={async () => {
-                  await updateFeeTrigger({
-                    token: token!,
-                    id: fee.id,
-                    payload: {
-                      description: "",
-                    },
-                  });
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DialogTrigger asChild>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                </DialogTrigger>
+                <DropdownMenuItem
+                  className="bg-destructive"
+                  disabled={isMutating}
+                  onClick={async () => {
+                    await deleteFeeTrigger({
+                      token: token!,
+                      id: fee.id,
+                      payload: {},
+                    });
 
-                  if (deleteFeeError) {
-                    destructiveToast(toast, "Error", "Failed to update fee")();
-                  } else {
-                    constructiveToast(toast, "Success", "Updated fee")();
-                  }
-                }}
-              >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="bg-destructive"
-                disabled={isMutating}
-                onClick={async () => {
-                  await deleteFeeTrigger({
-                    token: token!,
-                    id: fee.id,
-                    payload: {},
-                  });
-
-                  if (deleteFeeError) {
-                    destructiveToast(toast, "Error", "Failed to delete fee")();
-                  } else {
-                    constructiveToast(toast, "Success", "Deleted fee")();
-                  }
-                }}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                    if (deleteFeeError) {
+                      destructiveToast(
+                        toast,
+                        "Error",
+                        "Failed to delete fee"
+                      )();
+                    } else {
+                      constructiveToast(toast, "Success", "Deleted fee")();
+                    }
+                  }}
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <FeeDialog
+              id={fee.id}
+              student={selectedStudent}
+              description={fee.description}
+              amount={fee.amount}
+              dueDate={fee.dueDate}
+              paymentStatus={fee.paymentStatus}
+            />
+          </Dialog>
         );
       },
     },
@@ -190,6 +189,7 @@ export default function Finance() {
   const studentsOptions = students?.map((val) => {
     return { value: val.id, label: val.user.value.name };
   });
+  const selectedStudent = students?.filter((val) => val.id === value)[0];
 
   const studentFeeData = feeData?.docs?.filter(
     (val) => val.student.value.id === value
@@ -215,8 +215,13 @@ export default function Finance() {
           label="student"
           state={{ value: value, setValue: setValue }}
         />
-        {value !== "" && (
-          <FeeDialog student={students?.filter((val) => val.id === value)[0]} />
+        {value != "" && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Add new</Button>
+            </DialogTrigger>
+            <FeeDialog student={selectedStudent} />
+          </Dialog>
         )}
       </div>
       <DataTable columns={columns} data={studentFeeData!} />
