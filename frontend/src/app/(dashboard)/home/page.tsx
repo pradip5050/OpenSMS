@@ -25,7 +25,6 @@ import { Trash2 } from "lucide-react";
 import { useFetchCollection } from "@/lib/hooks";
 
 export default function Home() {
-  const list = [1, 2, 3, 4, 5];
   const { user, token } = useAuth();
   const { data, error, isLoading, mutate } =
     useFetchCollection<AnnouncementResponse>(announcementsUrl, token, {
@@ -66,10 +65,10 @@ export default function Home() {
       {isLoading ? (
         <Table>
           <TableBody>
-            {list.map((element) => {
+            {Array.from({ length: 5 }, (_, index) => {
               return (
                 <TableRow
-                  key={element}
+                  key={index}
                   className="flex flex-row items-center space-x-4 "
                 >
                   <TableCell className="flex flex-col w-full space-y-2">
