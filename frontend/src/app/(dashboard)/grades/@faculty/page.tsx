@@ -70,6 +70,8 @@ export default function StudentGrades() {
     draft: false,
   });
   const [value, setValue] = React.useState("");
+  const [createOpen, setCreateOpen] = React.useState(false);
+  const [editOpen, setEditOpen] = React.useState(false);
 
   const studentGradesData = gradesData?.docs?.filter(
     (grade) => grade.student.value.id === value
@@ -154,6 +156,7 @@ export default function StudentGrades() {
               marks={row.original.marks}
               maxMarks={row.original.maxMarks}
               testType={row.original.testType}
+              setOpen={setEditOpen}
             />
           </Dialog>
         );
@@ -182,11 +185,15 @@ export default function StudentGrades() {
           state={{ value: value, setValue: setValue }}
         />
         {value != "" && (
-          <Dialog>
+          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
               <Button>Add new</Button>
             </DialogTrigger>
-            <GradeDialog facultyCourses={facultyCourses} student={value} />
+            <GradeDialog
+              facultyCourses={facultyCourses}
+              student={value}
+              setOpen={setCreateOpen}
+            />
           </Dialog>
         )}
       </div>

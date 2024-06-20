@@ -90,8 +90,8 @@ export default function Home() {
         <Table>
           <TableBody>
             {dataWithDate!.length === 0 ? (
-              <div className="flex h-full items-center justify-center">
-                <h1 className="text-3xl">No announcements yet!</h1>
+              <div className="flex h-[calc(100vh-18rem)] items-center justify-center">
+                <h1 className="text-3xl">No announcements yet</h1>
               </div>
             ) : (
               dataWithDate!.map((element) => {

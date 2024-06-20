@@ -30,6 +30,7 @@ import { Student } from "@/lib/dashboard/user-profile";
 import { Combobox } from "../Combobox";
 
 export interface GradeDialogProps {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   student?: string;
   course?: string;
   id?: string;
@@ -56,6 +57,7 @@ export function GradeDialog({
   maxMarks,
   testType,
   facultyCourses,
+  setOpen,
 }: GradeDialogProps) {
   const isEdit = !facultyCourses;
 
@@ -120,6 +122,7 @@ export function GradeDialog({
           student: { relationTo: "students", value: values.student },
         },
       });
+      setOpen(false);
     } else {
       if (courseValue == "") {
         return;
@@ -138,6 +141,7 @@ export function GradeDialog({
       if (gradeCreateError) {
         console.log(gradeCreateError);
       }
+      setOpen(false);
     }
   }
 

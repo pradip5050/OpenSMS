@@ -89,15 +89,27 @@
 
 /* TODO: Improve styles */
 .lexical {
-  & h1 {
+  div {
+    @apply space-y-2
+  }
+
+  h1 {
     @apply text-5xl;
   }
 
-  & h2 {
+  h2 {
     @apply text-4xl
   }
 
-  & h3 {
+  h3 {
     @apply text-3xl
+  }
+
+  ul {
+    @apply list-disc pl-[1.2rem];
+  }
+
+  ol {
+    @apply list-decimal pl-[1.2rem];
   }
 }
