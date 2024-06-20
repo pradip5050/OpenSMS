@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AuthProvider } from "@/components/AuthProvider";
 import { useMetadata } from "@/lib/login/metadata";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,7 +15,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data } = useMetadata();
+  const { data, isLoading } = useMetadata();
 
   return (
     <html lang="en">
@@ -30,7 +31,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <header className="h-16 absolute w-full flex justify-end p-4">
+          <header className="z-10 h-16 absolute w-full flex justify-between items-center p-4">
+            {isLoading ? (
+              <Skeleton className="w-32 h-5" />
+            ) : (
+              <h1 className="flex text-xl items-center justify-center">
+                {data?.title ?? "OpenSMS"}
+              </h1>
+            )}
             <ThemeToggle />
           </header>
           <AuthProvider>{children}</AuthProvider>
