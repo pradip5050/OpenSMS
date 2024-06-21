@@ -1,4 +1,20 @@
 services:
+  swag:
+    container_name: swag
+    image: lscr.io/linuxserver/swag
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - .env
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ./swag/config:/config
+    ports:
+      - 443:443
+    restart: unless-stopped
+
   payload:
     container_name: payload
     image: ghcr.io/dhzdhd/opensms:latest
@@ -6,10 +22,10 @@ services:
       - .env
     volumes:
       - ./media:/home/node/app/src/media
-    ports:
-      - 3000:3000
     depends_on:
       - database
+      - swag
+    restart: unless-stopped
 
   database:
     container_name: database
@@ -18,6 +34,7 @@ services:
       - .env
     volumes:
       - sms_database:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
   sms_database:

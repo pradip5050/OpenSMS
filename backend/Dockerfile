@@ -1,6 +1,6 @@
-FROM node:18.8-alpine as base
+FROM node:18.8-alpine AS base
 
-FROM base as builder
+FROM base AS builder
 
 WORKDIR /home/node/app
 COPY package*.json ./
@@ -9,7 +9,7 @@ COPY . .
 RUN yarn install
 RUN yarn build
 
-FROM base as runtime
+FROM base AS runtime
 
 ENV NODE_ENV=production
 ENV PAYLOAD_CONFIG_PATH=dist/payload.config.js
