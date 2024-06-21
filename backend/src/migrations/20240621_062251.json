@@ -1,5 +1,5 @@
 {
-  "id": "eda29ae5-21c7-4a30-84f0-6480772d0444",
+  "id": "62ab80dc-cd3e-4d60-a6eb-2ec154354cea",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -365,6 +365,13 @@
         }
       },
       "indexes": {
+        "courses_code_idx": {
+          "name": "courses_code_idx",
+          "columns": [
+            "code"
+          ],
+          "isUnique": true
+        },
         "courses_created_at_idx": {
           "name": "courses_created_at_idx",
           "columns": [
@@ -713,8 +720,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "marks": {
-      "name": "marks",
+    "grades": {
+      "name": "grades",
       "schema": "",
       "columns": {
         "id": {
@@ -724,8 +731,20 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "amount": {
-          "name": "amount",
+        "test_type": {
+          "name": "test_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "marks": {
+          "name": "marks",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "max_marks": {
+          "name": "max_marks",
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
@@ -746,8 +765,8 @@
         }
       },
       "indexes": {
-        "marks_created_at_idx": {
-          "name": "marks_created_at_idx",
+        "grades_created_at_idx": {
+          "name": "grades_created_at_idx",
           "columns": [
             "created_at"
           ],
@@ -758,8 +777,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "marks_rels": {
-      "name": "marks_rels",
+    "grades_rels": {
+      "name": "grades_rels",
       "schema": "",
       "columns": {
         "id": {
@@ -800,22 +819,22 @@
         }
       },
       "indexes": {
-        "marks_rels_order_idx": {
-          "name": "marks_rels_order_idx",
+        "grades_rels_order_idx": {
+          "name": "grades_rels_order_idx",
           "columns": [
             "order"
           ],
           "isUnique": false
         },
-        "marks_rels_parent_idx": {
-          "name": "marks_rels_parent_idx",
+        "grades_rels_parent_idx": {
+          "name": "grades_rels_parent_idx",
           "columns": [
             "parent_id"
           ],
           "isUnique": false
         },
-        "marks_rels_path_idx": {
-          "name": "marks_rels_path_idx",
+        "grades_rels_path_idx": {
+          "name": "grades_rels_path_idx",
           "columns": [
             "path"
           ],
@@ -823,10 +842,10 @@
         }
       },
       "foreignKeys": {
-        "marks_rels_parent_fk": {
-          "name": "marks_rels_parent_fk",
-          "tableFrom": "marks_rels",
-          "tableTo": "marks",
+        "grades_rels_parent_fk": {
+          "name": "grades_rels_parent_fk",
+          "tableFrom": "grades_rels",
+          "tableTo": "grades",
           "columnsFrom": [
             "parent_id"
           ],
@@ -836,9 +855,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "marks_rels_students_fk": {
-          "name": "marks_rels_students_fk",
-          "tableFrom": "marks_rels",
+        "grades_rels_students_fk": {
+          "name": "grades_rels_students_fk",
+          "tableFrom": "grades_rels",
           "tableTo": "students",
           "columnsFrom": [
             "students_id"
@@ -849,9 +868,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "marks_rels_courses_fk": {
-          "name": "marks_rels_courses_fk",
-          "tableFrom": "marks_rels",
+        "grades_rels_courses_fk": {
+          "name": "grades_rels_courses_fk",
+          "tableFrom": "grades_rels",
           "tableTo": "courses",
           "columnsFrom": [
             "courses_id"
