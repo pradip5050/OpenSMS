@@ -27,7 +27,7 @@ jobs:
           - platform: "windows-latest"
             args: ""
           - platform: "windows-latest"
-            args: "aarch64-pc-windows-msvc"
+            args: "--target aarch64-pc-windows-msvc --bundles nsis"
 
     runs-on: ${{ matrix.settings.platform }}
 
