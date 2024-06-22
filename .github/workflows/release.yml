@@ -1,4 +1,4 @@
-name: Build and release Tauri desktop app
+name: Build and release Tauri app
 
 on:
   push:
@@ -173,7 +173,7 @@ jobs:
       - name: Install Rust targets
         run: rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 
-      - name: Build Tauri app (Android)
+      - name: Setup env variables
         run: |
           export CURRENT_DIR=$(pwd)
           export ANDROID_HOME="$CURRENT_DIR/sdk/"
@@ -183,8 +183,11 @@ jobs:
 
           sudo chmod 777 -R ./src-tauri
 
-          npm install
-          npm tauri android build
+      - name: Install packages
+        run: npm install
+
+      - name: Build Tauri app (Android)
+        run: npm run tauri android build
 
       # - name: Sign app APK
       #   uses: r0adkll/sign-android-release@master
