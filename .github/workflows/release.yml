@@ -188,24 +188,24 @@ jobs:
           npm install
           npm run tauri android build
 
-      # - name: Sign app APK
-      #   uses: r0adkll/sign-android-release@master
-      #   id: sign_app
-      #   with:
-      #     releaseDirectory: ./src-tauri/gen/android/app/build/outputs/apk/universal/release
-      #     signingKeyBase64: ${{ secrets.KEY_FILE }}
-      #     alias: opensms
-      #     keyStorePassword: ${{ secrets.K_PASSWORD }}
-      #     keyPassword: ${{ secrets.K_PASSWORD }}
-      #   env:
-      #     ANDROID_HOME: ./sdk
-      #     BUILD_TOOLS_VERSION: 35.0.0-rc4
+      - name: Sign app APK
+        uses: r0adkll/sign-android-release@master
+        id: sign_app
+        with:
+          releaseDirectory: ./src-tauri/gen/android/app/build/outputs/apk/universal/release
+          signingKeyBase64: ${{ secrets.KEY_FILE }}
+          alias: opensms
+          keyStorePassword: ${{ secrets.KEY_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          ANDROID_HOME: ./sdk
+          BUILD_TOOLS_VERSION: 35.0.0-rc4
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           name: OpenSMS
-          body_path: CHANGELOG.txt
+          body_path: CHANGELOG.md
           repository: dhzdhd/OpenSMS
           prerelease: true
           generate_release_notes: true
