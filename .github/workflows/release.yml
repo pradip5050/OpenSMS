@@ -189,7 +189,7 @@ jobs:
           npm run tauri android build
 
       - name: Sign app APK
-        uses: r0adkll/sign-android-release@master
+        uses: filippoLeporati93/android-release-signer@v1
         id: sign_app
         with:
           releaseDirectory: ./src-tauri/gen/android/app/build/outputs/apk/universal/release
