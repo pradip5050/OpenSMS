@@ -183,11 +183,8 @@ jobs:
 
           sudo chmod 777 -R ./src-tauri
 
-      - name: Install packages
-        run: npm install
-
-      - name: Build Tauri app (Android)
-        run: npm run tauri android build
+          npm install
+          npm run tauri android build
 
       # - name: Sign app APK
       #   uses: r0adkll/sign-android-release@master
