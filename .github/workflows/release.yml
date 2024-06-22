@@ -103,7 +103,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          sparse-checkout: frontend
+          sparse-checkout: |
+            CHANGELOG.md
+            frontend
           sparse-checkout-cone-mode: false
 
       - name: Move frontend files to root
