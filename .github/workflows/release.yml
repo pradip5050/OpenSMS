@@ -188,18 +188,18 @@ jobs:
           npm install
           npm run tauri android build
 
-      - name: Sign app APK
-        uses: filippoLeporati93/android-release-signer@v1
-        id: sign_app
-        with:
-          releaseDirectory: ./src-tauri/gen/android/app/build/outputs/apk/universal/release
-          signingKeyBase64: ${{ secrets.KEY_FILE }}
-          alias: opensms
-          keyStorePassword: ${{ secrets.KEY_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          ANDROID_HOME: ./sdk
-          BUILD_TOOLS_VERSION: 35.0.0-rc4
+      # - name: Sign app APK
+      #   uses: filippoLeporati93/android-release-signer@v1
+      #   id: sign_app
+      #   with:
+      #     releaseDirectory: ./src-tauri/gen/android/app/build/outputs/apk/universal/release
+      #     signingKeyBase64: ${{ secrets.KEY_FILE }}
+      #     alias: opensms
+      #     keyStorePassword: ${{ secrets.KEY_PASSWORD }}
+      #     keyPassword: ${{ secrets.KEY_PASSWORD }}
+      #   env:
+      #     ANDROID_HOME: ./sdk
+      #     BUILD_TOOLS_VERSION: 35.0.0-rc4
 
       - name: Create release
         uses: softprops/action-gh-release@v2
