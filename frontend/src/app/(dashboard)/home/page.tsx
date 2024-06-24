@@ -23,6 +23,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { isFacultyOrAdmin } from "@/lib/rbac";
 import { Trash2 } from "lucide-react";
 import { useFetchCollection } from "@/lib/hooks";
+import { PiCross, PiXBold } from "react-icons/pi";
 
 export default function Home() {
   const { user, token } = useAuth();
@@ -61,7 +62,6 @@ export default function Home() {
         <h1 className="text-left w-full">Announcements</h1>
         {isFacultyOrAdmin(user!.roles) && <AnnouncementSheet />}
       </div>
-      {/* TODO: Handle error & move Table/TableBody up */}
       {isLoading ? (
         <Table>
           <TableBody>
@@ -81,16 +81,20 @@ export default function Home() {
           </TableBody>
         </Table>
       ) : error ? (
-        <>
-          <h1>ERROR</h1>
-          <p>{JSON.stringify(error)}</p>
-        </>
+        <div className="flex flex-col gap-2 h-[calc(100vh-18rem)] items-center justify-center">
+          <PiXBold size="3rem" className="text-destructive" />
+          <h2 className="text-2xl md:text-3xl text-center">
+            Failed to load announcements
+          </h2>
+        </div>
       ) : (
         <Table>
           <TableBody>
             {dataWithDate!.length === 0 ? (
               <div className="flex h-[calc(100vh-18rem)] items-center justify-center">
-                <h1 className="text-3xl">No announcements yet</h1>
+                <h1 className="text-2xl md:text-3xl text-center">
+                  No announcements yet
+                </h1>
               </div>
             ) : (
               dataWithDate!.map((element) => {
