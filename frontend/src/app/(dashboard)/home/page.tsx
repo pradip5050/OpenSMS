@@ -24,6 +24,7 @@ import { isFacultyOrAdmin } from "@/lib/rbac";
 import { Trash2 } from "lucide-react";
 import { useFetchCollection } from "@/lib/hooks";
 import { PiCross, PiXBold } from "react-icons/pi";
+import GenericError from "@/components/GenericError";
 
 export default function Home() {
   const { user, token } = useAuth();
@@ -81,83 +82,73 @@ export default function Home() {
           </TableBody>
         </Table>
       ) : error ? (
-        <div className="flex flex-col gap-2 h-[calc(100vh-18rem)] items-center justify-center">
-          <PiXBold size="3rem" className="text-destructive" />
-          <h2 className="text-2xl md:text-3xl text-center">
-            Failed to load announcements
-          </h2>
-        </div>
+        <GenericError />
+      ) : dataWithDate!.length === 0 ? (
+        <GenericError
+          title="No Announcements Yet"
+          description="Check back soon for updates."
+        />
       ) : (
         <Table>
           <TableBody>
-            {dataWithDate!.length === 0 ? (
-              <div className="flex h-[calc(100vh-18rem)] items-center justify-center">
-                <h1 className="text-2xl md:text-3xl text-center">
-                  No announcements yet
-                </h1>
-              </div>
-            ) : (
-              dataWithDate!.map((element) => {
-                const updatedAt = getFormattedDatetime(element.updatedAt);
-                return (
-                  <TableRow
-                    key={element.id}
-                    className="flex flex-row items-center justify-between"
-                  >
-                    <TableCell>
-                      <div className="font-medium text-3xl">
-                        {element.title}
-                      </div>
-                      <div className="text-lg text-muted-foreground md:inline">
-                        {`${updatedAt.date} | ${updatedAt.hours}:${updatedAt.minutes}`}
-                      </div>
-                    </TableCell>
-                    <TableCell className="flex justify-end h-full items-center gap-2">
-                      {isFacultyOrAdmin(user!.roles) && (
-                        <Button
-                          // TODO: Show warning dialog
-                          onClick={() => deleteAnnouncementById(element.id)}
-                          variant={"destructive"}
-                          size={"icon"}
-                        >
-                          <Trash2 />
-                        </Button>
-                      )}
-                      {/* FIXME: Sheet open & openChanged cause stale content, make a list of open instead */}
-                      <Sheet>
-                        <SheetTrigger>
-                          <Button>Open</Button>
-                        </SheetTrigger>
-                        <SheetContent
-                          className="overflow-y-auto h-[80%] max-h-[80%]"
-                          side={"bottom"}
-                        >
-                          <SheetHeader className="flex flex-row justify-between">
-                            <SheetTitle>{element.title}</SheetTitle>
-                            {isFacultyOrAdmin(user!.roles) && (
-                              <AnnouncementSheet
-                                // mutate={mutate}
-                                editPayload={{
-                                  content: element.content,
-                                  id: element.id,
-                                  title: element.title,
-                                }}
-                              />
-                            )}
-                          </SheetHeader>
-                          <div
-                            className="pt-8 lexical"
-                            dangerouslySetInnerHTML={{
-                              __html: element.contentHtml,
-                            }}
-                          ></div>
-                        </SheetContent>
-                      </Sheet>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
+            {dataWithDate!.map((element) => {
+              const updatedAt = getFormattedDatetime(element.updatedAt);
+              return (
+                <TableRow
+                  key={element.id}
+                  className="flex flex-row items-center justify-between"
+                >
+                  <TableCell>
+                    <div className="font-medium text-3xl">{element.title}</div>
+                    <div className="text-lg text-muted-foreground md:inline">
+                      {`${updatedAt.date} | ${updatedAt.hours}:${updatedAt.minutes}`}
+                    </div>
+                  </TableCell>
+                  <TableCell className="flex justify-end h-full items-center gap-2">
+                    {isFacultyOrAdmin(user!.roles) && (
+                      <Button
+                        // TODO: Show warning dialog
+                        onClick={() => deleteAnnouncementById(element.id)}
+                        variant={"destructive"}
+                        size={"icon"}
+                      >
+                        <Trash2 />
+                      </Button>
+                    )}
+                    {/* FIXME: Sheet open & openChanged cause stale content, make a list of open instead */}
+                    <Sheet>
+                      <SheetTrigger>
+                        <Button>Open</Button>
+                      </SheetTrigger>
+                      <SheetContent
+                        className="overflow-y-auto h-[80%] max-h-[80%]"
+                        side={"bottom"}
+                      >
+                        <SheetHeader className="flex flex-row justify-between">
+                          <SheetTitle>{element.title}</SheetTitle>
+                          {isFacultyOrAdmin(user!.roles) && (
+                            <AnnouncementSheet
+                              // mutate={mutate}
+                              editPayload={{
+                                content: element.content,
+                                id: element.id,
+                                title: element.title,
+                              }}
+                            />
+                          )}
+                        </SheetHeader>
+                        <div
+                          className="pt-8 lexical"
+                          dangerouslySetInnerHTML={{
+                            __html: element.contentHtml,
+                          }}
+                        ></div>
+                      </SheetContent>
+                    </Sheet>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       )}
