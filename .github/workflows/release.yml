@@ -2,7 +2,7 @@ name: Build and release Tauri app
 
 on:
   push:
-    tags: ["v*.*.*"]
+    tags: ["*.*.*"]
   workflow_dispatch:
 
 env:
