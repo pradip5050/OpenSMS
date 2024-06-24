@@ -1,6 +1,6 @@
 {
   "productName": "OpenSMS",
-  "version": "v0.0.25",
+  "version": "0.1.0",
   "identifier": "com.dhzdhd.opensms",
   "build": {
     "beforeDevCommand": "npm run dev",
