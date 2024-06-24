@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/components/AuthProvider";
 import FeeTable from "@/components/dashboard/finance/FeeTable";
+import GenericError from "@/components/GenericError";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFees } from "@/lib/dashboard/finance";
@@ -36,7 +37,7 @@ export default function Finance() {
   }
 
   if (!!error) {
-    return <div>Failed to load data</div>;
+    return <GenericError />;
   }
 
   return (

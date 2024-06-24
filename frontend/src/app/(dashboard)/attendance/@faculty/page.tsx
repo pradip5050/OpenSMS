@@ -39,6 +39,7 @@ import {
 } from "@/lib/dashboard/attendance";
 import { Toggle } from "@/components/ui/toggle";
 import { useToast } from "@/components/ui/use-toast";
+import GenericError from "@/components/GenericError";
 
 export default function FacultyAttendancePage() {
   const { token, user } = useAuth();
@@ -182,7 +183,7 @@ export default function FacultyAttendancePage() {
   }
 
   if (isError) {
-    return <div>Failed to load data</div>;
+    return <GenericError />;
   }
 
   return (

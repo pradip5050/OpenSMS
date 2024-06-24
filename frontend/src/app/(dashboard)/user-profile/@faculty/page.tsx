@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/AuthProvider";
+import GenericError from "@/components/GenericError";
 import Spinner from "@/components/Spinner";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import {
@@ -23,19 +24,23 @@ export default function UserProfile() {
   const faculty = data?.docs?.filter(
     (val) => val.user.value.email === user?.email
   )[0];
-  console.log(data);
 
   if (isLoading) {
     return <Spinner size="32" />;
   }
 
   if (!!error) {
-    return <div>Failed to load data</div>;
+    return <GenericError />;
   }
 
   /*TODO: Better still, move this to parallel route layout */
   if (user?.roles === "admin") {
-    return <div>Admin does not have user profile</div>;
+    return (
+      <GenericError
+        title="Error"
+        description="User profile not implemented for admin role yet"
+      />
+    );
   }
 
   return (

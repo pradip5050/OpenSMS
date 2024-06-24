@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
+import GenericError from "@/components/GenericError";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -111,11 +112,7 @@ export default function FacultyCourses() {
   }
 
   if (isError) {
-    return (
-      <div>
-        <h1>Unable to load data</h1>
-      </div>
-    );
+    return <GenericError />;
   }
 
   return <DataTable columns={columns} data={courses!} />;

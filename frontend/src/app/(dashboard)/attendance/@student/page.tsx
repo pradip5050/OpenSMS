@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/AuthProvider";
+import GenericError from "@/components/GenericError";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -38,15 +39,11 @@ export default function Attendance() {
 
   // {/* TODO: Convert to a more powerful DataTable instead */}
   if (isLoading) {
-    return (
-      <div>
-        <Spinner size="32" />
-      </div>
-    );
+    return <Spinner size="32" />;
   }
 
   if (error) {
-    return <div>Failed to load data</div>;
+    return <GenericError />;
   }
 
   return (

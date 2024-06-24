@@ -33,6 +33,7 @@ import { MoreHorizontal } from "lucide-react";
 import { GradeDialog } from "@/components/dashboard/grades/GradeDialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
+import GenericError from "@/components/GenericError";
 
 export default function StudentGrades() {
   const { user, token } = useAuth();
@@ -173,7 +174,7 @@ export default function StudentGrades() {
   }
 
   if (isError) {
-    return <div>Failed to load data</div>;
+    return <GenericError />;
   }
 
   return (

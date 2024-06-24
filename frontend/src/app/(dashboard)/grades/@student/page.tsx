@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
+import GenericError from "@/components/GenericError";
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,15 +59,11 @@ export default function StudentGrades() {
   ];
 
   if (gradesIsLoading) {
-    return (
-      <>
-        <Spinner size="32" />
-      </>
-    );
+    return <Spinner size="32" />;
   }
 
   if (gradesError) {
-    return <div>Failed to load data</div>;
+    return <GenericError />;
   }
 
   return (

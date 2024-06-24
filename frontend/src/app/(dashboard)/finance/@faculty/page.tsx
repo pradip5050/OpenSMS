@@ -29,6 +29,7 @@ import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 import { useToast } from "@/components/ui/use-toast";
 import { constructiveToast, destructiveToast } from "@/lib/utils";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import GenericError from "@/components/GenericError";
 
 export default function Finance() {
   const { token } = useAuth();
@@ -204,7 +205,7 @@ export default function Finance() {
   }
 
   if (isError) {
-    return <div>Could not load data</div>;
+    return <GenericError />;
   }
 
   return (

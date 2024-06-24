@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/AuthProvider";
+import GenericError from "@/components/GenericError";
 import Spinner from "@/components/Spinner";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import {
@@ -29,7 +30,7 @@ export default function UserProfile() {
   }
 
   if (!!error) {
-    return <div>Failed to load data</div>;
+    return <GenericError />;
   }
 
   return (
