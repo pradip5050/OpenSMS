@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import useSWR, { Key } from "swr";
 import qs from "qs";
-import { AuthPayload, GetResponse, PostResponse } from "./utils";
+import { GenericPayload, GetResponse, PostResponse } from "./utils";
 import useSWRMutation from "swr/mutation";
 
 export function useFetchCollection<TResponse>(
@@ -42,15 +42,13 @@ export function useMutateCollection<TData, TResponse, TPayload>(
   populateCache?: (result: TData, currentData?: TResponse) => TResponse,
   transformer?: (data?: TData) => TData | undefined
 ) {
-  type Payload<TMethod> = TMethod extends "POST"
-    ? AuthPayload<TPayload>
-    : AuthPayload<Partial<TPayload>>;
+  type Payload = GenericPayload<Partial<TPayload>>;
 
   const { data, trigger, isMutating, error } = useSWRMutation<
     TData,
     AxiosError,
     Key | string,
-    Payload<typeof method>,
+    Payload,
     TResponse
   >(
     url,
@@ -60,7 +58,7 @@ export function useMutateCollection<TData, TResponse, TPayload>(
       {
         arg,
       }: {
-        arg: Payload<typeof method>;
+        arg: Payload;
       }
     ) => {
       const stringifiedQuery = arg.query

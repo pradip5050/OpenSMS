@@ -16,6 +16,18 @@ export interface LoginPayload {
   email: string;
   password: string;
 }
+export interface ForgotPasswordPayload {
+  email: string;
+}
+export interface ForgotPasswordResponse {
+  message: string;
+}
+export interface ResetPasswordPayload {
+  token: string;
+  password: string;
+}
+
+export const usersUrl = `${API_URL}/api/users`;
 
 const fetcher = (url: string, { arg }: { arg: LoginPayload }) =>
   axios

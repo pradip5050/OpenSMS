@@ -13,50 +13,52 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { login, LoginPayload, useLogin } from "@/lib/login/login";
+import {
+  ForgotPasswordPayload,
+  ForgotPasswordResponse,
+  usersUrl,
+} from "@/lib/login/login";
 import Spinner from "../Spinner";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { useAuthDispatch } from "../AuthProvider";
-import Link from "next/link";
+import { useMutateCollection } from "@/lib/hooks";
+import { constructiveToast, destructiveToast } from "@/lib/utils";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter valid email address" }),
-  password: z.string(),
 });
 
-export function LoginForm() {
-  const { trigger, isMutating } = useLogin();
+export function ForgotPasswordForm() {
+  const { trigger, isMutating } = useMutateCollection<
+    never,
+    ForgotPasswordResponse,
+    ForgotPasswordPayload
+  >(usersUrl, "POST");
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
   const router = useRouter();
-  const authDispatch = useAuthDispatch();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const payload = {
       email: values.email,
-      password: values.password,
-    } satisfies LoginPayload;
+    } satisfies ForgotPasswordPayload;
 
     try {
-      const result = await trigger(payload);
-
-      // TODO: Use session management library
-      login(result.token, result.exp, result.user, authDispatch);
-
-      router.push("/home");
+      await trigger({ payload, id: "forgot-password" });
+      constructiveToast(
+        toast,
+        "Success",
+        "An email was sent to reset the password",
+        5000
+      )();
     } catch (err) {
-      const { dismiss } = toast({
-        variant: "destructive",
-        title: "Error!",
-        description: JSON.stringify(err),
-      });
-
-      setTimeout(() => {
-        dismiss();
-      }, 2000);
+      destructiveToast(
+        toast,
+        "Error",
+        "Failed to send forgot password request"
+      )();
     }
   }
 
@@ -68,7 +70,7 @@ export function LoginForm() {
           className="mx-auto grid w-[350px] gap-6"
         >
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Login</h1>
+            <h1 className="text-3xl font-bold">Forgot Password</h1>
             <p className="text-balance text-muted-foreground"></p>
           </div>
           <div className="grid gap-4">
@@ -92,35 +94,11 @@ export function LoginForm() {
                 )}
               />
             </div>
-            <div className="grid gap-2">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex justify-between">
-                      <FormLabel htmlFor="password">Password</FormLabel>
-                      <Link
-                        href="/forgot-password"
-                        className="ml-auto inline-block text-sm underline"
-                      >
-                        Forgot your password?
-                      </Link>
-                    </div>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id="password"
-                        type="password"
-                        required
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
             <Button disabled={isMutating} type="submit" className="w-full">
-              {isMutating ? <Spinner size="24" /> : "Login"}
+              {isMutating ? <Spinner size="24" /> : "Submit"}
+            </Button>
+            <Button className="w-full" onClick={() => router.back()}>
+              Go back
             </Button>
           </div>
         </form>

@@ -18,9 +18,9 @@ export interface PostResponse<T, E> {
   isMutating: boolean;
 }
 
-export interface AuthPayload<T> {
-  token: string;
-  id?: string;
+export interface GenericPayload<T> {
+  token?: string;
+  id?: string; // TODO: Name it - segment or something (users/login)
   query?: Record<string, any>;
   payload: T;
 }
@@ -65,13 +65,14 @@ export function destructiveToast(
 export function constructiveToast(
   toast: any,
   title: string,
-  description: string
+  description: string,
+  duration?: number
 ) {
   return () =>
     toast({
       title,
       description,
       variant: "constructive",
-      duration: 2000,
+      duration: duration ?? 2000,
     });
 }
