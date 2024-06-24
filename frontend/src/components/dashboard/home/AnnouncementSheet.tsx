@@ -48,7 +48,9 @@ export interface NewAnnouncementProps {
   };
 }
 
-export default function NewAnnouncement({ editPayload }: NewAnnouncementProps) {
+export default function AnnouncementSheet({
+  editPayload,
+}: NewAnnouncementProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

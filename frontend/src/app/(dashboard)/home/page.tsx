@@ -1,6 +1,6 @@
 "use client";
 
-import NewAnnouncement from "@/components/dashboard/home/NewAnnouncement";
+import AnnouncementSheet from "@/components/dashboard/home/AnnouncementSheet";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -59,7 +59,7 @@ export default function Home() {
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Announcements</h1>
-        {isFacultyOrAdmin(user!.roles) && <NewAnnouncement />}
+        {isFacultyOrAdmin(user!.roles) && <AnnouncementSheet />}
       </div>
       {/* TODO: Handle error & move Table/TableBody up */}
       {isLoading ? (
@@ -130,14 +130,16 @@ export default function Home() {
                         >
                           <SheetHeader className="flex flex-row justify-between">
                             <SheetTitle>{element.title}</SheetTitle>
-                            <NewAnnouncement
-                              // mutate={mutate}
-                              editPayload={{
-                                content: element.content,
-                                id: element.id,
-                                title: element.title,
-                              }}
-                            />
+                            {isFacultyOrAdmin(user!.roles) && (
+                              <AnnouncementSheet
+                                // mutate={mutate}
+                                editPayload={{
+                                  content: element.content,
+                                  id: element.id,
+                                  title: element.title,
+                                }}
+                              />
+                            )}
                           </SheetHeader>
                           <div
                             className="pt-8 lexical"
