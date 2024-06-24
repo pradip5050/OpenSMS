@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import useSWR, { Key } from "swr";
 import { API_URL } from "../constants";
-import { AuthPayload, GetResponse, PostResponse, Relation } from "../utils";
+import { GenericPayload, GetResponse, PostResponse, Relation } from "../utils";
 import useSWRMutation from "swr/mutation";
 import { Student } from "./user-profile";
 
@@ -66,7 +66,7 @@ export function useFees(token?: string): GetResponse<FeeResponse> {
 
 const postFeeFetcher = (
   url: string,
-  { arg }: { arg: AuthPayload<FeePayload> }
+  { arg }: { arg: GenericPayload<FeePayload> }
 ) =>
   axios
     .post(url, JSON.stringify(arg.payload), {
@@ -83,7 +83,7 @@ export function useCreateFee() {
     FeeResponse,
     AxiosError,
     Key,
-    AuthPayload<FeePayload>,
+    GenericPayload<FeePayload>,
     any
   >(`${API_URL}/api/fees`, postFeeFetcher);
 
@@ -125,7 +125,10 @@ interface OrderResponse extends Order {
   offer_id?: string;
 }
 
-const postOrderFetcher = (url: string, { arg }: { arg: AuthPayload<string> }) =>
+const postOrderFetcher = (
+  url: string,
+  { arg }: { arg: GenericPayload<string> }
+) =>
   axios
     .post(url, JSON.stringify(arg.payload), {
       headers: {
