@@ -63,7 +63,7 @@ export default function StudentGrades() {
   }
 
   if (gradesError) {
-    return <GenericError />;
+    return <GenericError variant="error" />;
   }
 
   return (

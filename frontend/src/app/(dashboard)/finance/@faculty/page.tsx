@@ -205,7 +205,7 @@ export default function Finance() {
   }
 
   if (isError) {
-    return <GenericError />;
+    return <GenericError variant="error" />;
   }
 
   return (

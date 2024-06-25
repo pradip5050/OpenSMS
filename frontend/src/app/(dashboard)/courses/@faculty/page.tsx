@@ -112,7 +112,7 @@ export default function FacultyCourses() {
   }
 
   if (isError) {
-    return <GenericError />;
+    return <GenericError variant="error" />;
   }
 
   return <DataTable columns={columns} data={courses!} />;

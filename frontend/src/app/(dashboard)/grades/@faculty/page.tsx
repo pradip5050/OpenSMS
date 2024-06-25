@@ -174,7 +174,7 @@ export default function StudentGrades() {
   }
 
   if (isError) {
-    return <GenericError />;
+    return <GenericError variant="error" />;
   }
 
   return (

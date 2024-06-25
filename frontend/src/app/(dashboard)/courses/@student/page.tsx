@@ -103,7 +103,11 @@ export default function Courses() {
   }
 
   if (isError) {
-    return <GenericError />;
+    return <GenericError variant="error" />;
+  }
+
+  if (courses!.length === 0) {
+    return <GenericError variant="noData" title="No courses listed yet" />;
   }
 
   return <DataTable columns={columns} data={courses!} />;

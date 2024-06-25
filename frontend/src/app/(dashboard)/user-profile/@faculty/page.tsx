@@ -30,15 +30,15 @@ export default function UserProfile() {
   }
 
   if (!!error) {
-    return <GenericError />;
+    return <GenericError variant="error" />;
   }
 
   /*TODO: Better still, move this to parallel route layout */
   if (user?.roles === "admin") {
     return (
       <GenericError
-        title="Error"
-        description="User profile not implemented for admin role yet"
+        variant="noData"
+        title="Admin profile currently unavailable"
       />
     );
   }

@@ -183,7 +183,7 @@ export default function FacultyAttendancePage() {
   }
 
   if (isError) {
-    return <GenericError />;
+    return <GenericError variant="error" />;
   }
 
   return (

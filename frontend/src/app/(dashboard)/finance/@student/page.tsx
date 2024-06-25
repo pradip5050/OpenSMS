@@ -37,7 +37,7 @@ export default function Finance() {
   }
 
   if (!!error) {
-    return <GenericError />;
+    return <GenericError variant="error" />;
   }
 
   return (

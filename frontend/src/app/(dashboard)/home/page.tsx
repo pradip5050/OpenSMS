@@ -82,12 +82,9 @@ export default function Home() {
           </TableBody>
         </Table>
       ) : error ? (
-        <GenericError />
+        <GenericError variant="error" />
       ) : dataWithDate!.length === 0 ? (
-        <GenericError
-          title="No Announcements Yet"
-          description="Check back soon for updates."
-        />
+        <GenericError variant="noData" title="No announcements yet" />
       ) : (
         <Table>
           <TableBody>

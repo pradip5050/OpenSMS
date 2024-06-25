@@ -43,7 +43,7 @@ export default function Attendance() {
   }
 
   if (error) {
-    return <GenericError />;
+    return <GenericError variant="error" />;
   }
 
   return (

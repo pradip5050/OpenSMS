@@ -1,12 +1,30 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
+interface VariantBody {
+  title?: string;
+  desc?: string;
+}
+type Variant = "error" | "noData";
+
+const variants: Record<Variant, VariantBody> = {
+  error: {
+    title: "Oops, something went wrong",
+    desc: "We encountered an issue while trying to load the page. Please try refreshing the page.",
+  },
+  noData: {
+    desc: "Check back soon for updates.",
+  },
+};
+
 export interface GenericErrorPayload {
   title?: string;
   description?: string;
+  variant: Variant;
 }
 
 export default function GenericError({
+  variant,
   title,
   description,
 }: GenericErrorPayload) {
@@ -16,11 +34,10 @@ export default function GenericError({
     <div className="flex h-screen w-full flex-col items-center justify-center bg-background px-4 text-center">
       <div className="max-w-md space-y-4">
         <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-          {title ?? "Oops, something went wrong"}
+          {title ?? variants[variant].title!}
         </h1>
         <p className="text-muted-foreground">
-          {description ??
-            "We encountered an issue while trying to load the page. Please try refreshing the page."}
+          {description ?? variants[variant].desc!}
         </p>
         <Button
           onClick={() => router.refresh()}
