@@ -50,7 +50,6 @@ export default function Attendance() {
     <Table>
       <TableBody>
         <TableRow>
-          <TableHead>S.No</TableHead>
           <TableHead>Course</TableHead>
           <TableHead>Days present</TableHead>
           <TableHead>Days absent</TableHead>
@@ -58,7 +57,7 @@ export default function Attendance() {
           <TableHead>Percentage</TableHead>
           <TableHead>Daily attendance</TableHead>
         </TableRow>
-        {courseGroupedList!.map(([course, data], index) => {
+        {courseGroupedList!.map(([course, data]) => {
           const presentList = data
             .filter((val) => val.isPresent)
             .map((val) => new Date(val.date));
@@ -73,7 +72,6 @@ export default function Attendance() {
 
           return (
             <TableRow key={course}>
-              <TableCell>{index + 1}</TableCell>
               <TableCell>{course}</TableCell>
               <TableCell>{numPresent}</TableCell>
               <TableCell>{numAbsent}</TableCell>
