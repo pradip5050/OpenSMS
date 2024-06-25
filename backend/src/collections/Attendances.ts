@@ -12,6 +12,7 @@ const Attendances: CollectionConfig = {
     useAsTitle: "name",
     description: "A student attendance",
   },
+  defaultSort: "-date",
   fields: [
     { name: "date", type: "date", required: true },
     { name: "isPresent", type: "checkbox", required: true },

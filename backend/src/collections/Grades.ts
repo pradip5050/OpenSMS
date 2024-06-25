@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload/types";
 import { isAdminOrFaculty } from "../access/isAdmin";
+import type { Validate } from "payload/types";
 
 const Grades: CollectionConfig = {
   slug: "grades",
@@ -13,8 +14,26 @@ const Grades: CollectionConfig = {
   },
   fields: [
     { name: "testType", type: "text", required: true },
-    { name: "marks", type: "number", min: 0, max: 100, required: true },
-    { name: "maxMarks", type: "number", min: 0, max: 100, required: true },
+    {
+      name: "marks",
+      type: "number",
+      min: 0,
+      max: 100,
+      required: true,
+      validate: (value, { siblingData }) => {
+        return (
+          value <= siblingData.maxMarks ||
+          "Marks should be lesser or equal to Max Marks"
+        );
+      },
+    },
+    {
+      name: "maxMarks",
+      type: "number",
+      min: 0,
+      max: 100,
+      required: true,
+    },
     {
       name: "student",
       type: "relationship",

@@ -14,6 +14,7 @@ const Fees: CollectionConfig = {
     useAsTitle: "name",
     description: "A student fee",
   },
+  defaultSort: "dueDate",
   fields: [
     { name: "description", type: "text", required: true },
     { name: "amount", type: "number", required: true },
