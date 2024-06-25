@@ -1,21 +1,24 @@
-import { Metadata, mapMetadata, placeholderUrl } from "@/lib/login/metadata";
+import {
+  Metadata,
+  mapMetadata,
+  placeholderUrl,
+  useMetadata,
+} from "@/lib/login/metadata";
 import Image from "next/image";
 import Spinner from "../Spinner";
 
-export interface LogoProps {
-  data: Metadata | undefined;
-  error: any;
-  isLoading: boolean;
-}
+export default function LogoImage() {
+  const { data, error, isLoading } = useMetadata();
 
-export default function LogoImage({ data, error, isLoading }: LogoProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
         <Spinner size="50" />
       </div>
     );
-  } else if (error) {
+  }
+
+  if (error) {
     return (
       <Image
         src={placeholderUrl}
@@ -26,6 +29,7 @@ export default function LogoImage({ data, error, isLoading }: LogoProps) {
       />
     );
   }
+
   return (
     <Image
       src={mapMetadata(data!).logo.url}
