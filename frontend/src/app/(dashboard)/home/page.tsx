@@ -57,11 +57,13 @@ export default function Home() {
     mutate();
   }
 
+  const isAuthorized = isFacultyOrAdmin(user!.roles);
+
   return (
     <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
       <div className="flex flex-row justify-between items-center pb-4">
         <h1 className="text-left w-full">Announcements</h1>
-        {isFacultyOrAdmin(user!.roles) && <AnnouncementSheet />}
+        {isAuthorized && <AnnouncementSheet />}
       </div>
       {isLoading ? (
         <Table>
@@ -84,7 +86,12 @@ export default function Home() {
       ) : error ? (
         <GenericError variant="error" />
       ) : dataWithDate!.length === 0 ? (
-        <GenericError variant="noData" title="No announcements yet" />
+        <GenericError
+          variant="noData"
+          title="No announcements yet"
+          showDesc={!isAuthorized}
+          showRefreshButton={!isAuthorized}
+        />
       ) : (
         <Table>
           <TableBody>
@@ -102,7 +109,7 @@ export default function Home() {
                     </div>
                   </TableCell>
                   <TableCell className="flex justify-end h-full items-center gap-2">
-                    {isFacultyOrAdmin(user!.roles) && (
+                    {isAuthorized && (
                       <Button
                         // TODO: Show warning dialog
                         onClick={() => deleteAnnouncementById(element.id)}

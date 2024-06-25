@@ -21,12 +21,16 @@ export interface GenericErrorPayload {
   title?: string;
   description?: string;
   variant: Variant;
+  showDesc?: boolean;
+  showRefreshButton?: boolean;
 }
 
 export default function GenericError({
   variant,
   title,
   description,
+  showDesc = true,
+  showRefreshButton = true,
 }: GenericErrorPayload) {
   const router = useRouter();
 
@@ -36,15 +40,19 @@ export default function GenericError({
         <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
           {title ?? variants[variant].title!}
         </h1>
-        <p className="text-muted-foreground">
-          {description ?? variants[variant].desc!}
-        </p>
-        <Button
-          onClick={() => router.refresh()}
-          className="w-full max-w-[200px]"
-        >
-          Reload Page
-        </Button>
+        {showDesc && (
+          <p className="text-muted-foreground">
+            {description ?? variants[variant].desc!}
+          </p>
+        )}
+        {showRefreshButton && (
+          <Button
+            onClick={() => router.refresh()}
+            className="w-full max-w-[200px]"
+          >
+            Reload Page
+          </Button>
+        )}
       </div>
     </div>
   );
