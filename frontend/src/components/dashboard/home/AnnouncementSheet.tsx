@@ -141,14 +141,14 @@ export default function AnnouncementSheet({
       <SheetTrigger>
         <Button variant={"secondary"}>{editPayload ? "Edit" : "New"}</Button>
       </SheetTrigger>
-      <SheetContent side={"bottom"} className="max-h-[80%]">
+      <SheetContent side={"bottom"} className="max-h-[80%] overflow-auto">
         <SheetHeader>
           <SheetTitle>{editPayload ? "Edit" : "New"} announcement</SheetTitle>
         </SheetHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="pt-8 space-y-4"
+            className="pt-8 space-y-4 "
           >
             <FormField
               control={form.control}

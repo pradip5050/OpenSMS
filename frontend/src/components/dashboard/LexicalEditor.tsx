@@ -63,7 +63,7 @@ const LexicalEditor = React.forwardRef((props: LexicalEditorProps, ref) => {
         <RichTextPlugin
           contentEditable={
             // TODO: Find alternative to max-h
-            <ContentEditable className="lexical p-2 max-h-[30rem] min-h-[25rem] overflow-y-auto" />
+            <ContentEditable className="lexical p-2 max-h-[15rem] min-h-[15rem] md:max-h-[30rem] md:min-h-[25rem] overflow-y-auto" />
           }
           placeholder={<></>}
           ErrorBoundary={LexicalErrorBoundary}
