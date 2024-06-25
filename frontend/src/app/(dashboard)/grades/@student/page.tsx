@@ -66,6 +66,10 @@ export default function StudentGrades() {
     return <GenericError variant="error" />;
   }
 
+  if (Object.keys(groupedCourses!).length === 0) {
+    return <GenericError variant="noData" title="No grades listed yet" />;
+  }
+
   return (
     <div className="flex flex-col gap-2 overflow-y-auto">
       {Object.entries(groupedCourses!).map(([course, grades]) => {

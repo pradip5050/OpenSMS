@@ -36,6 +36,10 @@ export default function Finance() {
     );
   }
 
+  if (payments!.length === 0) {
+    return <GenericError variant="noData" title="No fees listed yet" />;
+  }
+
   if (!!error) {
     return <GenericError variant="error" />;
   }

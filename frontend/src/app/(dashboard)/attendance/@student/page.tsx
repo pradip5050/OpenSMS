@@ -46,6 +46,10 @@ export default function Attendance() {
     return <GenericError variant="error" />;
   }
 
+  if (courseGroupedList!.length === 0) {
+    return <GenericError variant="noData" title="No attendance listed yet" />;
+  }
+
   return (
     <Table>
       <TableBody>
