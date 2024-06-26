@@ -19,14 +19,14 @@ const Attendances: CollectionConfig = {
     {
       name: "course",
       type: "relationship",
-      relationTo: ["courses"],
+      relationTo: "courses",
       hasMany: false,
       required: true,
     },
     {
       name: "student",
       type: "relationship",
-      relationTo: ["students"],
+      relationTo: "students",
       hasMany: false,
       required: true,
     },

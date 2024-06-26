@@ -30,7 +30,7 @@ const Fees: CollectionConfig = {
     {
       name: "student",
       type: "relationship",
-      relationTo: ["students"],
+      relationTo: "students",
       hasMany: false,
       required: true,
     },

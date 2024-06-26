@@ -42,35 +42,14 @@ const Students: CollectionConfig = {
     {
       name: "user",
       type: "relationship",
-      relationTo: ["users"],
+      relationTo: "users",
       hasMany: false,
       required: true,
     },
     {
       name: "courses",
       type: "relationship",
-      relationTo: ["courses"],
-      // filterOptions: async ({ data, siblingData }) => {
-      // const query = qs.stringify(
-      //   {
-      //     where: {
-      //       id: {
-      //         equals: Number(data.branch.value),
-      //       },
-      //     },
-      //   },
-      //   { addQueryPrefix: true }
-      // );
-      // const response = await fetch(
-      //   `http://localhost:3000/api/branches${query}`
-      // );
-      // const json = await response.json();
-      // const courses = json["docs"][0]["courses"].map(
-      //   (e) => e["value"]["id"]
-      // );
-
-      // console.log(data, siblingData, courses);
-      // },
+      relationTo: "courses",
       hasMany: true,
       required: true,
     },
