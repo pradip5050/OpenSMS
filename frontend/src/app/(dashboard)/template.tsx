@@ -1,7 +1,7 @@
 "use client";
 
-import AuthError from "@/components/AuthError";
 import { useAuth } from "@/components/AuthProvider";
+import GenericError from "@/components/GenericError";
 import Spinner from "@/components/Spinner";
 
 export default function Template({ children }: { children: React.ReactNode }) {
@@ -18,6 +18,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
   if (auth.token) {
     return children;
   } else {
-    return <AuthError />;
+    return <GenericError variant="auth" />;
   }
 }

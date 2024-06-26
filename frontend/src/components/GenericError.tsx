@@ -4,18 +4,37 @@ import { useRouter } from "next/navigation";
 interface VariantBody {
   title?: string;
   desc?: string;
+  buttonAction?: ErrorButtonAction;
 }
-type Variant = "error" | "noData";
+type Variant = "error" | "noData" | "auth";
 
 const variants: Record<Variant, VariantBody> = {
   error: {
     title: "Oops, something went wrong",
     desc: "We encountered an issue while trying to load the page. Please try refreshing the page.",
+    buttonAction: { action: "refresh", label: "Reload page" },
   },
   noData: {
     desc: "Check back soon for updates.",
+    buttonAction: { action: "refresh", label: "Reload page" },
+  },
+  auth: {
+    title: "Not authorized",
+    desc: "You are not authorized to access this page.",
+    buttonAction: { action: "redirect", url: "/", label: "Back to login" },
   },
 };
+
+export type ErrorButtonAction =
+  | {
+      action: "refresh";
+      label: string;
+    }
+  | {
+      action: "redirect";
+      url: string;
+      label: string;
+    };
 
 export interface GenericErrorPayload {
   title?: string;
@@ -23,6 +42,7 @@ export interface GenericErrorPayload {
   variant: Variant;
   showDesc?: boolean;
   showRefreshButton?: boolean;
+  buttonAction?: ErrorButtonAction;
 }
 
 export default function GenericError({
@@ -33,6 +53,19 @@ export default function GenericError({
   showRefreshButton = true,
 }: GenericErrorPayload) {
   const router = useRouter();
+
+  function onButtonClick(buttonAction: ErrorButtonAction) {
+    switch (buttonAction.action) {
+      case "refresh": {
+        router.refresh();
+        break;
+      }
+      case "redirect": {
+        router.push(buttonAction.url);
+        break;
+      }
+    }
+  }
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-background px-4 text-center">
@@ -47,10 +80,10 @@ export default function GenericError({
         )}
         {showRefreshButton && (
           <Button
-            onClick={() => router.refresh()}
+            onClick={() => onButtonClick(variants[variant].buttonAction!)}
             className="w-full max-w-[200px]"
           >
-            Reload Page
+            {variants[variant].buttonAction!.label}
           </Button>
         )}
       </div>
