@@ -8,6 +8,8 @@ const Courses: CollectionConfig = {
     update: isAdminOrFaculty,
     delete: isAdminOrFaculty,
   },
+  // TODO: Add duration
+  // TODO: Add subjects list
   admin: {
     useAsTitle: "name",
     description: "A course",

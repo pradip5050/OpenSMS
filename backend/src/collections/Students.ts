@@ -14,6 +14,8 @@ const Students: CollectionConfig = {
     useAsTitle: "studentId",
     description: "A student",
   },
+  // TODO: Add portal/portfolio links
+  // TODO: Add subject completion relation
   fields: [
     { name: "studentId", label: "Student ID", type: "number", required: true },
     {

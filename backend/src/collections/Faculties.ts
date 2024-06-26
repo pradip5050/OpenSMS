@@ -41,6 +41,7 @@ const Faculties: CollectionConfig = {
       hasMany: true,
       required: true,
     },
+    // TODO: Add subject relation
     { name: "photo", type: "upload", relationTo: "media", required: true },
   ],
 };
