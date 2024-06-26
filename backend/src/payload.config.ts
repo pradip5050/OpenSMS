@@ -2,7 +2,6 @@ import path from "path";
 
 import { payloadCloud } from "@payloadcms/plugin-cloud";
 import { postgresAdapter } from "@payloadcms/db-postgres";
-// import { webpackBundler } from "@payloadcms/bundler-webpack";
 import { viteBundler } from "@payloadcms/bundler-vite";
 import { slateEditor } from "@payloadcms/richtext-slate";
 import { buildConfig } from "payload/config";
@@ -17,6 +16,8 @@ import Fees from "./collections/Fees";
 import Attendances from "./collections/Attendances";
 import Grades from "./collections/Grades";
 import Faculties from "./collections/Faculties";
+import Subjects from "./collections/Subjects";
+import Progresses from "./collections/Progresses";
 
 export default buildConfig({
   admin: {
@@ -33,7 +34,9 @@ export default buildConfig({
     Faculties,
     Fees,
     Grades,
+    Progresses,
     Students,
+    Subjects,
     Media,
   ],
   globals: [Metadata],

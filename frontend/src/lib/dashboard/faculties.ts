@@ -4,6 +4,7 @@ import { Relation } from "../utils";
 import { Course } from "./courses";
 
 export interface Faculty {
+  // TODO: Add subjects
   id: string;
   facultyId: number;
   number: number;

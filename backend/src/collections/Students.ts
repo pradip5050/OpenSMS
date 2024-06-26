@@ -14,8 +14,6 @@ const Students: CollectionConfig = {
     useAsTitle: "studentId",
     description: "A student",
   },
-  // TODO: Add portal/portfolio links
-  // TODO: Add subject completion relation
   fields: [
     { name: "studentId", label: "Student ID", type: "number", required: true },
     {
@@ -31,6 +29,16 @@ const Students: CollectionConfig = {
       required: true,
     },
     { name: "dob", label: "Date Of Birth", type: "date", required: true },
+    {
+      name: "links",
+      label: "Portfolio links",
+      type: "array",
+      fields: [
+        { name: "title", type: "text", required: true },
+        { name: "url", type: "text", required: true },
+      ],
+      required: true,
+    },
     {
       name: "user",
       type: "relationship",

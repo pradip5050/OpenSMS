@@ -2,7 +2,6 @@ import { CollectionConfig } from "payload/types";
 import { isAdmin } from "../access/isAdmin";
 
 const Users: CollectionConfig = {
-  // Email added by default
   slug: "users",
   auth: true,
   admin: {

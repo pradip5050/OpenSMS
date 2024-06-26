@@ -1,6 +1,7 @@
 import { API_URL } from "../constants";
 
 export interface Course {
+  // TODO: Add duration and subjects
   id: string;
   code: string;
   name: string;

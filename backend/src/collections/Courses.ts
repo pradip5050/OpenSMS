@@ -8,8 +8,6 @@ const Courses: CollectionConfig = {
     update: isAdminOrFaculty,
     delete: isAdminOrFaculty,
   },
-  // TODO: Add duration
-  // TODO: Add subjects list
   admin: {
     useAsTitle: "name",
     description: "A course",
@@ -18,6 +16,20 @@ const Courses: CollectionConfig = {
     { name: "code", type: "text", unique: true, required: true },
     { name: "name", type: "text", required: true },
     { name: "credits", type: "number", required: true },
+    {
+      name: "duration",
+      label: "Duration (in months)",
+      type: "number",
+      required: true,
+    },
+    {
+      name: "subjects",
+      type: "relationship",
+      relationTo: "subjects",
+      hasMany: true,
+      minRows: 1,
+      required: true,
+    },
   ],
 };
 

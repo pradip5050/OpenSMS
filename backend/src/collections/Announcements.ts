@@ -4,7 +4,7 @@ import {
   lexicalEditor,
   lexicalHTML,
 } from "@payloadcms/richtext-lexical";
-import { isAdmin, isAdminOrFaculty } from "../access/isAdmin";
+import { isAdminOrFaculty } from "../access/isAdmin";
 
 const Announcements: CollectionConfig = {
   slug: "announcements",

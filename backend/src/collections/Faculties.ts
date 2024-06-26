@@ -30,18 +30,26 @@ const Faculties: CollectionConfig = {
     {
       name: "user",
       type: "relationship",
-      relationTo: ["users"],
+      relationTo: "users",
       hasMany: false,
       required: true,
     },
     {
       name: "courses",
       type: "relationship",
-      relationTo: ["courses"],
+      relationTo: "courses",
       hasMany: true,
+      minRows: 1,
       required: true,
     },
-    // TODO: Add subject relation
+    {
+      name: "subjects",
+      type: "relationship",
+      relationTo: "subjects",
+      hasMany: true,
+      minRows: 1,
+      required: true,
+    },
     { name: "photo", type: "upload", relationTo: "media", required: true },
   ],
 };
