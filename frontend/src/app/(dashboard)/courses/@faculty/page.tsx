@@ -3,7 +3,9 @@
 import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
 import GenericError from "@/components/GenericError";
+import SortButton from "@/components/SortButton";
 import Spinner from "@/components/Spinner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -19,7 +21,6 @@ import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
 import { useFetchCollection } from "@/lib/hooks";
 import { isAdmin } from "@/lib/rbac";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
 
 export default function FacultyCourses() {
   const { user, token } = useAuth();
@@ -35,43 +36,39 @@ export default function FacultyCourses() {
   } = useFetchCollection<CourseResponse>(coursesUrl, token);
 
   const faculty = facultyData?.docs?.filter(
-    (val) => val.user.value.email === user!.email
+    (val) => val.user.email === user!.email
   )[0];
   // TODO: Consider making parallel route for admin instead
-  const courses = isAdmin(user!.roles)
-    ? courseData?.docs
-    : faculty?.courses?.map((val) => val.value);
+  const courses = isAdmin(user!.roles) ? courseData?.docs : faculty?.courses;
 
   const columns: ColumnDef<Course>[] = [
     {
       accessorKey: "code",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Code
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
+        return <SortButton title="Code" column={column} />;
       },
     },
     {
       accessorKey: "name",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
+        return <SortButton title="Name" column={column} />;
       },
     },
     { accessorKey: "credits", header: "Credits" },
+    { accessorKey: "duration", header: "Duration" },
+    {
+      accessorKey: "subjects",
+      header: "Subjects",
+      cell: ({ row }) => {
+        return row.original.subjects.map((subject) => {
+          return (
+            <Badge className="mr-1 mb-1" key={subject.id}>
+              {subject.name}
+            </Badge>
+          );
+        });
+      },
+    },
   ];
 
   const isLoading = facultyIsLoading || courseIsLoading;

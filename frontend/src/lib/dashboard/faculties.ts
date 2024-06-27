@@ -9,8 +9,8 @@ export interface Faculty {
   facultyId: number;
   number: number;
   dob: string;
-  courses: Relation<Course>[];
-  user: Relation<User>;
+  courses: Course[];
+  user: User;
   photo: {
     alt: string;
     url: string;

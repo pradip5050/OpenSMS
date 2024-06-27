@@ -80,7 +80,7 @@ export default function StudentGrades() {
   const students = studentData?.docs;
   const faculty = facultyData?.docs![0];
 
-  const facultyCourses = faculty?.courses.map((course) => course.value);
+  const facultyCourses = faculty?.courses;
   // TODO: Simplify
   const facultyCourseStudents = students?.filter((val) =>
     val.courses.some((course) =>

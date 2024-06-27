@@ -56,8 +56,8 @@ export default function RazorpayGateway({
         callback_url: "https://eneqd3r9zrjok.x.pipedream.net/",
         // Customer
         prefill: {
-          name: student.user.value.name,
-          email: student.user.value.email,
+          name: student.user.name,
+          email: student.user.email,
           contact: student.number,
         },
         notes: {

@@ -77,7 +77,7 @@ export default function FacultyAttendancePage() {
 
   const faculty = facultyData?.docs?.at(0);
   const facultyCourseOptions = faculty?.courses.map((val) => {
-    return { value: val.value.id, label: val.value.name };
+    return { value: val.id, label: val.name };
   });
   const studentsByCourse = studentData?.docs?.filter((student) =>
     student.courses.map((course) => course.id).some((id) => id === value)

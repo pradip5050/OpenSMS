@@ -17,13 +17,15 @@ export default function UserProfile() {
   const { data, error, isLoading } = useFetchCollection<FacultyResponse>(
     facultiesUrl,
     token,
-    { draft: false, depth: 2 },
+    {
+      draft: false,
+      depth: 2,
+      where: { "user.email": { equals: user!.email } },
+    },
     facultyTransformer
   );
 
-  const faculty = data?.docs?.filter(
-    (val) => val.user.value.email === user?.email
-  )[0];
+  const faculty = data?.docs?.at(0);
 
   if (isLoading) {
     return <Spinner variant="page" />;
@@ -59,7 +61,7 @@ export default function UserProfile() {
           <TableCell>
             <div className="font-medium text-3xl">Name</div>
             <div className="text-lg text-muted-foreground md:inline">
-              {faculty!.user.value.name}
+              {faculty!.user.name}
             </div>
           </TableCell>
         </TableRow>
@@ -75,7 +77,7 @@ export default function UserProfile() {
           <TableCell>
             <div className="font-medium text-3xl">Email</div>
             <div className="text-lg text-muted-foreground md:inline">
-              {faculty!.user.value.email}
+              {faculty!.user.email}
             </div>
           </TableCell>
         </TableRow>
