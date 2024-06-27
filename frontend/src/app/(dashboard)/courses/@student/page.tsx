@@ -3,7 +3,7 @@
 import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
 import GenericError from "@/components/GenericError";
-import Spinner from "@/components/Spinner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -25,27 +25,29 @@ export default function Courses() {
   const { data, isLoading, error } = useFetchCollection<StudentResponse>(
     studentsUrl,
     token,
-    { draft: false, depth: 2 }
+    { draft: false, depth: 2, where: { "user.email": { equals: user!.email } } }
   );
 
   // FIXME: Student user existing but collection not existing causes errors
-  const student = data?.docs?.filter(
-    (val) => val.user.email === user!.email
-  )[0];
-  const courses = student?.courses?.map((val) => val);
+  const student = data?.docs?.at(0);
+  const courses = student?.courses;
 
   const columns: ColumnDef<Course>[] = [
     {
       accessorKey: "code",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
+          <div className="flex items-center gap-1">
             Code
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              <ArrowUpDown className="h-4 w-4" />
+            </Button>
+          </div>
         );
       },
     },
@@ -53,17 +55,35 @@ export default function Courses() {
       accessorKey: "name",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
+          <div className="flex items-center gap-1">
             Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              <ArrowUpDown className="h-4 w-4" />
+            </Button>
+          </div>
         );
       },
     },
     { accessorKey: "credits", header: "Credits" },
+    { accessorKey: "duration", header: "Duration" },
+    {
+      accessorKey: "subjects",
+      header: "Subjects",
+      cell: ({ row }) => {
+        return row.original.subjects.map((subject) => {
+          return (
+            <Badge className="mr-1 mb-1" key={subject.id}>
+              {subject.name}
+            </Badge>
+          );
+        });
+      },
+    },
   ];
 
   const isError = !!error;

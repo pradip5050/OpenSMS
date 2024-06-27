@@ -1,11 +1,13 @@
 import { API_URL } from "../constants";
+import { Subject } from "./subjects";
 
 export interface Course {
-  // TODO: Add duration and subjects
   id: string;
   code: string;
   name: string;
   credits: number;
+  duration: number;
+  subjects: Subject[];
 }
 export interface CourseResponse {
   docs?: Course[];
