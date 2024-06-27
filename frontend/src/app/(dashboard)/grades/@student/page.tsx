@@ -59,7 +59,7 @@ export default function StudentGrades() {
   ];
 
   if (gradesIsLoading) {
-    return <Spinner size="32" />;
+    return <Spinner variant="page" />;
   }
 
   if (gradesError) {

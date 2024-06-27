@@ -168,7 +168,7 @@ export default function StudentGrades() {
   const isMutating = gradeDeleteIsMutating;
 
   if (isLoading) {
-    return <Spinner size="32" />;
+    return <Spinner variant="page" />;
   }
 
   if (isError) {

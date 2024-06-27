@@ -39,7 +39,7 @@ export default function Attendance() {
 
   // {/* TODO: Convert to a more powerful DataTable instead */}
   if (isLoading) {
-    return <Spinner size="32" />;
+    return <Spinner variant="page" />;
   }
 
   if (error) {

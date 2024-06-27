@@ -26,7 +26,7 @@ export default function UserProfile() {
   )[0];
 
   if (isLoading) {
-    return <Spinner size="32" />;
+    return <Spinner variant="page" />;
   }
 
   if (!!error) {

@@ -201,7 +201,7 @@ export default function Finance() {
   const isMutating = deleteFeeIsMutating || updateFeeIsMutating;
 
   if (isLoading) {
-    return <Spinner size="32" />;
+    return <Spinner variant="page" />;
   }
 
   if (isError) {

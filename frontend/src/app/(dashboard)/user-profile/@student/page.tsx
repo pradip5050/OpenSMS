@@ -29,7 +29,7 @@ export default function UserProfile() {
   const student = data?.docs?.at(0);
 
   if (isLoading) {
-    return <Spinner size="32" />;
+    return <Spinner variant="page" />;
   }
 
   if (!!error || !student) {

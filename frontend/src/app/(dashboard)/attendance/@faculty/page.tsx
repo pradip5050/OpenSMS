@@ -175,11 +175,7 @@ export default function FacultyAttendancePage() {
   const isMutating = attendanceCreateIsMutating || attendanceUpdateIsMutating;
 
   if (isLoading) {
-    return (
-      <div>
-        <Spinner size="32" />
-      </div>
-    );
+    return <Spinner variant="page" />;
   }
 
   if (isError) {
