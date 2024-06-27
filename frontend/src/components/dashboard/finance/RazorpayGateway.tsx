@@ -80,7 +80,7 @@ export default function RazorpayGateway({
     <>
       <div id="razorpay"></div>
       <Button disabled={isMutating} onClick={pay}>
-        {isMutating ? <Spinner size={"12"} /> : "Pay"}
+        {isMutating ? <Spinner variant="button" /> : "Pay"}
       </Button>
     </>
   );

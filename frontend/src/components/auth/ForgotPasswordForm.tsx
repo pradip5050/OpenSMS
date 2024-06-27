@@ -95,7 +95,7 @@ export function ForgotPasswordForm() {
               />
             </div>
             <Button disabled={isMutating} type="submit" className="w-full">
-              {isMutating ? <Spinner size="24" /> : "Submit"}
+              {isMutating ? <Spinner variant="button" /> : "Submit"}
             </Button>
             <Button className="w-full" onClick={() => router.back()}>
               Go back

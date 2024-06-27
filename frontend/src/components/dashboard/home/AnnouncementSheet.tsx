@@ -171,7 +171,7 @@ export default function AnnouncementSheet({
             </div>
             <SheetFooter>
               <Button disabled={isMutating} type="submit">
-                {isMutating ? <Spinner size="12" /> : "Submit"}
+                {isMutating ? <Spinner variant="button" /> : "Submit"}
               </Button>
             </SheetFooter>
           </form>

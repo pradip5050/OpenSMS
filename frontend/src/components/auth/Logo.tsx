@@ -13,7 +13,7 @@ export default function LogoImage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <Spinner size="50" />
+        <Spinner variant="button" />
       </div>
     );
   }

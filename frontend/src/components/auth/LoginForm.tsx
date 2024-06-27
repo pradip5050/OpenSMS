@@ -120,7 +120,7 @@ export function LoginForm() {
               />
             </div>
             <Button disabled={isMutating} type="submit" className="w-full">
-              {isMutating ? <Spinner size="24" /> : "Login"}
+              {isMutating ? <Spinner variant="button" /> : "Login"}
             </Button>
           </div>
         </form>

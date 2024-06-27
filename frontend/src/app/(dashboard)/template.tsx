@@ -10,7 +10,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   if (auth.loading) {
     return (
       <div className="flex w-full items-center justify-center">
-        <Spinner size="50" />
+        <Spinner variant="page" />
       </div>
     );
   }
