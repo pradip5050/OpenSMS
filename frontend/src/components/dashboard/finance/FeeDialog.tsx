@@ -29,7 +29,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { Student } from "@/lib/dashboard/user-profile";
+import { Student } from "@/lib/dashboard/students";
 import { Fee, FeePayload, FeeResponse, feesUrl } from "@/lib/dashboard/finance";
 import { useAuth } from "@/components/AuthProvider";
 import Spinner from "@/components/Spinner";

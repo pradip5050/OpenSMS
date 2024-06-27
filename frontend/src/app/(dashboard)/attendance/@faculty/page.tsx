@@ -21,7 +21,7 @@ import {
   Student,
   StudentResponse,
   studentsUrl,
-} from "@/lib/dashboard/user-profile";
+} from "@/lib/dashboard/students";
 import {
   Table,
   TableHeader,
@@ -80,7 +80,7 @@ export default function FacultyAttendancePage() {
     return { value: val.value.id, label: val.value.name };
   });
   const studentsByCourse = studentData?.docs?.filter((student) =>
-    student.courses.map((course) => course.value.id).some((id) => id === value)
+    student.courses.map((course) => course.id).some((id) => id === value)
   );
 
   const dates = Array.from(
@@ -251,7 +251,7 @@ export default function FacultyAttendancePage() {
           <TableBody>
             {studentsByCourse?.map((student) => (
               <TableRow key={student.id}>
-                <TableCell>{student.user.value.name}</TableCell>
+                <TableCell>{student.user.name}</TableCell>
                 {dates.map((date) => {
                   const currentAttendances = attendanceData!.docs!.filter(
                     (attendance) => {

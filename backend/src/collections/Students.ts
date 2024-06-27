@@ -35,9 +35,10 @@ const Students: CollectionConfig = {
       type: "array",
       fields: [
         { name: "title", type: "text", required: true },
+        { name: "description", type: "text", required: false },
         { name: "url", type: "text", required: true },
       ],
-      required: true,
+      required: false,
     },
     {
       name: "user",

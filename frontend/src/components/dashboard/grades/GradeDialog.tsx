@@ -26,7 +26,7 @@ import {
   gradesUrl,
 } from "@/lib/dashboard/grades";
 import { Course } from "@/lib/dashboard/courses";
-import { Student } from "@/lib/dashboard/user-profile";
+import { Student } from "@/lib/dashboard/students";
 import { Combobox } from "../Combobox";
 
 export interface GradeDialogProps {

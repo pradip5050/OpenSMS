@@ -1,7 +1,7 @@
 import { API_URL } from "../constants";
 import { Relation } from "../utils";
 import { Course } from "./courses";
-import { Student } from "./user-profile";
+import { Student } from "./students";
 
 export interface Grade {
   id: string;

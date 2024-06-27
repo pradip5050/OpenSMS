@@ -17,7 +17,7 @@ import {
   GradeResponse,
   gradesUrl,
 } from "@/lib/dashboard/grades";
-import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
+import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 import { groupBy } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
@@ -83,17 +83,15 @@ export default function StudentGrades() {
   const facultyCourses = faculty?.courses.map((course) => course.value);
   // TODO: Simplify
   const facultyCourseStudents = students?.filter((val) =>
-    val.courses
-      .map((course) => course.value)
-      .some((course) =>
-        facultyCourses
-          ?.map((facultyCourse) => facultyCourse.id)
-          ?.includes(course.id)
-      )
+    val.courses.some((course) =>
+      facultyCourses
+        ?.map((facultyCourse) => facultyCourse.id)
+        ?.includes(course.id)
+    )
   );
 
   const studentsOptions = facultyCourseStudents?.map((val) => {
-    return { value: val.id, label: val.user.value.name };
+    return { value: val.id, label: val.user.name };
   });
 
   const groupedCourses = groupBy(

@@ -24,7 +24,7 @@ import Spinner from "@/components/Spinner";
 import { Combobox } from "@/components/dashboard/Combobox";
 import React from "react";
 import { FeeDialog } from "@/components/dashboard/finance/FeeDialog";
-import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
+import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 import { useToast } from "@/components/ui/use-toast";
 import { constructiveToast, destructiveToast } from "@/lib/utils";
@@ -188,7 +188,7 @@ export default function Finance() {
 
   const students = studentData?.docs;
   const studentsOptions = students?.map((val) => {
-    return { value: val.id, label: val.user.value.name };
+    return { value: val.id, label: val.user.name };
   });
   const selectedStudent = students?.filter((val) => val.id === value)[0];
 

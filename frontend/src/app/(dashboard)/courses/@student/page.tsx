@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Course } from "@/lib/dashboard/courses";
-import { StudentResponse, studentsUrl } from "@/lib/dashboard/user-profile";
+import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
@@ -30,9 +30,9 @@ export default function Courses() {
 
   // FIXME: Student user existing but collection not existing causes errors
   const student = data?.docs?.filter(
-    (val) => val.user.value.email === user!.email
+    (val) => val.user.email === user!.email
   )[0];
-  const courses = student?.courses?.map((val) => val.value);
+  const courses = student?.courses?.map((val) => val);
 
   const columns: ColumnDef<Course>[] = [
     {

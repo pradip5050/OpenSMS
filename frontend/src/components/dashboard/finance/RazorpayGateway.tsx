@@ -3,7 +3,7 @@ import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useOrder } from "@/lib/dashboard/finance";
-import { Student } from "@/lib/dashboard/user-profile";
+import { Student } from "@/lib/dashboard/students";
 import { MouseEvent, useEffect, useRef } from "react";
 
 export interface RazorpayGatewayProps {

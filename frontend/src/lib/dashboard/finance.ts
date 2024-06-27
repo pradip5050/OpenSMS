@@ -3,7 +3,7 @@ import useSWR, { Key } from "swr";
 import { API_URL } from "../constants";
 import { GenericPayload, GetResponse, PostResponse, Relation } from "../utils";
 import useSWRMutation from "swr/mutation";
-import { Student } from "./user-profile";
+import { Student } from "./students";
 
 export interface Fee {
   id: string;

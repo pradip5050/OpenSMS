@@ -30,7 +30,7 @@ export default function StudentGrades() {
   });
 
   const studentGradesData = gradesData?.docs?.filter(
-    (grade) => grade.student.value.user.value.email === user!.email
+    (grade) => grade.student.value.user.email === user!.email
   );
 
   const groupedCourses = groupBy(

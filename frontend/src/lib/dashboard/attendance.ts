@@ -1,6 +1,6 @@
 import { Relation } from "../utils";
 import { Course } from "./courses";
-import { Student } from "./user-profile";
+import { Student } from "./students";
 import { API_URL } from "../constants";
 
 export interface Attendance {
