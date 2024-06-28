@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 interface VariantBody {
   title?: string;
   desc?: string;
-  buttonAction?: ErrorButtonAction;
+  buttonAction: ErrorButtonAction;
 }
-type Variant = "error" | "noData" | "auth";
+type Variant = "error" | "noData" | "auth" | "notImpl";
 
 const variants: Record<Variant, VariantBody> = {
   error: {
@@ -22,6 +22,11 @@ const variants: Record<Variant, VariantBody> = {
     title: "Not authorized",
     desc: "You are not authorized to access this page.",
     buttonAction: { action: "redirect", url: "/", label: "Back to login" },
+  },
+  notImpl: {
+    title: "This page is not available",
+    desc: "The current page has not been implemented yet.",
+    buttonAction: { action: "refresh", label: "Reload page" },
   },
 };
 

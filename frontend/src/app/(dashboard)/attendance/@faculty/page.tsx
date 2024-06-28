@@ -42,7 +42,7 @@ import { useToast } from "@/components/ui/use-toast";
 import GenericError from "@/components/GenericError";
 
 export default function FacultyAttendancePage() {
-  const { token } = useAuth();
+  const { user, token } = useAuth();
 
   const {
     data: attendanceData,
@@ -180,6 +180,11 @@ export default function FacultyAttendancePage() {
 
   if (isError) {
     return <GenericError variant="error" />;
+  }
+
+  /*TODO: Better still, move this to parallel route layout */
+  if (user?.roles === "admin") {
+    return <GenericError variant="notImpl" />;
   }
 
   return (

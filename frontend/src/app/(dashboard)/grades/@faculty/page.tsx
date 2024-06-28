@@ -167,6 +167,11 @@ export default function StudentGrades() {
     return <GenericError variant="error" />;
   }
 
+  /*TODO: Better still, move this to parallel route layout */
+  if (user!.roles === "admin") {
+    return <GenericError variant="notImpl" />;
+  }
+
   return (
     <div className="flex flex-col gap-2 overflow-y-auto">
       <div className="flex justify-between">
