@@ -9,6 +9,7 @@ import {
   PiStudentBold,
   PiListNumbersBold,
   PiUserBold,
+  PiTrendUpBold,
 } from "react-icons/pi";
 
 interface Route {
@@ -26,6 +27,12 @@ export default function Navbar({ setOpen }: NavbarProps) {
   const [routes, setRoutes] = useState<Route[]>([
     { name: "Home", path: "/home", selected: true, icon: PiHouseSimpleBold },
     { name: "Courses", path: "/courses", selected: false, icon: PiStudentBold },
+    {
+      name: "Progress",
+      path: "/progress",
+      selected: false,
+      icon: PiTrendUpBold,
+    },
     {
       name: "Attendance",
       path: "/attendance",
