@@ -34,6 +34,7 @@ import { GradeDialog } from "@/components/dashboard/grades/GradeDialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
 import GenericError from "@/components/GenericError";
+import SortButton from "@/components/SortButton";
 
 export default function StudentGrades() {
   const { user, token } = useAuth();
@@ -69,6 +70,9 @@ export default function StudentGrades() {
   } = useFetchCollection<FacultyResponse>(facultiesUrl, token, {
     depth: 2,
     draft: false,
+    where: {
+      "user.email": { equals: user!.email },
+    },
   });
   const [value, setValue] = React.useState("");
   const [createOpen, setCreateOpen] = React.useState(false);
@@ -78,7 +82,7 @@ export default function StudentGrades() {
     (grade) => grade.student.id === value
   );
   const students = studentData?.docs;
-  const faculty = facultyData?.docs![0];
+  const faculty = facultyData?.docs?.at(0);
 
   const facultyCourses = faculty?.courses;
   // TODO: Simplify
@@ -95,22 +99,13 @@ export default function StudentGrades() {
   });
 
   const groupedCourses = groupBy(["course", "name"], studentGradesData);
-  // console.log(groupedCourses);
 
   const columns: ColumnDef<Grade>[] = [
     { accessorKey: "testType", header: "Test Type" },
     {
       accessorKey: "marks",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Marks
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
+        return <SortButton title="Marks" column={column} />;
       },
     },
     { accessorKey: "maxMarks", header: "Max Marks" },

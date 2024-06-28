@@ -42,7 +42,7 @@ import { useToast } from "@/components/ui/use-toast";
 import GenericError from "@/components/GenericError";
 
 export default function FacultyAttendancePage() {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
 
   const {
     data: attendanceData,

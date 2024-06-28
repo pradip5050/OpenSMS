@@ -17,7 +17,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Fee } from "@/lib/dashboard/finance";
 import Spinner from "@/components/Spinner";
@@ -31,6 +30,7 @@ import { constructiveToast, destructiveToast } from "@/lib/utils";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import GenericError from "@/components/GenericError";
 import { Badge } from "@/components/ui/badge";
+import SortButton from "@/components/SortButton";
 
 export default function Finance() {
   const { token } = useAuth();
@@ -94,31 +94,15 @@ export default function Finance() {
     {
       accessorKey: "amount",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Amount
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
+        return <SortButton title="Amount" column={column} />;
       },
     },
     {
       accessorKey: "dueDate",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Due date
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
+        return <SortButton title="Due Date" column={column} />;
       },
-      sortingFn: (rowA, rowB, columnId) => {
+      sortingFn: (rowA, rowB, _columnId) => {
         return rowA.original.dueDate > rowB.original.dueDate
           ? 1
           : rowA.original.dueDate < rowB.original.dueDate
