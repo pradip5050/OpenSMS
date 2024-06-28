@@ -32,7 +32,7 @@ export default function Attendance() {
     { depth: 2, draft: false }
   );
 
-  const courseGrouped = groupBy(["course", "value", "name"], data?.docs);
+  const courseGrouped = groupBy(["course", "name"], data?.docs);
   const courseGroupedList = courseGrouped
     ? Object.entries(courseGrouped)
     : undefined;

@@ -94,10 +94,7 @@ export default function StudentGrades() {
     return { value: val.id, label: val.user.name };
   });
 
-  const groupedCourses = groupBy(
-    ["course", "value", "name"],
-    studentGradesData
-  );
+  const groupedCourses = groupBy(["course", "name"], studentGradesData);
   // console.log(groupedCourses);
 
   const columns: ColumnDef<Grade>[] = [

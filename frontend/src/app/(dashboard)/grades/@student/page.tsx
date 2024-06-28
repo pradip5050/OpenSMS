@@ -33,10 +33,7 @@ export default function StudentGrades() {
     (grade) => grade.student.user.email === user!.email
   );
 
-  const groupedCourses = groupBy(
-    ["course", "value", "name"],
-    studentGradesData
-  );
+  const groupedCourses = groupBy(["course", "name"], studentGradesData);
   console.log(groupedCourses);
 
   const columns: ColumnDef<Grade>[] = [
