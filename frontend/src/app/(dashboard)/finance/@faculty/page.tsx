@@ -30,6 +30,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { constructiveToast, destructiveToast } from "@/lib/utils";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import GenericError from "@/components/GenericError";
+import { Badge } from "@/components/ui/badge";
 
 export default function Finance() {
   const { token } = useAuth();
@@ -128,7 +129,19 @@ export default function Finance() {
         return row.original.dueDate.toDateString();
       },
     },
-    { accessorKey: "paymentStatus", header: "Payment status" },
+    {
+      accessorKey: "paymentStatus",
+      header: "Payment status",
+      cell: ({ row }) => {
+        const paymentStatus = row.original.paymentStatus;
+
+        return (
+          <Badge variant={paymentStatus === "paid" ? "default" : "destructive"}>
+            {paymentStatus}
+          </Badge>
+        );
+      },
+    },
     {
       id: "actions",
       cell: ({ row }) => {
