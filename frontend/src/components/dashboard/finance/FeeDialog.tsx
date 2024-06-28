@@ -114,10 +114,7 @@ export function FeeDialog({
             amount: Number(values.amount),
             dueDate: values.dueDate.toISOString(),
             paymentStatus: values.paymentStatus,
-            student: {
-              relationTo: "students",
-              value: student!.id,
-            },
+            student: student!.id,
           },
         });
       } catch (err) {
@@ -132,10 +129,7 @@ export function FeeDialog({
             amount: Number(values.amount),
             dueDate: values.dueDate.toISOString(),
             paymentStatus: "unpaid",
-            student: {
-              relationTo: "students",
-              value: student!.id,
-            },
+            student: student!.id,
           },
         });
       } catch (err) {

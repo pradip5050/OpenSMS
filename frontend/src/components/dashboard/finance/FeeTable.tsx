@@ -44,7 +44,7 @@ export default function FeeTable({
                   {/* Amount in paise */}
                   <RazorpayGateway
                     amount={fee.amount * 100}
-                    student={fee.student.value}
+                    student={fee.student}
                   />
                 </TableCell>
               )}

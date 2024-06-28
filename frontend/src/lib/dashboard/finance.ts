@@ -11,7 +11,7 @@ export interface Fee {
   amount: number;
   dueDate: Date;
   paymentStatus: "unpaid" | "paid" | "delayed";
-  student: Relation<Student>;
+  student: Student;
 }
 // TODO: Find a way to make docs not undefined for mapping
 export interface FeeResponse {
@@ -22,7 +22,7 @@ export interface FeePayload {
   amount: number;
   dueDate: string;
   paymentStatus: string;
-  student: Relation<string>; // string here is the student ID
+  student: string; // string here is the student ID
 }
 
 export const feesUrl = `${API_URL}/api/fees`;

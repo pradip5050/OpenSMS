@@ -133,8 +133,8 @@ export default function FacultyAttendancePage() {
   ) {
     const existingAttendance = attendanceData!.docs!.filter(
       (attendance) =>
-        attendance.course.value.id === value &&
-        attendance.student.value.id === student.id &&
+        attendance.course.id === value &&
+        attendance.student.id === student.id &&
         new Date(attendance.date).getDate() === date.getDate()
     )[0]?.id;
 
@@ -146,8 +146,8 @@ export default function FacultyAttendancePage() {
         payload: {
           date: date.toISOString(),
           isPresent: !isPresent,
-          course: { relationTo: "courses", value: value },
-          student: { relationTo: "students", value: student.id },
+          course: value,
+          student: student.id,
         },
       });
     } else {
@@ -157,8 +157,8 @@ export default function FacultyAttendancePage() {
         payload: {
           date: date.toISOString(),
           isPresent: !isPresent,
-          course: { relationTo: "courses", value: value },
-          student: { relationTo: "students", value: student.id },
+          course: value,
+          student: student.id,
         },
       });
     }
@@ -252,8 +252,8 @@ export default function FacultyAttendancePage() {
                   const currentAttendances = attendanceData!.docs!.filter(
                     (attendance) => {
                       return (
-                        attendance.course.value.id === value &&
-                        attendance.student.value.id === student.id &&
+                        attendance.course.id === value &&
+                        attendance.student.id === student.id &&
                         new Date(attendance.date).toDateString() ===
                           date.toDateString()
                       );

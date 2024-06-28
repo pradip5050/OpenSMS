@@ -8,15 +8,15 @@ export interface Grade {
   testType: string;
   marks: number;
   maxMarks: number;
-  student: Relation<Student>;
-  course: Relation<Course>;
+  student: Student;
+  course: Course;
 }
 export interface GradeResponse {
   docs?: Grade[];
 }
 export interface GradePayload {
-  student: Relation<string>;
-  course: Relation<string>;
+  student: string;
+  course: string;
   testType: string;
   maxMarks: number;
   marks: number;

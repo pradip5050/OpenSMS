@@ -193,7 +193,7 @@ export default function Finance() {
   const selectedStudent = students?.filter((val) => val.id === value)[0];
 
   const studentFeeData = feeData?.docs?.filter(
-    (val) => val.student.value.id === value
+    (val) => val.student.id === value
   );
 
   const isLoading = feeIsLoading || studentIsLoading;

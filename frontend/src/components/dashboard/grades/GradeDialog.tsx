@@ -118,8 +118,8 @@ export function GradeDialog({
           ...values,
           marks: Number(values.marks),
           maxMarks: Number(values.maxMarks),
-          course: { relationTo: "courses", value: values.course },
-          student: { relationTo: "students", value: values.student },
+          course: values.course,
+          student: values.student,
         },
       });
       setOpen(false);
@@ -133,8 +133,8 @@ export function GradeDialog({
           ...values,
           marks: Number(values.marks),
           maxMarks: Number(values.maxMarks),
-          course: { relationTo: "courses", value: courseValue },
-          student: { relationTo: "students", value: values.student },
+          course: courseValue,
+          student: values.student,
         },
       });
 

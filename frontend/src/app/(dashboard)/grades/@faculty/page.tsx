@@ -75,7 +75,7 @@ export default function StudentGrades() {
   const [editOpen, setEditOpen] = React.useState(false);
 
   const studentGradesData = gradesData?.docs?.filter(
-    (grade) => grade.student.value.id === value
+    (grade) => grade.student.id === value
   );
   const students = studentData?.docs;
   const faculty = facultyData?.docs![0];
@@ -150,8 +150,8 @@ export default function StudentGrades() {
             </DropdownMenu>
             <GradeDialog
               id={row.original.id}
-              student={row.original.student.value.id}
-              course={row.original.course.value.id}
+              student={row.original.student.id}
+              course={row.original.course.id}
               marks={row.original.marks}
               maxMarks={row.original.maxMarks}
               testType={row.original.testType}
