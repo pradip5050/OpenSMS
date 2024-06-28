@@ -15,7 +15,13 @@ const Students: CollectionConfig = {
     description: "A student",
   },
   fields: [
-    { name: "studentId", label: "Student ID", type: "number", required: true },
+    {
+      name: "studentId",
+      label: "Student ID",
+      type: "number",
+      unique: true,
+      required: true,
+    },
     {
       name: "number",
       type: "number",
@@ -45,6 +51,7 @@ const Students: CollectionConfig = {
       type: "relationship",
       relationTo: "users",
       hasMany: false,
+      unique: true,
       required: true,
     },
     {

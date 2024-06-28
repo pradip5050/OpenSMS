@@ -3,6 +3,7 @@
 import { useAuth } from "@/components/AuthProvider";
 import GenericError from "@/components/GenericError";
 import Spinner from "@/components/Spinner";
+import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import {
   facultiesUrl,
@@ -94,6 +95,16 @@ export default function UserProfile() {
             <div className="font-medium text-3xl">Number</div>
             <div className="text-lg text-muted-foreground md:inline">
               {faculty!.number}
+            </div>
+          </TableCell>
+        </TableRow>
+        <TableRow className="flex flex-row items-center justify-between">
+          <TableCell>
+            <div className="font-medium text-3xl">Subjects</div>
+            <div className="text-lg text-muted-foreground md:inline">
+              {faculty!.subjects.map((subject) => (
+                <Badge key={subject.id}>{subject.name}</Badge>
+              ))}
             </div>
           </TableCell>
         </TableRow>

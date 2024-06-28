@@ -13,7 +13,13 @@ const Faculties: CollectionConfig = {
     description: "A faculty",
   },
   fields: [
-    { name: "facultyId", label: "Faculty ID", type: "number", required: true },
+    {
+      name: "facultyId",
+      label: "Faculty ID",
+      type: "number",
+      unique: true,
+      required: true,
+    },
     {
       name: "number",
       type: "number",
@@ -32,6 +38,7 @@ const Faculties: CollectionConfig = {
       type: "relationship",
       relationTo: "users",
       hasMany: false,
+      unique: true,
       required: true,
     },
     {

@@ -2,14 +2,15 @@ import { API_URL } from "../constants";
 import { User } from "../login/login";
 import { Relation } from "../utils";
 import { Course } from "./courses";
+import { Subject } from "./subjects";
 
 export interface Faculty {
-  // TODO: Add subjects
   id: string;
   facultyId: number;
   number: number;
   dob: string;
   courses: Course[];
+  subjects: Subject[];
   user: User;
   photo: {
     alt: string;
