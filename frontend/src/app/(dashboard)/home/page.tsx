@@ -23,7 +23,6 @@ import { useAuth } from "@/components/AuthProvider";
 import { isFacultyOrAdmin } from "@/lib/rbac";
 import { Trash2 } from "lucide-react";
 import { useFetchCollection } from "@/lib/hooks";
-import { PiCross, PiXBold } from "react-icons/pi";
 import GenericError from "@/components/GenericError";
 
 export default function Home() {
@@ -59,103 +58,105 @@ export default function Home() {
 
   const isAuthorized = isFacultyOrAdmin(user!.roles);
 
+  if (isLoading) {
+    return (
+      <Table>
+        <TableBody>
+          {Array.from({ length: 5 }, (_, index) => {
+            return (
+              <TableRow
+                key={index}
+                className="flex flex-row items-center space-x-4 "
+              >
+                <TableCell className="flex flex-col w-full space-y-2">
+                  <Skeleton className="h-8 w-[70%]" />
+                  <Skeleton className="h-8 w-[95%]" />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    );
+  }
+
+  if (!!error) {
+    return <GenericError variant="error" />;
+  }
+
+  if (dataWithDate!.length === 0) {
+    return (
+      <GenericError
+        variant="noData"
+        title="No announcements yet"
+        showDesc={!isAuthorized}
+        showRefreshButton={!isAuthorized}
+      />
+    );
+  }
+
   return (
-    <main className="min-h-screen w-full p-4 pt-20 flex flex-col max-h-screen">
-      <div className="flex flex-row justify-between items-center pb-4">
-        <h1 className="text-left w-full">Announcements</h1>
-        {isAuthorized && <AnnouncementSheet />}
-      </div>
-      {isLoading ? (
-        <Table>
-          <TableBody>
-            {Array.from({ length: 5 }, (_, index) => {
-              return (
-                <TableRow
-                  key={index}
-                  className="flex flex-row items-center space-x-4 "
-                >
-                  <TableCell className="flex flex-col w-full space-y-2">
-                    <Skeleton className="h-8 w-[70%]" />
-                    <Skeleton className="h-8 w-[95%]" />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      ) : error ? (
-        <GenericError variant="error" />
-      ) : dataWithDate!.length === 0 ? (
-        <GenericError
-          variant="noData"
-          title="No announcements yet"
-          showDesc={!isAuthorized}
-          showRefreshButton={!isAuthorized}
-        />
-      ) : (
-        <Table>
-          <TableBody>
-            {dataWithDate!.map((element) => {
-              const updatedAt = getFormattedDatetime(element.updatedAt);
-              return (
-                <TableRow
-                  key={element.id}
-                  className="flex flex-row items-center justify-between"
-                >
-                  <TableCell>
-                    <div className="font-medium text-3xl">{element.title}</div>
-                    <div className="text-lg text-muted-foreground md:inline">
-                      {`${updatedAt.date} | ${updatedAt.hours}:${updatedAt.minutes}`}
-                    </div>
-                  </TableCell>
-                  <TableCell className="flex justify-end h-full items-center gap-2">
-                    {isAuthorized && (
-                      <Button
-                        // TODO: Show warning dialog
-                        onClick={() => deleteAnnouncementById(element.id)}
-                        variant={"destructive"}
-                        size={"icon"}
-                      >
-                        <Trash2 />
-                      </Button>
-                    )}
-                    {/* FIXME: Sheet open & openChanged cause stale content, make a list of open instead */}
-                    <Sheet>
-                      <SheetTrigger>
-                        <Button>Open</Button>
-                      </SheetTrigger>
-                      <SheetContent
-                        className="overflow-y-auto h-[80%] max-h-[80%]"
-                        side={"bottom"}
-                      >
-                        <SheetHeader className="flex flex-row justify-between">
-                          <SheetTitle>{element.title}</SheetTitle>
-                          {isFacultyOrAdmin(user!.roles) && (
-                            <AnnouncementSheet
-                              // mutate={mutate}
-                              editPayload={{
-                                content: element.content,
-                                id: element.id,
-                                title: element.title,
-                              }}
-                            />
-                          )}
-                        </SheetHeader>
-                        <div
-                          className="pt-8 lexical"
-                          dangerouslySetInnerHTML={{
-                            __html: element.contentHtml,
+    <Table>
+      <TableBody>
+        {dataWithDate!.map((element) => {
+          const updatedAt = getFormattedDatetime(element.updatedAt);
+          return (
+            <TableRow
+              key={element.id}
+              className="flex flex-row items-center justify-between"
+            >
+              <TableCell>
+                <div className="font-medium text-3xl">{element.title}</div>
+                <div className="text-lg text-muted-foreground md:inline">
+                  {`${updatedAt.date} | ${updatedAt.hours}:${updatedAt.minutes}`}
+                </div>
+              </TableCell>
+              <TableCell className="flex justify-end h-full items-center gap-2">
+                {isAuthorized && (
+                  <Button
+                    // TODO: Show warning dialog
+                    onClick={() => deleteAnnouncementById(element.id)}
+                    variant={"destructive"}
+                    size={"icon"}
+                  >
+                    <Trash2 />
+                  </Button>
+                )}
+                {/* FIXME: Sheet open & openChanged cause stale content, make a list of open instead */}
+                <Sheet>
+                  <SheetTrigger>
+                    <Button>Open</Button>
+                  </SheetTrigger>
+                  <SheetContent
+                    className="overflow-y-auto h-[80%] max-h-[80%]"
+                    side={"bottom"}
+                  >
+                    <SheetHeader className="flex flex-row justify-between">
+                      <SheetTitle>{element.title}</SheetTitle>
+                      {isFacultyOrAdmin(user!.roles) && (
+                        <AnnouncementSheet
+                          // mutate={mutate}
+                          editPayload={{
+                            content: element.content,
+                            id: element.id,
+                            title: element.title,
                           }}
-                        ></div>
-                      </SheetContent>
-                    </Sheet>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      )}
-    </main>
+                        />
+                      )}
+                    </SheetHeader>
+                    <div
+                      className="pt-8 lexical"
+                      dangerouslySetInnerHTML={{
+                        __html: element.contentHtml,
+                      }}
+                    ></div>
+                  </SheetContent>
+                </Sheet>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
   );
 }
