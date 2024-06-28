@@ -139,7 +139,7 @@ export default function AnnouncementSheet({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <Button variant={"secondary"}>{editPayload ? "Edit" : "New"}</Button>
+        <Button variant={"default"}>{editPayload ? "Edit" : "New"}</Button>
       </SheetTrigger>
       <SheetContent side={"bottom"} className="max-h-[80%] overflow-auto">
         <SheetHeader>

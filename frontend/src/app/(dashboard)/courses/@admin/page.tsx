@@ -14,24 +14,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Course } from "@/lib/dashboard/courses";
-import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
+import { Course, CourseResponse, coursesUrl } from "@/lib/dashboard/courses";
 import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
 
 export default function FacultyCourses() {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const {
-    data: facultyData,
-    isLoading: facultyIsLoading,
-    error: facultyError,
-  } = useFetchCollection<FacultyResponse>(facultiesUrl, token, {
-    depth: 2,
-    where: { "user.email": { equals: user!.email } },
-  });
+    data: courseData,
+    isLoading: courseIsLoading,
+    error: courseError,
+  } = useFetchCollection<CourseResponse>(coursesUrl, token);
 
-  const faculty = facultyData?.docs?.at(0);
-  const courses = faculty?.courses;
+  const courses = courseData?.docs;
 
   // TODO: useMemo
   const columns: ColumnDef<Course>[] = [
@@ -64,8 +59,8 @@ export default function FacultyCourses() {
     },
   ];
 
-  const isLoading = facultyIsLoading;
-  const isError = !!facultyError;
+  const isLoading = courseIsLoading;
+  const isError = !!courseError;
 
   if (isLoading) {
     return (

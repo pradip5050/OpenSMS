@@ -152,7 +152,7 @@ export default function Home() {
                 {/* FIXME: Sheet open & openChanged cause stale content, make a list of open instead */}
                 <Sheet>
                   <SheetTrigger>
-                    <Button>Open</Button>
+                    <Button variant="secondary">Open</Button>
                   </SheetTrigger>
                   <SheetContent
                     className="overflow-y-auto h-[80%] max-h-[80%]"
