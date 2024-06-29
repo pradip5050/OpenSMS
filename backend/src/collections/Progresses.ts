@@ -14,6 +14,7 @@ const Progresses: CollectionConfig = {
   },
   fields: [
     { name: "percent", type: "number", max: 100, required: true },
+    // Restrict to subjects part of courses student has enrolled in
     {
       name: "subject",
       type: "relationship",
