@@ -32,6 +32,7 @@ import {
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { Subject } from "@/lib/dashboard/subjects";
 import { useFetchCollection } from "@/lib/hooks";
+import { groupBy } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronsUpDown } from "lucide-react";
 
@@ -55,8 +56,6 @@ export default function Courses() {
     depth: 2,
     where: { "student.user.email": { equals: user!.email } },
   });
-
-  console.log(progressData);
 
   const student = studentData?.docs?.at(0);
   const courses = student?.courses;
@@ -84,6 +83,21 @@ export default function Courses() {
     },
   ];
 
+  //  Make an object of { course.name, subject } and then groupBy course.name
+  const progressesWithCourse = progresses?.map((progress) => {
+    return {
+      ...progress,
+      course: courses
+        ?.filter((course) =>
+          course.subjects
+            .map((subject) => subject.id)
+            .some((val) => val === progress.subject.id)
+        )
+        ?.map((course) => course.name),
+    };
+  });
+  const groupedProgresses = groupBy(["course"], progressesWithCourse);
+
   const isLoading = studentIsLoading || progressIsLoading;
   const isError = !!studentError || !!progressError;
 
@@ -103,13 +117,13 @@ export default function Courses() {
 
   return (
     <div className="flex flex-col gap-2">
-      {courses!.map((course) => {
+      {Object.entries(groupedProgresses!).map(([course, progresses]) => {
         return (
-          <Collapsible key={course.id}>
+          <Collapsible key={course}>
             <Card>
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
-                  <span>{course.name}</span>
+                  <span>{course}</span>
                   <CollapsibleTrigger asChild>
                     <Button variant="ghost" size="sm" className="w-9 p-0">
                       <ChevronsUpDown className="h-4 w-4" />
