@@ -3,9 +3,7 @@
 import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
 import GenericError from "@/components/GenericError";
-import SortButton from "@/components/SortButton";
 import Spinner from "@/components/Spinner";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -14,27 +12,17 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { Progress as ProgressComponent } from "@/components/ui/progress";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Course } from "@/lib/dashboard/courses";
+
 import {
   Progress,
   progressesUrl,
   ProgressResponse,
 } from "@/lib/dashboard/progresses";
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
-import { Subject } from "@/lib/dashboard/subjects";
 import { useFetchCollection } from "@/lib/hooks";
 import { groupBy } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 
 export default function Courses() {
   const { user, token } = useAuth();
