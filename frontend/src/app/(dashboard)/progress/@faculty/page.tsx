@@ -1,23 +1,24 @@
 "use client";
 
 import { useAuth } from "@/components/AuthProvider";
+import { Combobox } from "@/components/dashboard/Combobox";
 import { DataTable } from "@/components/dashboard/DataTable";
 import GenericError from "@/components/GenericError";
 import SortButton from "@/components/SortButton";
+import Spinner from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Slider } from "@/components/ui/slider";
 import { Course } from "@/lib/dashboard/courses";
 import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
+import {
+  Progress,
+  progressesUrl,
+  ProgressResponse,
+} from "@/lib/dashboard/progresses";
+import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
+import { useEffect, useMemo, useState } from "react";
 
 export default function FacultyCourses() {
   const { user, token } = useAuth();
@@ -29,76 +30,106 @@ export default function FacultyCourses() {
     depth: 2,
     where: { "user.email": { equals: user!.email } },
   });
-
   const faculty = facultyData?.docs?.at(0);
-  const courses = faculty?.courses;
+
+  const {
+    data: studentData,
+    isLoading: studentIsLoading,
+    error: studentError,
+  } = useFetchCollection<StudentResponse>(
+    () => (!!facultyData ? studentsUrl : null),
+    token,
+    {
+      depth: 2,
+      where: {
+        "courses.code": {
+          in: faculty?.courses.map((course) => course.code).toString(),
+        },
+      },
+    }
+  );
+  const {
+    data: progressData,
+    isLoading: progressIsLoading,
+    error: progressError,
+  } = useFetchCollection<ProgressResponse>(
+    () => (!!facultyData ? progressesUrl : null),
+    token,
+    {
+      depth: 2,
+      where: {
+        "subject.code": {
+          in: faculty?.subjects.map((subject) => subject.code).toString(),
+        },
+      },
+    }
+  );
+
+  const students = studentData?.docs;
+  const progresses = progressData?.docs;
+
+  const [value, setValue] = useState("");
+
+  const filteredProgresses = progresses?.filter(
+    (progress) => progress.student.id === value
+  );
+  const filteredProgressPercents = filteredProgresses?.map(
+    (progress) => progress.percent
+  );
+
+  const [percents, setPercents] = useState<number[] | undefined>(() =>
+    filteredProgresses?.map((progress) => progress.percent)
+  );
+  useEffect(() => {
+    if (progressData) {
+      setPercents(
+        progressData?.docs
+          ?.filter((progress) => progress.student.id === value)
+          ?.map((progress) => progress.percent)
+      );
+    }
+  }, [progressData, value]);
+
+  const studentsOptions = students?.map((val) => {
+    return { value: val.id, label: val.user.name };
+  });
 
   // TODO: useMemo
-  const columns: ColumnDef<Course>[] = [
-    {
-      accessorKey: "code",
-      header: ({ column }) => {
-        return <SortButton title="Code" column={column} />;
+  const columns: ColumnDef<Progress>[] = useMemo(
+    () => [
+      {
+        accessorKey: "subject",
+        header: "Subject",
+        cell: ({ row }) => {
+          return row.original.subject.name;
+        },
       },
-    },
-    {
-      accessorKey: "name",
-      header: ({ column }) => {
-        return <SortButton title="Name" column={column} />;
-      },
-    },
-    { accessorKey: "credits", header: "Credits" },
-    { accessorKey: "duration", header: "Duration" },
-    {
-      accessorKey: "subjects",
-      header: "Subjects",
-      cell: ({ row }) => {
-        return row.original.subjects.map((subject) => {
+      {
+        accessorKey: "percent",
+        header: "Progress",
+        cell: ({ row }) => {
           return (
-            <Badge className="mr-1 mb-1" key={subject.id}>
-              {subject.name}
-            </Badge>
+            <div className="flex items-center">
+              <span className="w-12">{percents?.at(row.index)}%</span>
+              <Slider
+                value={[percents?.at(row.index)!]}
+                // TODO: onValueChange={}
+                max={100}
+                step={1}
+              />
+            </div>
           );
-        });
+        },
       },
-    },
-  ];
+    ],
+    [percents]
+  );
 
-  const isLoading = facultyIsLoading;
-  const isError = !!facultyError;
+  const isLoading = facultyIsLoading || studentIsLoading || progressIsLoading;
+  const isError = !!facultyError || !!studentError || !!progressError;
 
   if (isLoading) {
-    return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>
-              <Skeleton className="h-10" />
-            </TableHead>
-            <TableHead>
-              <Skeleton className="h-10" />
-            </TableHead>
-            <TableHead>
-              <Skeleton className="h-10" />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from(
-            {
-              length: 10,
-            },
-            (_, i) => (
-              <TableRow key={i}>
-                <TableCell colSpan={3}>
-                  <Skeleton className="h-8 col-span-3" />
-                </TableCell>
-              </TableRow>
-            )
-          )}
-        </TableBody>
-      </Table>
-    );
+    return <Spinner variant="page" />;
   }
 
   if (isError) {
@@ -110,5 +141,14 @@ export default function FacultyCourses() {
     return <GenericError variant="notImpl" />;
   }
 
-  return <DataTable columns={columns} data={courses!} />;
+  return (
+    <div className="space-y-3">
+      <Combobox
+        options={studentsOptions!}
+        label="student"
+        state={{ value: value, setValue: setValue }}
+      />
+      <DataTable columns={columns} data={filteredProgresses!} />
+    </div>
+  );
 }
