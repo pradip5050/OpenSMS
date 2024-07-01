@@ -7,6 +7,7 @@ import GenericError from "@/components/GenericError";
 import SortButton from "@/components/SortButton";
 import Spinner from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
 import { Course } from "@/lib/dashboard/courses";
 import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
 import {
@@ -17,7 +18,7 @@ import {
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function FacultyCourses() {
   const { user, token } = useAuth();
@@ -63,40 +64,66 @@ export default function FacultyCourses() {
       },
     }
   );
-  const [value, setValue] = useState("");
 
   const students = studentData?.docs;
   const progresses = progressData?.docs;
+
+  const [value, setValue] = useState("");
+
   const filteredProgresses = progresses?.filter(
     (progress) => progress.student.id === value
   );
+  const filteredProgressPercents = filteredProgresses?.map(
+    (progress) => progress.percent
+  );
+
+  const [percents, setPercents] = useState<number[] | undefined>(() =>
+    filteredProgresses?.map((progress) => progress.percent)
+  );
+  useEffect(() => {
+    if (progressData) {
+      setPercents(
+        progressData?.docs
+          ?.filter((progress) => progress.student.id === value)
+          ?.map((progress) => progress.percent)
+      );
+    }
+  }, [progressData, value]);
 
   const studentsOptions = students?.map((val) => {
     return { value: val.id, label: val.user.name };
   });
 
   // TODO: useMemo
-  const columns: ColumnDef<Progress>[] = [
-    {
-      accessorKey: "subject",
-      header: "Subject",
-      cell: ({ row }) => {
-        return row.original.subject.name;
+  const columns: ColumnDef<Progress>[] = useMemo(
+    () => [
+      {
+        accessorKey: "subject",
+        header: "Subject",
+        cell: ({ row }) => {
+          return row.original.subject.name;
+        },
       },
-    },
-    {
-      accessorKey: "percent",
-      header: "Progress",
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center">
-            <span className="w-12">{row.original.percent}%</span>
-            {/* <Progress value={row.original.percent} max={100} /> */}
-          </div>
-        );
+      {
+        accessorKey: "percent",
+        header: "Progress",
+        cell: ({ row }) => {
+          return (
+            <div className="flex items-center">
+              <span className="w-12">{percents?.at(row.index)}%</span>
+              <Slider
+                value={[percents?.at(row.index)!]}
+                // TODO: onValueChange={}
+                max={100}
+                step={1}
+              />
+            </div>
+          );
+        },
       },
-    },
-  ];
+    ],
+    [percents]
+  );
 
   const isLoading = facultyIsLoading || studentIsLoading || progressIsLoading;
   const isError = !!facultyError || !!studentError || !!progressError;
