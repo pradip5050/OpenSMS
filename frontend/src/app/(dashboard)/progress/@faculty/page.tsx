@@ -3,6 +3,7 @@
 import { useAuth } from "@/components/AuthProvider";
 import { Combobox } from "@/components/dashboard/Combobox";
 import { DataTable } from "@/components/dashboard/DataTable";
+import DeleteAlertDialog from "@/components/DeleteAlertDialog";
 import GenericError from "@/components/GenericError";
 import SortButton from "@/components/SortButton";
 import Spinner from "@/components/Spinner";
@@ -72,6 +73,13 @@ export default function FacultyCourses() {
   } = useMutateCollection<Progress, ProgressResponse, ProgressPayload>(
     progressesUrl,
     "PATCH"
+  );
+  const {
+    trigger: progressDeleteTrigger,
+    isMutating: progressDeleteIsMutating,
+  } = useMutateCollection<Progress, ProgressResponse, ProgressPayload>(
+    progressesUrl,
+    "DELETE"
   );
 
   const students = studentData?.docs;
@@ -156,12 +164,30 @@ export default function FacultyCourses() {
           );
         },
       },
+      {
+        id: "actions",
+        cell: ({ row }) => {
+          return (
+            <div className="flex justify-end">
+              <DeleteAlertDialog
+                onClick={async () => {
+                  await progressDeleteTrigger({
+                    token: token!,
+                    id: row.original.id,
+                    payload: {},
+                  });
+                }}
+                isIcon={true}
+              />
+            </div>
+          );
+        },
+      },
     ],
     [percents]
   );
 
   const isLoading = facultyIsLoading || studentIsLoading || progressIsLoading;
-  const isMutating = progressUpdateIsMutating;
   const isError = !!facultyError || !!studentError || !!progressError;
 
   if (isLoading) {
@@ -187,8 +213,12 @@ export default function FacultyCourses() {
         />
         <div className="space-x-2">
           {value !== "" && filteredProgresses?.length !== 0 && (
-            <Button onClick={onSubmit}>
-              {isMutating ? <Spinner variant="button" /> : "Update"}
+            <Button disabled={progressUpdateIsMutating} onClick={onSubmit}>
+              {progressUpdateIsMutating ? (
+                <Spinner variant="button" />
+              ) : (
+                "Update"
+              )}
             </Button>
           )}
           {value !== "" && <Button onClick={onSubmit}>New</Button>}
