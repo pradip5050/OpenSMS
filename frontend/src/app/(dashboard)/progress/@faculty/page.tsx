@@ -7,16 +7,18 @@ import GenericError from "@/components/GenericError";
 import SortButton from "@/components/SortButton";
 import Spinner from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Course } from "@/lib/dashboard/courses";
 import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
 import {
   Progress,
   progressesUrl,
+  ProgressPayload,
   ProgressResponse,
 } from "@/lib/dashboard/progresses";
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
-import { useFetchCollection } from "@/lib/hooks";
+import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 
@@ -64,6 +66,13 @@ export default function FacultyCourses() {
       },
     }
   );
+  const {
+    trigger: progressUpdateTrigger,
+    isMutating: progressUpdateIsMutating,
+  } = useMutateCollection<Progress, ProgressResponse, ProgressPayload>(
+    progressesUrl,
+    "PATCH"
+  );
 
   const students = studentData?.docs;
   const progresses = progressData?.docs;
@@ -73,7 +82,7 @@ export default function FacultyCourses() {
   const filteredProgresses = progresses?.filter(
     (progress) => progress.student.id === value
   );
-  const filteredProgressPercents = filteredProgresses?.map(
+  const filteredPercents = filteredProgresses?.map(
     (progress) => progress.percent
   );
 
@@ -94,6 +103,27 @@ export default function FacultyCourses() {
     return { value: val.id, label: val.user.name };
   });
 
+  async function onSubmit() {
+    // for (const progress of filteredProgresses!) {
+    //   if (progress.percent) {}
+    // }
+    filteredProgresses?.forEach(async (progress, index) => {
+      if (progress.percent === percents?.at(index)) {
+        return;
+      }
+
+      await progressUpdateTrigger({
+        token: token!,
+        id: progress.id,
+        payload: {
+          percent: percents?.at(index),
+          student: value,
+          subject: progress.subject.id,
+        },
+      });
+    });
+  }
+
   // TODO: useMemo
   const columns: ColumnDef<Progress>[] = useMemo(
     () => [
@@ -112,8 +142,13 @@ export default function FacultyCourses() {
             <div className="flex items-center">
               <span className="w-12">{percents?.at(row.index)}%</span>
               <Slider
+                defaultValue={[0]}
                 value={[percents?.at(row.index)!]}
-                // TODO: onValueChange={}
+                onValueChange={(value) => {
+                  setPercents((percents) =>
+                    percents?.with(row.index, value[0]!)
+                  );
+                }}
                 max={100}
                 step={1}
               />
@@ -126,6 +161,7 @@ export default function FacultyCourses() {
   );
 
   const isLoading = facultyIsLoading || studentIsLoading || progressIsLoading;
+  const isMutating = progressUpdateIsMutating;
   const isError = !!facultyError || !!studentError || !!progressError;
 
   if (isLoading) {
@@ -143,11 +179,21 @@ export default function FacultyCourses() {
 
   return (
     <div className="space-y-3">
-      <Combobox
-        options={studentsOptions!}
-        label="student"
-        state={{ value: value, setValue: setValue }}
-      />
+      <div className="flex items-center justify-between">
+        <Combobox
+          options={studentsOptions!}
+          label="student"
+          state={{ value: value, setValue: setValue }}
+        />
+        <div className="space-x-2">
+          {value !== "" && filteredProgresses?.length !== 0 && (
+            <Button onClick={onSubmit}>
+              {isMutating ? <Spinner variant="button" /> : "Update"}
+            </Button>
+          )}
+          {value !== "" && <Button onClick={onSubmit}>New</Button>}
+        </div>
+      </div>
       <DataTable columns={columns} data={filteredProgresses!} />
     </div>
   );

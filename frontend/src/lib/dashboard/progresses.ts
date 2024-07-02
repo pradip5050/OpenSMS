@@ -11,5 +11,10 @@ export interface Progress {
 export interface ProgressResponse {
   docs?: Progress[];
 }
+export interface ProgressPayload {
+  percent: number;
+  student: string;
+  subject: string;
+}
 
 export const progressesUrl = `${API_URL}/api/progresses`;
