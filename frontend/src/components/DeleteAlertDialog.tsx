@@ -12,16 +12,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 
+export interface DeleteAlertDialogProps {
+  onClick: () => void;
+  isIcon: boolean;
+}
+
 export default function DeleteAlertDialog({
   onClick,
-}: {
-  onClick: () => void;
-}) {
+  isIcon,
+}: DeleteAlertDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant={"destructive"} size={"icon"}>
-          <Trash2 />
+        <Button variant={"destructive"} size={isIcon ? "icon" : "default"}>
+          {isIcon ? <Trash2 /> : "Delete"}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
