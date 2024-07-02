@@ -35,6 +35,7 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
 } from "@/components/ui/alert-dialog";
+import DeleteAlertDialog from "@/components/DeleteAlertDialog";
 
 export default function Home() {
   const { user, token } = useAuth();
@@ -124,30 +125,9 @@ export default function Home() {
               </TableCell>
               <TableCell className="flex justify-end h-full items-center gap-2">
                 {isAuthorized && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant={"destructive"} size={"icon"}>
-                        <Trash2 />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                          onClick={() => deleteAnnouncementById(element.id)}
-                        >
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <DeleteAlertDialog
+                    onClick={() => deleteAnnouncementById(element.id)}
+                  />
                 )}
                 {/* FIXME: Sheet open & openChanged cause stale content, make a list of open instead */}
                 <Sheet>
@@ -162,7 +142,6 @@ export default function Home() {
                       <SheetTitle>{element.title}</SheetTitle>
                       {isFacultyOrAdmin(user!.roles) && (
                         <AnnouncementSheet
-                          // mutate={mutate}
                           editPayload={{
                             content: element.content,
                             id: element.id,
