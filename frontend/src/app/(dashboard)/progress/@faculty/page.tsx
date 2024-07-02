@@ -79,7 +79,12 @@ export default function FacultyCourses() {
     isMutating: progressDeleteIsMutating,
   } = useMutateCollection<Progress, ProgressResponse, ProgressPayload>(
     progressesUrl,
-    "DELETE"
+    "DELETE",
+    (result, data) => {
+      return {
+        docs: data?.docs?.filter((progress) => progress.id !== result.id),
+      };
+    }
   );
 
   const students = studentData?.docs;
@@ -177,7 +182,7 @@ export default function FacultyCourses() {
                     payload: {},
                   });
                 }}
-                isIcon={true}
+                variant={{ type: "icon", disabled: progressDeleteIsMutating }}
               />
             </div>
           );

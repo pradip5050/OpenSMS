@@ -127,7 +127,8 @@ export default function Home() {
                 {isAuthorized && (
                   <DeleteAlertDialog
                     onClick={() => deleteAnnouncementById(element.id)}
-                    isIcon={true}
+                    // TODO: Add ismutating when implemented
+                    variant={{ type: "icon", disabled: false }}
                   />
                 )}
                 {/* FIXME: Sheet open & openChanged cause stale content, make a list of open instead */}

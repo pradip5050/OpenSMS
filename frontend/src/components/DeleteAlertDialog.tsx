@@ -10,23 +10,47 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Trash2 } from "lucide-react";
 
 export interface DeleteAlertDialogProps {
   onClick: () => void;
-  isIcon: boolean;
+  variant:
+    | {
+        type: "icon";
+        disabled: boolean;
+      }
+    | {
+        type: "dropdownMenuItem";
+        disabled: boolean;
+      };
 }
 
 export default function DeleteAlertDialog({
   onClick,
-  isIcon,
+  variant,
 }: DeleteAlertDialogProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant={"destructive"} size={isIcon ? "icon" : "default"}>
-          {isIcon ? <Trash2 /> : "Delete"}
-        </Button>
+      <AlertDialogTrigger>
+        {variant.type === "icon" && (
+          <Button
+            variant={"destructive"}
+            disabled={variant.disabled}
+            size={"icon"}
+          >
+            <Trash2 />
+          </Button>
+        )}
+        {variant.type === "dropdownMenuItem" && (
+          <DropdownMenuItem
+            className="bg-destructive"
+            disabled={variant.disabled}
+            onClick={onClick}
+          >
+            Delete
+          </DropdownMenuItem>
+        )}
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
