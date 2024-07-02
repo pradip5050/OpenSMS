@@ -3,14 +3,13 @@
 import { useAuth } from "@/components/AuthProvider";
 import { Combobox } from "@/components/dashboard/Combobox";
 import { DataTable } from "@/components/dashboard/DataTable";
+import { ProgressDialog } from "@/components/dashboard/progresses/ProgressDialog";
 import DeleteAlertDialog from "@/components/DeleteAlertDialog";
 import GenericError from "@/components/GenericError";
-import SortButton from "@/components/SortButton";
 import Spinner from "@/components/Spinner";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
-import { Course } from "@/lib/dashboard/courses";
 import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
 import {
   Progress,
@@ -91,6 +90,7 @@ export default function FacultyCourses() {
   const progresses = progressData?.docs;
 
   const [value, setValue] = useState("");
+  const [open, setOpen] = useState(false);
 
   const filteredProgresses = progresses?.filter(
     (progress) => progress.student.id === value
@@ -115,11 +115,18 @@ export default function FacultyCourses() {
   const studentsOptions = students?.map((val) => {
     return { value: val.id, label: val.user.name };
   });
+  const subjectOptions = faculty?.subjects
+    ?.filter(
+      (val) =>
+        !filteredProgresses
+          ?.map((progress) => progress.subject.id)
+          .some((id) => val.id === id)
+    )
+    .map((val) => {
+      return { value: val.id, label: val.name };
+    });
 
   async function onSubmit() {
-    // for (const progress of filteredProgresses!) {
-    //   if (progress.percent) {}
-    // }
     filteredProgresses?.forEach(async (progress, index) => {
       if (progress.percent === percents?.at(index)) {
         return;
@@ -226,7 +233,18 @@ export default function FacultyCourses() {
               )}
             </Button>
           )}
-          {value !== "" && <Button onClick={onSubmit}>New</Button>}
+          {value !== "" && subjectOptions!.length !== 0 && (
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button>New</Button>
+              </DialogTrigger>
+              <ProgressDialog
+                setOpen={setOpen}
+                student={value}
+                subjectOptions={subjectOptions!}
+              />
+            </Dialog>
+          )}
         </div>
       </div>
       <DataTable columns={columns} data={filteredProgresses!} />
