@@ -62,8 +62,17 @@ CREATE TABLE IF NOT EXISTS "courses" (
 	"code" varchar NOT NULL,
 	"name" varchar NOT NULL,
 	"credits" numeric NOT NULL,
+	"duration" numeric NOT NULL,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "courses_rels" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"order" integer,
+	"parent_id" uuid NOT NULL,
+	"path" varchar NOT NULL,
+	"subjects_id" uuid
 );
 
 CREATE TABLE IF NOT EXISTS "faculties" (
@@ -82,6 +91,7 @@ CREATE TABLE IF NOT EXISTS "faculties_rels" (
 	"path" varchar NOT NULL,
 	"users_id" uuid,
 	"courses_id" uuid,
+	"subjects_id" uuid,
 	"media_id" uuid
 );
 
@@ -121,6 +131,31 @@ CREATE TABLE IF NOT EXISTS "grades_rels" (
 	"courses_id" uuid
 );
 
+CREATE TABLE IF NOT EXISTS "progresses" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"percent" numeric NOT NULL,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "progresses_rels" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"order" integer,
+	"parent_id" uuid NOT NULL,
+	"path" varchar NOT NULL,
+	"subjects_id" uuid,
+	"students_id" uuid
+);
+
+CREATE TABLE IF NOT EXISTS "students_links" (
+	"_order" integer NOT NULL,
+	"_parent_id" uuid NOT NULL,
+	"id" varchar PRIMARY KEY NOT NULL,
+	"title" varchar NOT NULL,
+	"description" varchar,
+	"url" varchar NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS "students" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"student_id" numeric NOT NULL,
@@ -138,6 +173,14 @@ CREATE TABLE IF NOT EXISTS "students_rels" (
 	"users_id" uuid,
 	"courses_id" uuid,
 	"media_id" uuid
+);
+
+CREATE TABLE IF NOT EXISTS "subjects" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"code" varchar NOT NULL,
+	"name" varchar NOT NULL,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "media" (
@@ -209,6 +252,10 @@ CREATE INDEX IF NOT EXISTS "attendances_rels_parent_idx" ON "attendances_rels" (
 CREATE INDEX IF NOT EXISTS "attendances_rels_path_idx" ON "attendances_rels" ("path");
 CREATE UNIQUE INDEX IF NOT EXISTS "courses_code_idx" ON "courses" ("code");
 CREATE INDEX IF NOT EXISTS "courses_created_at_idx" ON "courses" ("created_at");
+CREATE INDEX IF NOT EXISTS "courses_rels_order_idx" ON "courses_rels" ("order");
+CREATE INDEX IF NOT EXISTS "courses_rels_parent_idx" ON "courses_rels" ("parent_id");
+CREATE INDEX IF NOT EXISTS "courses_rels_path_idx" ON "courses_rels" ("path");
+CREATE UNIQUE INDEX IF NOT EXISTS "faculties_faculty_id_idx" ON "faculties" ("faculty_id");
 CREATE INDEX IF NOT EXISTS "faculties_created_at_idx" ON "faculties" ("created_at");
 CREATE INDEX IF NOT EXISTS "faculties_rels_order_idx" ON "faculties_rels" ("order");
 CREATE INDEX IF NOT EXISTS "faculties_rels_parent_idx" ON "faculties_rels" ("parent_id");
@@ -221,10 +268,19 @@ CREATE INDEX IF NOT EXISTS "grades_created_at_idx" ON "grades" ("created_at");
 CREATE INDEX IF NOT EXISTS "grades_rels_order_idx" ON "grades_rels" ("order");
 CREATE INDEX IF NOT EXISTS "grades_rels_parent_idx" ON "grades_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "grades_rels_path_idx" ON "grades_rels" ("path");
+CREATE INDEX IF NOT EXISTS "progresses_created_at_idx" ON "progresses" ("created_at");
+CREATE INDEX IF NOT EXISTS "progresses_rels_order_idx" ON "progresses_rels" ("order");
+CREATE INDEX IF NOT EXISTS "progresses_rels_parent_idx" ON "progresses_rels" ("parent_id");
+CREATE INDEX IF NOT EXISTS "progresses_rels_path_idx" ON "progresses_rels" ("path");
+CREATE INDEX IF NOT EXISTS "students_links_order_idx" ON "students_links" ("_order");
+CREATE INDEX IF NOT EXISTS "students_links_parent_id_idx" ON "students_links" ("_parent_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "students_student_id_idx" ON "students" ("student_id");
 CREATE INDEX IF NOT EXISTS "students_created_at_idx" ON "students" ("created_at");
 CREATE INDEX IF NOT EXISTS "students_rels_order_idx" ON "students_rels" ("order");
 CREATE INDEX IF NOT EXISTS "students_rels_parent_idx" ON "students_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "students_rels_path_idx" ON "students_rels" ("path");
+CREATE UNIQUE INDEX IF NOT EXISTS "subjects_code_idx" ON "subjects" ("code");
+CREATE INDEX IF NOT EXISTS "subjects_created_at_idx" ON "subjects" ("created_at");
 CREATE INDEX IF NOT EXISTS "media_created_at_idx" ON "media" ("created_at");
 CREATE UNIQUE INDEX IF NOT EXISTS "media_filename_idx" ON "media" ("filename");
 CREATE INDEX IF NOT EXISTS "media_sizes_thumbnail_sizes_thumbnail_filename_idx" ON "media" ("sizes_thumbnail_filename");
@@ -256,6 +312,18 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
+ ALTER TABLE "courses_rels" ADD CONSTRAINT "courses_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "courses"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "courses_rels" ADD CONSTRAINT "courses_rels_subjects_fk" FOREIGN KEY ("subjects_id") REFERENCES "subjects"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
  ALTER TABLE "faculties_rels" ADD CONSTRAINT "faculties_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "faculties"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -269,6 +337,12 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "faculties_rels" ADD CONSTRAINT "faculties_rels_courses_fk" FOREIGN KEY ("courses_id") REFERENCES "courses"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "faculties_rels" ADD CONSTRAINT "faculties_rels_subjects_fk" FOREIGN KEY ("subjects_id") REFERENCES "subjects"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -305,6 +379,30 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "grades_rels" ADD CONSTRAINT "grades_rels_courses_fk" FOREIGN KEY ("courses_id") REFERENCES "courses"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "progresses_rels" ADD CONSTRAINT "progresses_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "progresses"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "progresses_rels" ADD CONSTRAINT "progresses_rels_subjects_fk" FOREIGN KEY ("subjects_id") REFERENCES "subjects"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "progresses_rels" ADD CONSTRAINT "progresses_rels_students_fk" FOREIGN KEY ("students_id") REFERENCES "students"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "students_links" ADD CONSTRAINT "students_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "students"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -368,14 +466,19 @@ DROP TABLE "announcements";
 DROP TABLE "attendances";
 DROP TABLE "attendances_rels";
 DROP TABLE "courses";
+DROP TABLE "courses_rels";
 DROP TABLE "faculties";
 DROP TABLE "faculties_rels";
 DROP TABLE "fees";
 DROP TABLE "fees_rels";
 DROP TABLE "grades";
 DROP TABLE "grades_rels";
+DROP TABLE "progresses";
+DROP TABLE "progresses_rels";
+DROP TABLE "students_links";
 DROP TABLE "students";
 DROP TABLE "students_rels";
+DROP TABLE "subjects";
 DROP TABLE "media";
 DROP TABLE "payload_preferences";
 DROP TABLE "payload_preferences_rels";

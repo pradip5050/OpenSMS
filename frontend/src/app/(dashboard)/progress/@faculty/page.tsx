@@ -196,7 +196,7 @@ export default function FacultyCourses() {
         },
       },
     ],
-    [percents]
+    [percents, token, progressDeleteIsMutating, progressDeleteTrigger]
   );
 
   const isLoading = facultyIsLoading || studentIsLoading || progressIsLoading;
