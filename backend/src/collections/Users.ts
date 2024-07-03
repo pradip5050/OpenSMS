@@ -12,6 +12,7 @@ const Users: CollectionConfig = {
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
+    admin: isAdmin,
   },
   fields: [
     {

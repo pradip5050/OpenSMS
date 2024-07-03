@@ -13,15 +13,15 @@ export interface User {
   updatedAt: string;
 }
 
-export const isAdmin: Access<any, User> = ({ req: { user } }) => {
+export const isAdmin = ({ req: { user } }) => {
   return Boolean(user?.roles?.includes("admin"));
 };
 
-export const isFaculty: Access<any, User> = ({ req: { user } }) => {
+export const isFaculty = ({ req: { user } }) => {
   return Boolean(user?.roles.includes("faculty"));
 };
 
-export const isAdminOrFaculty: Access<any, User> = ({ req: { user } }) => {
+export const isAdminOrFaculty = ({ req: { user } }) => {
   return Boolean(
     user?.roles.includes("faculty") || user?.roles.includes("admin")
   );

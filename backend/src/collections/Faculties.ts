@@ -7,6 +7,7 @@ const Faculties: CollectionConfig = {
     create: isAdmin,
     update: isAdmin,
     delete: isAdmin,
+    admin: isAdmin,
   },
   admin: {
     useAsTitle: "facultyId",

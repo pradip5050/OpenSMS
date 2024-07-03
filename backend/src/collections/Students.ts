@@ -1,6 +1,4 @@
-import payload from "payload";
 import { CollectionConfig } from "payload/types";
-import qs from "qs";
 import { isAdminOrFaculty } from "../access/isAdmin";
 
 const Students: CollectionConfig = {
@@ -9,6 +7,7 @@ const Students: CollectionConfig = {
     create: isAdminOrFaculty,
     update: isAdminOrFaculty,
     delete: isAdminOrFaculty,
+    admin: isAdminOrFaculty,
   },
   admin: {
     useAsTitle: "studentId",

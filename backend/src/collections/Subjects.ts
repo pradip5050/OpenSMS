@@ -7,6 +7,7 @@ const Subjects: CollectionConfig = {
     create: isAdminOrFaculty,
     update: isAdminOrFaculty,
     delete: isAdminOrFaculty,
+    admin: isAdminOrFaculty,
   },
   admin: {
     useAsTitle: "name",
