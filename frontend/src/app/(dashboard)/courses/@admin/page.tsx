@@ -6,15 +6,6 @@ import GenericError from "@/components/GenericError";
 import SortButton from "@/components/SortButton";
 import Spinner from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Course, CourseResponse, coursesUrl } from "@/lib/dashboard/courses";
 import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";

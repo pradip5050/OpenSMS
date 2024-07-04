@@ -25,11 +25,19 @@ import { groupBy } from "@/lib/utils";
 import { PiCalendarBlankBold } from "react-icons/pi";
 
 export default function Attendance() {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const { data, isLoading, error } = useFetchCollection<AttendanceResponse>(
     attendancesUrl,
     token,
-    { depth: 2, draft: false }
+    {
+      depth: 2,
+      draft: false,
+      where: {
+        date: {
+          less_than_equal: new Date().toISOString(),
+        },
+      },
+    }
   );
 
   const courseGrouped = groupBy(["course", "name"], data?.docs);
@@ -37,7 +45,6 @@ export default function Attendance() {
     ? Object.entries(courseGrouped)
     : undefined;
 
-  // {/* TODO: Convert to a more powerful DataTable instead */}
   if (isLoading) {
     return <Spinner variant="page" />;
   }

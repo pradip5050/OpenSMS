@@ -59,6 +59,11 @@ export default function FacultyAttendancePage() {
   } = useFetchCollection<FacultyResponse>(facultiesUrl, token, {
     draft: false,
     depth: 2,
+    where: {
+      "user.email": {
+        equals: user!.email,
+      },
+    },
   });
   const {
     data: studentData,
@@ -98,33 +103,31 @@ export default function FacultyAttendancePage() {
     trigger: attendanceCreateTrigger,
     error: attendanceCreateError,
     isMutating: attendanceCreateIsMutating,
-  } = useMutateCollection<Attendance, AttendanceResponse, AttendancePayload>(
-    attendancesUrl,
-    "POST",
-    (attendance, data) => {
-      console.log(attendance);
-      return {
-        // FIXME: Do not use any and fix hook types
-        docs: [...data!.docs!, (attendance as any).doc],
-      };
-    }
-  );
+  } = useMutateCollection<
+    { doc: Attendance },
+    AttendanceResponse,
+    AttendancePayload
+  >(attendancesUrl, "POST", (attendance, data) => {
+    return {
+      docs: [...data!.docs!, attendance.doc],
+    };
+  });
   const {
     trigger: attendanceUpdateTrigger,
     error: attendanceUpdateError,
     isMutating: attendanceUpdateIsMutating,
-  } = useMutateCollection<Attendance, AttendanceResponse, AttendancePayload>(
-    attendancesUrl,
-    "PATCH",
-    (attendance, data) => {
-      return {
-        docs: [
-          ...data!.docs!.filter((val) => val.id === attendance.id),
-          (attendance as any).doc,
-        ],
-      };
-    }
-  );
+  } = useMutateCollection<
+    { doc: Attendance },
+    AttendanceResponse,
+    AttendancePayload
+  >(attendancesUrl, "PATCH", (attendance, data) => {
+    return {
+      docs: [
+        ...data!.docs!.filter((val) => val.id === attendance.doc.id),
+        attendance.doc,
+      ],
+    };
+  });
 
   async function togglePresent(
     date: Date,
