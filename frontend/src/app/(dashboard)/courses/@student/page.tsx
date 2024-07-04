@@ -3,6 +3,7 @@
 import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
 import GenericError from "@/components/GenericError";
+import Spinner from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -89,37 +90,7 @@ export default function Courses() {
   const isError = !!error;
 
   if (isLoading) {
-    return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>
-              <Skeleton className="h-10" />
-            </TableHead>
-            <TableHead>
-              <Skeleton className="h-10" />
-            </TableHead>
-            <TableHead>
-              <Skeleton className="h-10" />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from(
-            {
-              length: 10,
-            },
-            (_, i) => (
-              <TableRow key={i}>
-                <TableCell colSpan={3}>
-                  <Skeleton className="h-8 col-span-3" />
-                </TableCell>
-              </TableRow>
-            )
-          )}
-        </TableBody>
-      </Table>
-    );
+    return <Spinner variant="page" />;
   }
 
   if (isError) {

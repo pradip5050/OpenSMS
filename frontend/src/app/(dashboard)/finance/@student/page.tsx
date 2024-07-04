@@ -3,6 +3,7 @@
 import { useAuth } from "@/components/AuthProvider";
 import FeeTable from "@/components/dashboard/finance/FeeTable";
 import GenericError from "@/components/GenericError";
+import Spinner from "@/components/Spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFees } from "@/lib/dashboard/finance";
@@ -18,22 +19,7 @@ export default function Finance() {
   const duePayments = payments?.filter((val) => val.paymentStatus !== "paid");
 
   if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-screen">
-        <Card className="flex flex-col gap-4 lg:col-span-2 p-5">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-full" />
-        </Card>
-        <Card className="flex flex-col gap-4 p-5">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-full" />
-        </Card>
-        <Card className="flex flex-col gap-4 p-5">
-          <Skeleton className="h-10 w-64" />
-          <Skeleton className="h-full" />
-        </Card>
-      </div>
-    );
+    return <Spinner variant="page" />;
   }
 
   if (payments!.length === 0) {

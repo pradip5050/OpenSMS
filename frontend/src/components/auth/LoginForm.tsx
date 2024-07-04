@@ -100,12 +100,12 @@ export function LoginForm() {
                   <FormItem>
                     <div className="flex justify-between">
                       <FormLabel htmlFor="password">Password</FormLabel>
-                      <Link
+                      {/* <Link
                         href="/forgot-password"
                         className="ml-auto inline-block text-sm underline"
                       >
                         Forgot your password?
-                      </Link>
+                      </Link> */}
                     </div>
                     <FormControl>
                       <Input

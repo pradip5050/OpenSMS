@@ -2,7 +2,6 @@
 
 import AnnouncementSheet from "@/components/dashboard/home/AnnouncementSheet";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   AnnouncementResponse,
   announcementsUrl,
@@ -21,21 +20,10 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "@/components/AuthProvider";
 import { isFacultyOrAdmin } from "@/lib/rbac";
-import { Trash2 } from "lucide-react";
 import { useFetchCollection } from "@/lib/hooks";
 import GenericError from "@/components/GenericError";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogTrigger,
-  AlertDialogTitle,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogDescription,
-  AlertDialogCancel,
-  AlertDialogContent,
-} from "@/components/ui/alert-dialog";
 import DeleteAlertDialog from "@/components/DeleteAlertDialog";
+import Spinner from "@/components/Spinner";
 
 export default function Home() {
   const { user, token } = useAuth();
@@ -71,25 +59,7 @@ export default function Home() {
   const isAuthorized = isFacultyOrAdmin(user!.roles);
 
   if (isLoading) {
-    return (
-      <Table>
-        <TableBody>
-          {Array.from({ length: 5 }, (_, index) => {
-            return (
-              <TableRow
-                key={index}
-                className="flex flex-row items-center space-x-4 "
-              >
-                <TableCell className="flex flex-col w-full space-y-2">
-                  <Skeleton className="h-8 w-[70%]" />
-                  <Skeleton className="h-8 w-[95%]" />
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    );
+    return <Spinner variant="page" />;
   }
 
   if (!!error) {

@@ -236,7 +236,6 @@ export default function FacultyAttendancePage() {
           </Popover>
         )}
       </div>
-      {/* <DataTable columns={columns} data={studentFeeData!} /> */}
       {value !== "" && (
         <Table className="block md:max-w-[calc(100vw-16rem)] overflow-auto">
           <TableHeader>

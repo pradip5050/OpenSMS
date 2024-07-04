@@ -4,6 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { DataTable } from "@/components/dashboard/DataTable";
 import GenericError from "@/components/GenericError";
 import SortButton from "@/components/SortButton";
+import Spinner from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -63,37 +64,7 @@ export default function FacultyCourses() {
   const isError = !!courseError;
 
   if (isLoading) {
-    return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>
-              <Skeleton className="h-10" />
-            </TableHead>
-            <TableHead>
-              <Skeleton className="h-10" />
-            </TableHead>
-            <TableHead>
-              <Skeleton className="h-10" />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from(
-            {
-              length: 10,
-            },
-            (_, i) => (
-              <TableRow key={i}>
-                <TableCell colSpan={3}>
-                  <Skeleton className="h-8 col-span-3" />
-                </TableCell>
-              </TableRow>
-            )
-          )}
-        </TableBody>
-      </Table>
-    );
+    return <Spinner variant="page" />;
   }
 
   if (isError) {
