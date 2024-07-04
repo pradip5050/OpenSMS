@@ -108,9 +108,13 @@ export default function FacultyAttendancePage() {
     AttendanceResponse,
     AttendancePayload
   >(attendancesUrl, "POST", (attendance, data) => {
-    return {
-      docs: [...data!.docs!, attendance.doc],
-    };
+    try {
+      return {
+        docs: [...data!.docs!, attendance.doc],
+      };
+    } catch (err) {
+      return data!;
+    }
   });
   const {
     trigger: attendanceUpdateTrigger,
@@ -121,12 +125,16 @@ export default function FacultyAttendancePage() {
     AttendanceResponse,
     AttendancePayload
   >(attendancesUrl, "PATCH", (attendance, data) => {
-    return {
-      docs: [
-        ...data!.docs!.filter((val) => val.id === attendance.doc.id),
-        attendance.doc,
-      ],
-    };
+    try {
+      return {
+        docs: [
+          ...data!.docs!.filter((val) => val.id === attendance.doc.id),
+          attendance.doc,
+        ],
+      };
+    } catch (err) {
+      return data!;
+    }
   });
 
   async function togglePresent(

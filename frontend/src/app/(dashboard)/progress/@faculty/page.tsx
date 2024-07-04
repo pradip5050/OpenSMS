@@ -10,6 +10,7 @@ import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
+import { useToast } from "@/components/ui/use-toast";
 import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
 import {
   Progress,
@@ -19,11 +20,13 @@ import {
 } from "@/lib/dashboard/progresses";
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
+import { constructiveToast, destructiveToast } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 
 export default function FacultyCourses() {
   const { user, token } = useAuth();
+  const { toast } = useToast();
   const {
     data: facultyData,
     isLoading: facultyIsLoading,
@@ -69,6 +72,7 @@ export default function FacultyCourses() {
   const {
     trigger: progressUpdateTrigger,
     isMutating: progressUpdateIsMutating,
+    error: progressUpdateError,
   } = useMutateCollection<Progress, ProgressResponse, ProgressPayload>(
     progressesUrl,
     "PATCH"
@@ -76,6 +80,7 @@ export default function FacultyCourses() {
   const {
     trigger: progressDeleteTrigger,
     isMutating: progressDeleteIsMutating,
+    error: progressDeleteError,
   } = useMutateCollection<Progress, ProgressResponse, ProgressPayload>(
     progressesUrl,
     "DELETE",
@@ -94,9 +99,6 @@ export default function FacultyCourses() {
 
   const filteredProgresses = progresses?.filter(
     (progress) => progress.student.id === value
-  );
-  const filteredPercents = filteredProgresses?.map(
-    (progress) => progress.percent
   );
 
   const [percents, setPercents] = useState<number[] | undefined>(() =>
@@ -141,6 +143,12 @@ export default function FacultyCourses() {
           subject: progress.subject.id,
         },
       });
+
+      if (progressUpdateError) {
+        destructiveToast(toast, "Error", "Failed to update progress")();
+      } else {
+        constructiveToast(toast, "Success", "Updated progress")();
+      }
     });
   }
 
@@ -188,6 +196,16 @@ export default function FacultyCourses() {
                     id: row.original.id,
                     payload: {},
                   });
+
+                  if (progressDeleteError) {
+                    destructiveToast(
+                      toast,
+                      "Error",
+                      "Failed to delete progress"
+                    )();
+                  } else {
+                    constructiveToast(toast, "Success", "Deleted progress")();
+                  }
                 }}
                 variant={{ type: "icon", disabled: progressDeleteIsMutating }}
               />
@@ -196,7 +214,14 @@ export default function FacultyCourses() {
         },
       },
     ],
-    [percents, token, progressDeleteIsMutating, progressDeleteTrigger]
+    [
+      percents,
+      token,
+      progressDeleteIsMutating,
+      progressDeleteTrigger,
+      toast,
+      progressDeleteError,
+    ]
   );
 
   const isLoading = facultyIsLoading || studentIsLoading || progressIsLoading;

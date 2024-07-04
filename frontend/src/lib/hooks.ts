@@ -52,7 +52,6 @@ export function useMutateCollection<TData, TResponse, TPayload>(
     TResponse
   >(
     url,
-    // FIXME: Fix conditional type and test partial payload
     async (
       url: string,
       {
@@ -65,7 +64,6 @@ export function useMutateCollection<TData, TResponse, TPayload>(
         ? qs.stringify(arg.query, { addQueryPrefix: true })
         : undefined;
       const aggUrl = `${url}/${arg.id ?? ""}${stringifiedQuery ?? ""}`;
-      console.log(aggUrl);
 
       return axios
         .request({
@@ -78,11 +76,14 @@ export function useMutateCollection<TData, TResponse, TPayload>(
           },
         })
         .then((res: AxiosResponse<TData>) => res.data)
-        .catch((err) => err);
+        .catch((err) => {
+          throw err;
+        });
     },
     {
       populateCache: populateCache,
       revalidate: !!populateCache,
+      throwOnError: false,
     }
   );
 

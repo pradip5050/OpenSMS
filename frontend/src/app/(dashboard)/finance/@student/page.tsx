@@ -5,7 +5,6 @@ import FeeTable from "@/components/dashboard/finance/FeeTable";
 import GenericError from "@/components/GenericError";
 import Spinner from "@/components/Spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useFees } from "@/lib/dashboard/finance";
 
 export default function Finance() {

@@ -55,21 +55,11 @@ export default function Finance() {
     feesUrl,
     "DELETE",
     (result, data) => {
-      return { docs: data!.docs!.filter((val) => val.id !== result.id) };
-    }
-  );
-  const {
-    trigger: updateFeeTrigger,
-    isMutating: updateFeeIsMutating,
-    error: updateFeeError,
-  } = useMutateCollection<Fee, FeeResponse, FeePayload>(
-    feesUrl,
-    "PATCH",
-    (result, data) => {
-      console.log(result);
-      return {
-        docs: [...data!.docs!.filter((val) => val.id !== result.id), result],
-      };
+      try {
+        return { docs: data!.docs!.filter((val) => val.id !== result.id) };
+      } catch (err) {
+        return data!;
+      }
     }
   );
 
@@ -195,7 +185,7 @@ export default function Finance() {
 
   const isLoading = feeIsLoading || studentIsLoading;
   const isError = !!feeError || !!studentError;
-  const isMutating = deleteFeeIsMutating || updateFeeIsMutating;
+  const isMutating = deleteFeeIsMutating;
 
   if (isLoading) {
     return <Spinner variant="page" />;

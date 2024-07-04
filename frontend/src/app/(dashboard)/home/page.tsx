@@ -24,9 +24,12 @@ import { useFetchCollection } from "@/lib/hooks";
 import GenericError from "@/components/GenericError";
 import DeleteAlertDialog from "@/components/DeleteAlertDialog";
 import Spinner from "@/components/Spinner";
+import { constructiveToast, destructiveToast } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Home() {
   const { user, token } = useAuth();
+  const { toast } = useToast();
   const { data, error, isLoading, mutate } =
     useFetchCollection<AnnouncementResponse>(announcementsUrl, token, {
       draft: false,
@@ -44,15 +47,13 @@ export default function Home() {
     .toSorted((a, b) => (a.updatedAt > b.updatedAt ? -1 : 1));
 
   async function deleteAnnouncementById(id: string) {
-    const { result, error } = await deleteAnnouncements(
-      announcementsUrl,
-      token,
-      id
-    );
+    const { error } = await deleteAnnouncements(announcementsUrl, token, id);
 
-    // TODO: Handle popups
-    console.log(result);
-    console.log(error);
+    if (error) {
+      destructiveToast(toast, "Error", "Failed to delete announcement")();
+    } else {
+      constructiveToast(toast, "Success", "Deleted announcement")();
+    }
     mutate();
   }
 

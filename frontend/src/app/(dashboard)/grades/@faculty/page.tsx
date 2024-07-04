@@ -19,9 +19,9 @@ import {
 } from "@/lib/dashboard/grades";
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
-import { groupBy } from "@/lib/utils";
+import { constructiveToast, destructiveToast, groupBy } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import React from "react";
 import {
   DropdownMenu,
@@ -35,6 +35,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
 import GenericError from "@/components/GenericError";
 import SortButton from "@/components/SortButton";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function StudentGrades() {
   const { user, token } = useAuth();
@@ -46,14 +47,17 @@ export default function StudentGrades() {
     draft: false,
     depth: 2,
   });
-  const { trigger: gradeDeleteTrigger, isMutating: gradeDeleteIsMutating } =
-    useMutateCollection<Grade, GradeResponse, GradePayload>(
-      gradesUrl,
-      "DELETE",
-      (result, data) => {
-        return { docs: data!.docs!.filter((val) => val.id !== result.id) };
-      }
-    );
+  const {
+    trigger: gradeDeleteTrigger,
+    isMutating: gradeDeleteIsMutating,
+    error: gradeDeleteError,
+  } = useMutateCollection<Grade, GradeResponse, GradePayload>(
+    gradesUrl,
+    "DELETE",
+    (result, data) => {
+      return { docs: data!.docs!.filter((val) => val.id !== result.id) };
+    }
+  );
 
   const {
     data: studentData,
@@ -77,6 +81,7 @@ export default function StudentGrades() {
   const [value, setValue] = React.useState("");
   const [createOpen, setCreateOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
+  const { toast } = useToast();
 
   const studentGradesData = gradesData?.docs?.filter(
     (grade) => grade.student.id === value
@@ -134,6 +139,16 @@ export default function StudentGrades() {
                       id: row.original.id,
                       payload: {},
                     });
+
+                    if (gradeDeleteError) {
+                      destructiveToast(
+                        toast,
+                        "Error",
+                        "Failed to delete grade"
+                      )();
+                    } else {
+                      constructiveToast(toast, "Success", "Deleted grade")();
+                    }
                   }}
                 >
                   Delete
