@@ -33,7 +33,6 @@ export default function RazorpayGateway({
   async function pay(event: MouseEvent<HTMLElement>) {
     await trigger({ token: token });
 
-    // TODO: Handle error UI
     if (error) {
       toast({
         title: "Error",

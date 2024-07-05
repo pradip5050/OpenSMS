@@ -27,13 +27,14 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, constructiveToast, destructiveToast } from "@/lib/utils";
 import { format } from "date-fns";
 import { Student } from "@/lib/dashboard/students";
 import { Fee, FeePayload, FeeResponse, feesUrl } from "@/lib/dashboard/finance";
 import { useAuth } from "@/components/AuthProvider";
 import Spinner from "@/components/Spinner";
 import { useMutateCollection } from "@/lib/hooks";
+import { useToast } from "@/components/ui/use-toast";
 
 export interface AddFeeDialogProps {
   student?: Student;
@@ -100,40 +101,45 @@ export function FeeDialog({
     }
   );
   const { token } = useAuth();
+  const { toast } = useToast();
 
   const isEdit = !!description && !!amount && !!dueDate && !!id;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (isEdit) {
-      try {
-        await updateFeeTrigger({
-          token: token!,
-          id: id,
-          payload: {
-            description: values.description,
-            amount: Number(values.amount),
-            dueDate: values.dueDate.toISOString(),
-            paymentStatus: values.paymentStatus,
-            student: student!.id,
-          },
-        });
-      } catch (err) {
-        console.log(err);
+      await updateFeeTrigger({
+        token: token!,
+        id: id,
+        payload: {
+          description: values.description,
+          amount: Number(values.amount),
+          dueDate: values.dueDate.toISOString(),
+          paymentStatus: values.paymentStatus,
+          student: student!.id,
+        },
+      });
+
+      if (updateFeeError) {
+        destructiveToast(toast, "Error", "Failed to update fee")();
+      } else {
+        constructiveToast(toast, "Success", "Updated fee")();
       }
     } else {
-      try {
-        await createFeeTrigger({
-          token: token!,
-          payload: {
-            description: values.description,
-            amount: Number(values.amount),
-            dueDate: values.dueDate.toISOString(),
-            paymentStatus: "unpaid",
-            student: student!.id,
-          },
-        });
-      } catch (err) {
-        console.log(err);
+      await createFeeTrigger({
+        token: token!,
+        payload: {
+          description: values.description,
+          amount: Number(values.amount),
+          dueDate: values.dueDate.toISOString(),
+          paymentStatus: "unpaid",
+          student: student!.id,
+        },
+      });
+
+      if (createFeeError) {
+        destructiveToast(toast, "Error", "Failed to create fee")();
+      } else {
+        constructiveToast(toast, "Success", "Created fee")();
       }
     }
     // TODO: Handle error

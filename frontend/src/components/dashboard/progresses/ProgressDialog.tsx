@@ -16,6 +16,8 @@ import {
 } from "@/lib/dashboard/progresses";
 import { Slider } from "@/components/ui/slider";
 import Spinner from "@/components/Spinner";
+import { constructiveToast, destructiveToast } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 export interface ProgressDialogProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -29,6 +31,7 @@ export function ProgressDialog({
   subjectOptions,
 }: ProgressDialogProps) {
   const { token } = useAuth();
+  const { toast } = useToast();
   const [subjectValue, setSubjectValue] = useState("");
   const [percent, setPercent] = useState([0]);
 
@@ -61,8 +64,11 @@ export function ProgressDialog({
     });
 
     if (progressCreateError) {
-      console.log(progressCreateError);
+      destructiveToast(toast, "Error", "Failed to update grade")();
+    } else {
+      constructiveToast(toast, "Success", "Updated grade")();
     }
+
     setOpen(false);
   }
 

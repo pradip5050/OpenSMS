@@ -59,37 +59,43 @@ export default function AnnouncementSheet({
   });
 
   const editorRef: any = useRef<LE | undefined>();
-  const { trigger: createTrigger, isMutating: createIsMutating } =
-    useMutateCollection<
-      Announcement,
-      AnnouncementResponse,
-      AnnouncementPayload
-    >(
-      announcementsUrl,
-      "POST",
-      (result, currentData) => {
-        return { docs: [...currentData!.docs!, result] };
-      },
-      (data) => data
-    );
-  const { trigger: updateTrigger, isMutating: updateIsMutating } =
-    useMutateCollection<
-      Announcement,
-      AnnouncementResponse,
-      AnnouncementPayload
-    >(
-      announcementsUrl,
-      "PATCH",
-      (result, currentData) => {
-        return {
-          docs: [
-            ...currentData!.docs!.filter((val) => val.id !== result.id),
-            result,
-          ],
-        };
-      },
-      (data) => data
-    );
+  const {
+    trigger: createTrigger,
+    isMutating: createIsMutating,
+    error: createError,
+  } = useMutateCollection<
+    Announcement,
+    AnnouncementResponse,
+    AnnouncementPayload
+  >(
+    announcementsUrl,
+    "POST",
+    (result, currentData) => {
+      return { docs: [...currentData!.docs!, result] };
+    },
+    (data) => data
+  );
+  const {
+    trigger: updateTrigger,
+    isMutating: updateIsMutating,
+    error: updateError,
+  } = useMutateCollection<
+    Announcement,
+    AnnouncementResponse,
+    AnnouncementPayload
+  >(
+    announcementsUrl,
+    "PATCH",
+    (result, currentData) => {
+      return {
+        docs: [
+          ...currentData!.docs!.filter((val) => val.id !== result.id),
+          result,
+        ],
+      };
+    },
+    (data) => data
+  );
   const [open, setOpen] = useState(false);
   const auth = useAuth();
   const { toast } = useToast();
@@ -97,41 +103,39 @@ export default function AnnouncementSheet({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(JSON.stringify(editorRef.current!.getEditorState()));
 
-    try {
-      if (editPayload) {
-        await updateTrigger({
-          token: auth.token!,
-          id: editPayload?.id,
-          payload: {
-            title: values.title,
-            content: JSON.stringify(editorRef.current.getEditorState()),
-          },
-        });
-      } else {
-        await createTrigger({
-          token: auth.token!,
-          payload: {
-            title: values.title,
-            content: JSON.stringify(editorRef.current.getEditorState()),
-          },
-        });
-      }
+    if (editPayload) {
+      await updateTrigger({
+        token: auth.token!,
+        id: editPayload?.id,
+        payload: {
+          title: values.title,
+          content: JSON.stringify(editorRef.current.getEditorState()),
+        },
+      });
+    } else {
+      await createTrigger({
+        token: auth.token!,
+        payload: {
+          title: values.title,
+          content: JSON.stringify(editorRef.current.getEditorState()),
+        },
+      });
+    }
 
+    if (createError || updateError) {
       constructiveToast(
         toast,
         "Success",
         `${editPayload ? "Edited" : "Created"} announcement`
       )();
-    } catch (err) {
-      console.log(err);
+    } else {
       destructiveToast(
         toast,
         "Error",
         `Could not ${editPayload ? "edit" : "create"} announcement`
       )();
-    } finally {
-      setOpen(false);
     }
+    setOpen(false);
   }
 
   const isMutating = createIsMutating || updateIsMutating;

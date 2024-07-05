@@ -28,6 +28,8 @@ import {
 import { Course } from "@/lib/dashboard/courses";
 import { Student } from "@/lib/dashboard/students";
 import { Combobox } from "../Combobox";
+import { constructiveToast, destructiveToast } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 export interface GradeDialogProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -76,6 +78,7 @@ export function GradeDialog({
     },
   });
   const { user, token } = useAuth();
+  const { toast } = useToast();
   const [courseValue, setCourseValue] = useState("");
 
   const {
@@ -122,6 +125,13 @@ export function GradeDialog({
           student: values.student,
         },
       });
+
+      if (gradeUpdateError) {
+        destructiveToast(toast, "Error", "Failed to update grade")();
+      } else {
+        constructiveToast(toast, "Success", "Updated grade")();
+      }
+
       setOpen(false);
     } else {
       if (courseValue == "") {
@@ -139,8 +149,11 @@ export function GradeDialog({
       });
 
       if (gradeCreateError) {
-        console.log(gradeCreateError);
+        destructiveToast(toast, "Error", "Failed to create grade")();
+      } else {
+        constructiveToast(toast, "Success", "Created grade")();
       }
+
       setOpen(false);
     }
   }
