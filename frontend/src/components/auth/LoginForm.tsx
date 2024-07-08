@@ -19,6 +19,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useAuthDispatch } from "../AuthProvider";
 import Link from "next/link";
+import { destructiveToast } from "@/lib/utils";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter valid email address" }),
@@ -48,15 +49,7 @@ export function LoginForm() {
 
       router.push("/home");
     } catch (err) {
-      const { dismiss } = toast({
-        variant: "destructive",
-        title: "Error!",
-        description: JSON.stringify(err),
-      });
-
-      setTimeout(() => {
-        dismiss();
-      }, 2000);
+      destructiveToast(toast, "Error", "Invalid credentials")();
     }
   }
 

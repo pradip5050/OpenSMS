@@ -112,28 +112,27 @@ export default function AnnouncementSheet({
           content: JSON.stringify(editorRef.current.getEditorState()),
         },
       });
+
+      if (updateError) {
+        destructiveToast(toast, "Error", "Could not update announcement")();
+      } else {
+        constructiveToast(toast, "Success", "Updated announcement")();
+      }
     } else {
-      await createTrigger({
+      const res = await createTrigger({
         token: auth.token!,
         payload: {
           title: values.title,
           content: JSON.stringify(editorRef.current.getEditorState()),
         },
       });
-    }
+      console.log(res);
 
-    if (createError || updateError) {
-      constructiveToast(
-        toast,
-        "Success",
-        `${editPayload ? "Edited" : "Created"} announcement`
-      )();
-    } else {
-      destructiveToast(
-        toast,
-        "Error",
-        `Could not ${editPayload ? "edit" : "create"} announcement`
-      )();
+      if (createError) {
+        destructiveToast(toast, "Error", "Could not create announcement")();
+      } else {
+        constructiveToast(toast, "Success", "Created announcement")();
+      }
     }
     setOpen(false);
   }
