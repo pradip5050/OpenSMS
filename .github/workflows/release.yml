@@ -196,7 +196,7 @@ jobs:
         with:
           releaseDirectory: ./src-tauri/gen/android/app/build/outputs/apk/universal/release
           signingKeyBase64: ${{ secrets.KEY_FILE }}
-          alias: opensms
+          alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEY_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
