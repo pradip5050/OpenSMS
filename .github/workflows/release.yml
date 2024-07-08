@@ -203,6 +203,11 @@ jobs:
           ANDROID_HOME: ./sdk
           BUILD_TOOLS_VERSION: 35.0.0-rc4
 
+      - name: Rename signed apk and move to apk/
+        run: |
+          mkdir apk
+          mv ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned-signed.apk ./apk/opensms.apk
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
@@ -210,5 +215,5 @@ jobs:
           body_path: CHANGELOG.md
           prerelease: true
           generate_release_notes: true
-          files: ./src-tauri/gen/android/app/build/outputs/apk/universal/release/*
+          files: ./apk/*
           token: ${{ secrets.GITHUB_TOKEN }}
