@@ -1,5 +1,6 @@
 import express from "express";
 import payload from "payload";
+import cron from "node-cron";
 
 require("dotenv").config();
 const app = express();
@@ -14,6 +15,10 @@ const start = async () => {
     express: app,
     onInit: async () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
+
+      cron.schedule("* * * * * *", async () => {
+        console.log(await payload.count({ collection: "users" }));
+      });
     },
   });
 
