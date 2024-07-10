@@ -16,7 +16,7 @@ const Courses: CollectionConfig = {
   fields: [
     { name: "code", type: "text", unique: true, required: true },
     { name: "name", type: "text", required: true },
-    { name: "credits", type: "number", required: true },
+    { name: "credits", type: "number", required: false },
     {
       name: "duration",
       label: "Duration (in months)",
