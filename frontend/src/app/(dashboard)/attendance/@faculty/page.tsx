@@ -254,7 +254,7 @@ export default function FacultyAttendancePage() {
               <TableHead>Student</TableHead>
               {dates.map((date) => (
                 <TableHead key={date.toISOString()}>
-                  {`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`}
+                  {`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`}
                 </TableHead>
               ))}
             </TableRow>

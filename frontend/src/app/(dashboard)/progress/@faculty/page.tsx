@@ -97,6 +97,7 @@ export default function FacultyCourses() {
   const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
 
+  const student = students?.filter((val) => val.id === value).at(0);
   const filteredProgresses = progresses?.filter(
     (progress) => progress.student.id === value
   );
@@ -118,6 +119,11 @@ export default function FacultyCourses() {
     return { value: val.id, label: val.user.name };
   });
   const subjectOptions = faculty?.subjects
+    ?.filter((facSub) =>
+      student?.courses
+        .map((val) => val.subjects.map((sub) => sub.id))
+        .some((r) => r.includes(facSub.id))
+    )
     ?.filter(
       (val) =>
         !filteredProgresses
