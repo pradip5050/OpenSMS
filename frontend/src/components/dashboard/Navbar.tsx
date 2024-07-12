@@ -83,10 +83,6 @@ export default function Navbar({ setOpen }: NavbarProps) {
           >
             {<route.icon className="w-4 h-4" />}
             {route.name}
-            {/* TODO: Add badge to student announcements tab */}
-            {/* <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                6
-              </Badge> */}
           </Link>
         );
       })}

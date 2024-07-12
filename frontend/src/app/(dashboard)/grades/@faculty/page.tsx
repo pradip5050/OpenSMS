@@ -90,7 +90,6 @@ export default function StudentGrades() {
   const faculty = facultyData?.docs?.at(0);
 
   const facultyCourses = faculty?.courses;
-  // TODO: Simplify
   const facultyCourseStudents = students?.filter((val) =>
     val.courses.some((course) =>
       facultyCourses

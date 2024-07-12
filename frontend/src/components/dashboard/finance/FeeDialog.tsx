@@ -88,7 +88,6 @@ export function FeeDialog({
     isMutating: updateFeeIsMutating,
     error: updateFeeError,
   } = useMutateCollection<{ doc: Fee }, FeeResponse, FeePayload>(
-    // TODO: Create interface for update/post responses
     feesUrl,
     "PATCH",
     (result, data) => {
@@ -142,7 +141,6 @@ export function FeeDialog({
         constructiveToast(toast, "Success", "Created fee")();
       }
     }
-    // TODO: Handle error
     // setOpen(false);
   }
 

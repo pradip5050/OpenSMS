@@ -14,7 +14,6 @@ const Progresses: CollectionConfig = {
     description: "A subject progress",
   },
   fields: [
-    // TODO: Perhaps change from number to pending/ongoing/complete
     { name: "percent", type: "number", max: 100, required: true },
     {
       name: "subject",
