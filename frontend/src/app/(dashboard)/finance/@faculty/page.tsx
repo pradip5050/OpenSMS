@@ -21,7 +21,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Fee } from "@/lib/dashboard/finance";
 import Spinner from "@/components/Spinner";
 import { Combobox } from "@/components/dashboard/Combobox";
-import React from "react";
+import React, { useMemo } from "react";
 import { FeeDialog } from "@/components/dashboard/finance/FeeDialog";
 import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
@@ -75,104 +75,6 @@ export default function Finance() {
   const [value, setValue] = React.useState("");
   const { toast } = useToast();
 
-  // TODO: useMemo
-  const columns: ColumnDef<Fee>[] = [
-    {
-      accessorKey: "description",
-      header: "Description",
-    },
-    {
-      accessorKey: "amount",
-      header: ({ column }) => {
-        return <SortButton title="Amount" column={column} />;
-      },
-    },
-    {
-      accessorKey: "dueDate",
-      header: ({ column }) => {
-        return <SortButton title="Due Date" column={column} />;
-      },
-      sortingFn: (rowA, rowB, _columnId) => {
-        return rowA.original.dueDate > rowB.original.dueDate
-          ? 1
-          : rowA.original.dueDate < rowB.original.dueDate
-            ? -1
-            : 0;
-      },
-      cell: ({ row }) => {
-        return row.original.dueDate.toDateString();
-      },
-    },
-    {
-      accessorKey: "paymentStatus",
-      header: "Payment status",
-      cell: ({ row }) => {
-        const paymentStatus = row.original.paymentStatus;
-
-        return (
-          <Badge variant={paymentStatus === "paid" ? "default" : "destructive"}>
-            {paymentStatus}
-          </Badge>
-        );
-      },
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const fee = row.original;
-
-        return (
-          <Dialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DialogTrigger asChild>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                </DialogTrigger>
-                <DropdownMenuItem
-                  className="bg-destructive"
-                  disabled={isMutating}
-                  onClick={async () => {
-                    await deleteFeeTrigger({
-                      token: token!,
-                      id: fee.id,
-                      payload: {},
-                    });
-
-                    if (deleteFeeError) {
-                      destructiveToast(
-                        toast,
-                        "Error",
-                        "Failed to delete fee"
-                      )();
-                    } else {
-                      constructiveToast(toast, "Success", "Deleted fee")();
-                    }
-                  }}
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <FeeDialog
-              id={fee.id}
-              student={selectedStudent}
-              description={fee.description}
-              amount={fee.amount}
-              dueDate={fee.dueDate}
-              paymentStatus={fee.paymentStatus}
-            />
-          </Dialog>
-        );
-      },
-    },
-  ];
-
   const students = studentData?.docs;
   const studentsOptions = students?.map((val) => {
     return { value: val.id, label: val.user.name };
@@ -186,6 +88,115 @@ export default function Finance() {
   const isLoading = feeIsLoading || studentIsLoading;
   const isError = !!feeError || !!studentError;
   const isMutating = deleteFeeIsMutating;
+
+  const columns: ColumnDef<Fee>[] = useMemo(
+    () => [
+      {
+        accessorKey: "description",
+        header: "Description",
+      },
+      {
+        accessorKey: "amount",
+        header: ({ column }) => {
+          return <SortButton title="Amount" column={column} />;
+        },
+      },
+      {
+        accessorKey: "dueDate",
+        header: ({ column }) => {
+          return <SortButton title="Due Date" column={column} />;
+        },
+        sortingFn: (rowA, rowB, _columnId) => {
+          return rowA.original.dueDate > rowB.original.dueDate
+            ? 1
+            : rowA.original.dueDate < rowB.original.dueDate
+              ? -1
+              : 0;
+        },
+        cell: ({ row }) => {
+          return row.original.dueDate.toDateString();
+        },
+      },
+      {
+        accessorKey: "paymentStatus",
+        header: "Payment status",
+        cell: ({ row }) => {
+          const paymentStatus = row.original.paymentStatus;
+
+          return (
+            <Badge
+              variant={paymentStatus === "paid" ? "default" : "destructive"}
+            >
+              {paymentStatus}
+            </Badge>
+          );
+        },
+      },
+      {
+        id: "actions",
+        cell: ({ row }) => {
+          const fee = row.original;
+
+          return (
+            <Dialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                  </DialogTrigger>
+                  <DropdownMenuItem
+                    className="bg-destructive"
+                    disabled={isMutating}
+                    onClick={async () => {
+                      await deleteFeeTrigger({
+                        token: token!,
+                        id: fee.id,
+                        payload: {},
+                      });
+
+                      if (deleteFeeError) {
+                        destructiveToast(
+                          toast,
+                          "Error",
+                          "Failed to delete fee"
+                        )();
+                      } else {
+                        constructiveToast(toast, "Success", "Deleted fee")();
+                      }
+                    }}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <FeeDialog
+                id={fee.id}
+                student={selectedStudent}
+                description={fee.description}
+                amount={fee.amount}
+                dueDate={fee.dueDate}
+                paymentStatus={fee.paymentStatus}
+              />
+            </Dialog>
+          );
+        },
+      },
+    ],
+    [
+      deleteFeeError,
+      deleteFeeTrigger,
+      isMutating,
+      toast,
+      selectedStudent,
+      token,
+    ]
+  );
 
   if (isLoading) {
     return <Spinner variant="page" />;

@@ -22,7 +22,7 @@ import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 import { constructiveToast, destructiveToast, groupBy } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronsUpDown } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -99,74 +99,77 @@ export default function StudentGrades() {
 
   const groupedCourses = groupBy(["course", "name"], studentGradesData);
 
-  const columns: ColumnDef<Grade>[] = [
-    { accessorKey: "testType", header: "Test Type" },
-    {
-      accessorKey: "marks",
-      header: ({ column }) => {
-        return <SortButton title="Marks" column={column} />;
-      },
-    },
-    { accessorKey: "maxMarks", header: "Max Marks" },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        return (
-          <Dialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DialogTrigger asChild>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                </DialogTrigger>
-                <DropdownMenuItem
-                  className="bg-destructive"
-                  disabled={isMutating}
-                  onClick={async () => {
-                    await gradeDeleteTrigger({
-                      token: token!,
-                      id: row.original.id,
-                      payload: {},
-                    });
-
-                    if (gradeDeleteError) {
-                      destructiveToast(
-                        toast,
-                        "Error",
-                        "Failed to delete grade"
-                      )();
-                    } else {
-                      constructiveToast(toast, "Success", "Deleted grade")();
-                    }
-                  }}
-                >
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <GradeDialog
-              id={row.original.id}
-              student={row.original.student.id}
-              course={row.original.course.id}
-              marks={row.original.marks}
-              maxMarks={row.original.maxMarks}
-              testType={row.original.testType}
-              setOpen={setEditOpen}
-            />
-          </Dialog>
-        );
-      },
-    },
-  ];
-
   const isLoading = gradesIsLoading || studentIsLoading || courseIsLoading;
   const isError = !!gradesError || !!studentError || !!courseError;
   const isMutating = gradeDeleteIsMutating;
+
+  const columns: ColumnDef<Grade>[] = useMemo(
+    () => [
+      { accessorKey: "testType", header: "Test Type" },
+      {
+        accessorKey: "marks",
+        header: ({ column }) => {
+          return <SortButton title="Marks" column={column} />;
+        },
+      },
+      { accessorKey: "maxMarks", header: "Max Marks" },
+      {
+        id: "actions",
+        cell: ({ row }) => {
+          return (
+            <Dialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                  </DialogTrigger>
+                  <DropdownMenuItem
+                    className="bg-destructive"
+                    disabled={isMutating}
+                    onClick={async () => {
+                      await gradeDeleteTrigger({
+                        token: token!,
+                        id: row.original.id,
+                        payload: {},
+                      });
+
+                      if (gradeDeleteError) {
+                        destructiveToast(
+                          toast,
+                          "Error",
+                          "Failed to delete grade"
+                        )();
+                      } else {
+                        constructiveToast(toast, "Success", "Deleted grade")();
+                      }
+                    }}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <GradeDialog
+                id={row.original.id}
+                student={row.original.student.id}
+                course={row.original.course.id}
+                marks={row.original.marks}
+                maxMarks={row.original.maxMarks}
+                testType={row.original.testType}
+                setOpen={setEditOpen}
+              />
+            </Dialog>
+          );
+        },
+      },
+    ],
+    [gradeDeleteError, gradeDeleteTrigger, isMutating, toast, token]
+  );
 
   if (isLoading) {
     return <Spinner variant="page" />;

@@ -16,7 +16,7 @@ import { useFetchCollection } from "@/lib/hooks";
 import { groupBy } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronsUpDown } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 
 export default function StudentGrades() {
   const { user, token } = useAuth();
@@ -36,24 +36,29 @@ export default function StudentGrades() {
   const groupedCourses = groupBy(["course", "name"], studentGradesData);
   console.log(groupedCourses);
 
-  const columns: ColumnDef<Grade>[] = [
-    { accessorKey: "testType", header: "Test Type" },
-    {
-      accessorKey: "marks",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Marks
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
+  const columns: ColumnDef<Grade>[] = useMemo(
+    () => [
+      { accessorKey: "testType", header: "Test Type" },
+      {
+        accessorKey: "marks",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Marks
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
       },
-    },
-    { accessorKey: "maxMarks", header: "Max Marks" },
-  ];
+      { accessorKey: "maxMarks", header: "Max Marks" },
+    ],
+    []
+  );
 
   if (gradesIsLoading) {
     return <Spinner variant="page" />;

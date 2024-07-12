@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFees } from "@/lib/dashboard/finance";
 
 export default function Finance() {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const { data, error, isLoading } = useFees(token);
 
   const payments = data?.docs;

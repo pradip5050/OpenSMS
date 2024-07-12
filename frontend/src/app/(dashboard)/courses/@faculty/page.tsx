@@ -19,6 +19,7 @@ import { Course } from "@/lib/dashboard/courses";
 import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
 import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
+import { useMemo } from "react";
 
 export default function FacultyCourses() {
   const { user, token } = useAuth();
@@ -34,36 +35,38 @@ export default function FacultyCourses() {
   const faculty = facultyData?.docs?.at(0);
   const courses = faculty?.courses;
 
-  // TODO: useMemo
-  const columns: ColumnDef<Course>[] = [
-    {
-      accessorKey: "code",
-      header: ({ column }) => {
-        return <SortButton title="Code" column={column} />;
+  const columns: ColumnDef<Course>[] = useMemo(
+    () => [
+      {
+        accessorKey: "code",
+        header: ({ column }) => {
+          return <SortButton title="Code" column={column} />;
+        },
       },
-    },
-    {
-      accessorKey: "name",
-      header: ({ column }) => {
-        return <SortButton title="Name" column={column} />;
+      {
+        accessorKey: "name",
+        header: ({ column }) => {
+          return <SortButton title="Name" column={column} />;
+        },
       },
-    },
-    { accessorKey: "credits", header: "Credits" },
-    { accessorKey: "duration", header: "Duration" },
-    {
-      accessorKey: "subjects",
-      header: "Subjects",
-      cell: ({ row }) => {
-        return row.original.subjects.map((subject) => {
-          return (
-            <Badge className="mr-1 mb-1" key={subject.id}>
-              {subject.name}
-            </Badge>
-          );
-        });
+      { accessorKey: "credits", header: "Credits" },
+      { accessorKey: "duration", header: "Duration" },
+      {
+        accessorKey: "subjects",
+        header: "Subjects",
+        cell: ({ row }) => {
+          return row.original.subjects.map((subject) => {
+            return (
+              <Badge className="mr-1 mb-1" key={subject.id}>
+                {subject.name}
+              </Badge>
+            );
+          });
+        },
       },
-    },
-  ];
+    ],
+    []
+  );
 
   const isLoading = facultyIsLoading;
   const isError = !!facultyError;
