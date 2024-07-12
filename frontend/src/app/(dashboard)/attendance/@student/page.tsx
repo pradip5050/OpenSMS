@@ -25,7 +25,7 @@ import { groupBy } from "@/lib/utils";
 import { PiCalendarBlankBold } from "react-icons/pi";
 
 export default function Attendance() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { data, isLoading, error } = useFetchCollection<AttendanceResponse>(
     attendancesUrl,
     token,
@@ -33,9 +33,16 @@ export default function Attendance() {
       depth: 2,
       draft: false,
       where: {
-        date: {
-          less_than_equal: new Date().toISOString(),
-        },
+        and: [
+          {
+            date: {
+              less_than_equal: new Date().toISOString(),
+            },
+          },
+          {
+            "student.user.email": { equals: user!.email },
+          },
+        ],
       },
     }
   );

@@ -10,7 +10,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
 import { useFetchCollection, useMutateCollection } from "@/lib/hooks";
 import { cn, constructiveToast, destructiveToast } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
@@ -40,9 +39,10 @@ import {
 import { Toggle } from "@/components/ui/toggle";
 import { useToast } from "@/components/ui/use-toast";
 import GenericError from "@/components/GenericError";
+import { CourseResponse, coursesUrl } from "@/lib/dashboard/courses";
 
 export default function FacultyAttendancePage() {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
 
   const {
     data: attendanceData,
@@ -53,23 +53,18 @@ export default function FacultyAttendancePage() {
     depth: 2,
   });
   const {
-    data: facultyData,
-    isLoading: facultyIsLoading,
-    error: facultyError,
-  } = useFetchCollection<FacultyResponse>(facultiesUrl, token, {
-    draft: false,
-    depth: 2,
-    where: {
-      "user.email": {
-        equals: user!.email,
-      },
-    },
-  });
-  const {
     data: studentData,
     isLoading: studentIsLoading,
     error: studentError,
   } = useFetchCollection<StudentResponse>(studentsUrl, token, {
+    draft: false,
+    depth: 2,
+  });
+  const {
+    data: courseData,
+    isLoading: courseIsLoading,
+    error: courseError,
+  } = useFetchCollection<CourseResponse>(coursesUrl, token, {
     draft: false,
     depth: 2,
   });
@@ -80,10 +75,6 @@ export default function FacultyAttendancePage() {
   });
   const { toast } = useToast();
 
-  const faculty = facultyData?.docs?.at(0);
-  const facultyCourseOptions = faculty?.courses.map((val) => {
-    return { value: val.id, label: val.name };
-  });
   const studentsByCourse = studentData?.docs?.filter((student) =>
     student.courses.map((course) => course.id).some((id) => id === value)
   );
@@ -181,8 +172,12 @@ export default function FacultyAttendancePage() {
     }
   }
 
-  const isLoading = attendanceIsLoading || studentIsLoading || facultyIsLoading;
-  const isError = !!attendanceError || !!studentError || !!facultyError;
+  const courseOptions = courseData?.docs?.map((val) => {
+    return { value: val.id, label: val.name };
+  });
+
+  const isLoading = attendanceIsLoading || studentIsLoading || courseIsLoading;
+  const isError = !!attendanceError || !!studentError || !!courseError;
   const isMutating = attendanceCreateIsMutating || attendanceUpdateIsMutating;
 
   if (isLoading) {
@@ -197,7 +192,7 @@ export default function FacultyAttendancePage() {
     <div className="flex flex-col gap-3 overflow-y-auto">
       <div className="flex justify-between">
         <Combobox
-          options={facultyCourseOptions!}
+          options={courseOptions!}
           label="course"
           state={{ value: value, setValue: setValue }}
         />

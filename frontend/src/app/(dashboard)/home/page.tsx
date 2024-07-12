@@ -35,7 +35,7 @@ export default function Home() {
       draft: false,
       depth: 2,
     });
-  // TODO: Sort data during fetch
+
   const dataWithDate = data?.docs
     ?.map((announcement) => {
       return {
@@ -98,7 +98,6 @@ export default function Home() {
                 {isAuthorized && (
                   <DeleteAlertDialog
                     onClick={() => deleteAnnouncementById(element.id)}
-                    // TODO: Add ismutating when implemented
                     variant={{ type: "icon", disabled: false }}
                   />
                 )}

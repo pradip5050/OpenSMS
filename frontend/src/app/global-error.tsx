@@ -1,6 +1,7 @@
 "use client";
 
-// TODO: Improve global error page
+import GenericError from "@/components/GenericError";
+
 export default function GlobalError({
   error,
   reset,
@@ -11,8 +12,7 @@ export default function GlobalError({
   return (
     <html>
       <body>
-        <h2>Something went wrong!</h2>
-        <button onClick={() => reset()}>Try again</button>
+        <GenericError variant={"error"} />
       </body>
     </html>
   );

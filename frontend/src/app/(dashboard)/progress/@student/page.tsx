@@ -23,6 +23,7 @@ import { useFetchCollection } from "@/lib/hooks";
 import { groupBy } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronsUpDown } from "lucide-react";
+import { useMemo } from "react";
 
 export default function Courses() {
   const { user, token } = useAuth();
@@ -49,27 +50,30 @@ export default function Courses() {
   const courses = student?.courses;
   const progresses = progressData?.docs;
 
-  const columns: ColumnDef<Progress>[] = [
-    {
-      accessorKey: "subject",
-      header: "Subject",
-      cell: ({ row }) => {
-        return row.original.subject.name;
+  const columns: ColumnDef<Progress>[] = useMemo(
+    () => [
+      {
+        accessorKey: "subject",
+        header: "Subject",
+        cell: ({ row }) => {
+          return row.original.subject.name;
+        },
       },
-    },
-    {
-      accessorKey: "percent",
-      header: "Progress",
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center">
-            <span className="w-12">{row.original.percent}%</span>
-            <ProgressComponent value={row.original.percent} max={100} />
-          </div>
-        );
+      {
+        accessorKey: "percent",
+        header: "Progress",
+        cell: ({ row }) => {
+          return (
+            <div className="flex items-center">
+              <span className="w-12">{row.original.percent}%</span>
+              <ProgressComponent value={row.original.percent} max={100} />
+            </div>
+          );
+        },
       },
-    },
-  ];
+    ],
+    []
+  );
 
   //  Make an object of { course.name, subject } and then groupBy course.name
   const progressesWithCourse = progresses?.map((progress) => {

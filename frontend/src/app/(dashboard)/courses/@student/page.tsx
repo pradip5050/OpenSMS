@@ -20,6 +20,7 @@ import { StudentResponse, studentsUrl } from "@/lib/dashboard/students";
 import { useFetchCollection } from "@/lib/hooks";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import { useMemo } from "react";
 
 export default function Courses() {
   const { user, token } = useAuth();
@@ -33,59 +34,62 @@ export default function Courses() {
   const student = data?.docs?.at(0);
   const courses = student?.courses;
 
-  const columns: ColumnDef<Course>[] = [
-    {
-      accessorKey: "code",
-      header: ({ column }) => {
-        return (
-          <div className="flex items-center gap-1">
-            Code
-            <Button
-              variant="ghost"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            >
-              <ArrowUpDown className="h-4 w-4" />
-            </Button>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "name",
-      header: ({ column }) => {
-        return (
-          <div className="flex items-center gap-1">
-            Name
-            <Button
-              variant="ghost"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            >
-              <ArrowUpDown className="h-4 w-4" />
-            </Button>
-          </div>
-        );
-      },
-    },
-    { accessorKey: "credits", header: "Credits" },
-    { accessorKey: "duration", header: "Duration" },
-    {
-      accessorKey: "subjects",
-      header: "Subjects",
-      cell: ({ row }) => {
-        return row.original.subjects.map((subject) => {
+  const columns: ColumnDef<Course>[] = useMemo(
+    () => [
+      {
+        accessorKey: "code",
+        header: ({ column }) => {
           return (
-            <Badge className="mr-1 mb-1" key={subject.id}>
-              {subject.name}
-            </Badge>
+            <div className="flex items-center gap-1">
+              Code
+              <Button
+                variant="ghost"
+                onClick={() =>
+                  column.toggleSorting(column.getIsSorted() === "asc")
+                }
+              >
+                <ArrowUpDown className="h-4 w-4" />
+              </Button>
+            </div>
           );
-        });
+        },
       },
-    },
-  ];
+      {
+        accessorKey: "name",
+        header: ({ column }) => {
+          return (
+            <div className="flex items-center gap-1">
+              Name
+              <Button
+                variant="ghost"
+                onClick={() =>
+                  column.toggleSorting(column.getIsSorted() === "asc")
+                }
+              >
+                <ArrowUpDown className="h-4 w-4" />
+              </Button>
+            </div>
+          );
+        },
+      },
+      { accessorKey: "credits", header: "Credits" },
+      { accessorKey: "duration", header: "Duration" },
+      {
+        accessorKey: "subjects",
+        header: "Subjects",
+        cell: ({ row }) => {
+          return row.original.subjects.map((subject) => {
+            return (
+              <Badge className="mr-1 mb-1" key={subject.id}>
+                {subject.name}
+              </Badge>
+            );
+          });
+        },
+      },
+    ],
+    []
+  );
 
   const isError = !!error;
 
@@ -101,5 +105,9 @@ export default function Courses() {
     return <GenericError variant="noData" title="No courses listed yet" />;
   }
 
-  return <DataTable columns={columns} data={courses!} />;
+  return (
+    <div className="overflow-y-auto">
+      <DataTable columns={columns} data={courses!} />
+    </div>
+  );
 }

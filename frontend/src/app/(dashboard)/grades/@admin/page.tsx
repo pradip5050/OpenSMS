@@ -32,10 +32,10 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { GradeDialog } from "@/components/dashboard/grades/GradeDialog";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { facultiesUrl, FacultyResponse } from "@/lib/dashboard/faculties";
 import GenericError from "@/components/GenericError";
 import SortButton from "@/components/SortButton";
 import { useToast } from "@/components/ui/use-toast";
+import { CourseResponse, coursesUrl } from "@/lib/dashboard/courses";
 
 export default function StudentGrades() {
   const { user, token } = useAuth();
@@ -68,16 +68,14 @@ export default function StudentGrades() {
     draft: false,
   });
   const {
-    data: facultyData,
-    isLoading: facultyIsLoading,
-    error: facultyError,
-  } = useFetchCollection<FacultyResponse>(facultiesUrl, token, {
+    data: courseData,
+    isLoading: courseIsLoading,
+    error: courseError,
+  } = useFetchCollection<CourseResponse>(coursesUrl, token, {
     depth: 2,
     draft: false,
-    where: {
-      "user.email": { equals: user!.email },
-    },
   });
+
   const [value, setValue] = React.useState("");
   const [createOpen, setCreateOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
@@ -87,25 +85,16 @@ export default function StudentGrades() {
     (grade) => grade.student.id === value
   );
   const students = studentData?.docs;
-  const faculty = facultyData?.docs?.at(0);
+  const courses = courseData?.docs;
 
-  const facultyCourses = faculty?.courses;
-  const facultyCourseStudents = students?.filter((val) =>
-    val.courses.some((course) =>
-      facultyCourses
-        ?.map((facultyCourse) => facultyCourse.id)
-        ?.includes(course.id)
-    )
-  );
-
-  const studentsOptions = facultyCourseStudents?.map((val) => {
+  const studentsOptions = students?.map((val) => {
     return { value: val.id, label: val.user.name };
   });
 
   const groupedCourses = groupBy(["course", "name"], studentGradesData);
 
-  const isLoading = gradesIsLoading || studentIsLoading || facultyIsLoading;
-  const isError = !!gradesError || !!studentError || !!facultyError;
+  const isLoading = gradesIsLoading || studentIsLoading || courseIsLoading;
+  const isError = !!gradesError || !!studentError || !!courseError;
   const isMutating = gradeDeleteIsMutating;
 
   const columns: ColumnDef<Grade>[] = useMemo(
@@ -173,7 +162,7 @@ export default function StudentGrades() {
         },
       },
     ],
-    [gradeDeleteError, gradeDeleteTrigger, token, toast, isMutating]
+    [gradeDeleteError, gradeDeleteTrigger, isMutating, toast, token]
   );
 
   if (isLoading) {
@@ -198,7 +187,7 @@ export default function StudentGrades() {
               <Button>Add new</Button>
             </DialogTrigger>
             <GradeDialog
-              facultyCourses={facultyCourses}
+              facultyCourses={courses}
               student={value}
               setOpen={setCreateOpen}
             />

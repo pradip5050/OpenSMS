@@ -36,11 +36,6 @@ export default function UserProfile() {
     return <GenericError variant="error" />;
   }
 
-  /*TODO: Better still, move this to parallel route layout */
-  if (user?.roles === "admin") {
-    return <GenericError variant="notImpl" />;
-  }
-
   return (
     <Table>
       <TableBody>

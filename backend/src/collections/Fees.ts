@@ -38,7 +38,6 @@ const Fees: CollectionConfig = {
   ],
   endpoints: [
     {
-      // TODO: Move amount to req body
       path: "/order/create/:amount",
       method: "post",
       handler: async (req, res, next) => {
