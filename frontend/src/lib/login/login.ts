@@ -11,6 +11,9 @@ export interface User {
   email: string;
   loginAttempts: number;
 }
+export interface UserResponse {
+  docs?: User[];
+}
 
 export interface LoginPayload {
   email: string;
