@@ -40,9 +40,11 @@ export function Combobox({ options, label, state }: ComboboxProps) {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {state.value
-            ? options.find((option) => option.value === state.value)?.label
-            : `Select ${label}...`}
+          <span className="text-ellipsis overflow-hidden">
+            {state.value
+              ? options.find((option) => option.value === state.value)?.label
+              : `Select ${label}...`}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
