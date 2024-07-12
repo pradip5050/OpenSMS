@@ -62,5 +62,9 @@ export default function FacultyCourses() {
     return <GenericError variant="error" />;
   }
 
-  return <DataTable columns={columns} data={courses!} />;
+  return (
+    <div className="overflow-y-auto">
+      <DataTable columns={columns} data={courses!} />
+    </div>
+  );
 }
