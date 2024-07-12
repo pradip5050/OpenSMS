@@ -4,7 +4,7 @@ import { User } from "../login/login";
 
 export interface Student {
   id: string;
-  studentId: number;
+  studentId: string;
   number: number;
   dob: string;
   links: { title: string; url: string; description: string }[];
