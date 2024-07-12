@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/components/ui/use-toast";
-import { FacultyResponse, facultiesUrl } from "@/lib/dashboard/faculties";
 import {
   Progress,
   progressesUrl,
@@ -25,50 +24,24 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 
 export default function FacultyCourses() {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const { toast } = useToast();
-  const {
-    data: facultyData,
-    isLoading: facultyIsLoading,
-    error: facultyError,
-  } = useFetchCollection<FacultyResponse>(facultiesUrl, token, {
-    depth: 2,
-    where: { "user.email": { equals: user!.email } },
-  });
-  const faculty = facultyData?.docs?.at(0);
 
   const {
     data: studentData,
     isLoading: studentIsLoading,
     error: studentError,
-  } = useFetchCollection<StudentResponse>(
-    () => (!!facultyData ? studentsUrl : null),
-    token,
-    {
-      depth: 2,
-      where: {
-        "courses.code": {
-          in: faculty?.courses.map((course) => course.code).toString(),
-        },
-      },
-    }
-  );
+  } = useFetchCollection<StudentResponse>(studentsUrl, token, {
+    depth: 2,
+  });
+
   const {
     data: progressData,
     isLoading: progressIsLoading,
     error: progressError,
-  } = useFetchCollection<ProgressResponse>(
-    () => (!!facultyData ? progressesUrl : null),
-    token,
-    {
-      depth: 2,
-      where: {
-        "subject.code": {
-          in: faculty?.subjects.map((subject) => subject.code).toString(),
-        },
-      },
-    }
-  );
+  } = useFetchCollection<ProgressResponse>(progressesUrl, token, {
+    depth: 2,
+  });
   const {
     trigger: progressUpdateTrigger,
     isMutating: progressUpdateIsMutating,
@@ -118,21 +91,16 @@ export default function FacultyCourses() {
   const studentsOptions = students?.map((val) => {
     return { value: val.id, label: val.user.name };
   });
-  const subjectOptions = faculty?.subjects
-    ?.filter((facSub) =>
-      student?.courses
-        .map((val) => val.subjects.map((sub) => sub.id))
-        .some((r) => r.includes(facSub.id))
+  const subjects = student?.courses
+    .map((val) => val.subjects.map((val) => val))
+    .flat();
+  const subjectOptions = student?.courses
+    .map((val) =>
+      val.subjects.map((val) => {
+        return { value: val.id, label: val.name };
+      })
     )
-    ?.filter(
-      (val) =>
-        !filteredProgresses
-          ?.map((progress) => progress.subject.id)
-          .some((id) => val.id === id)
-    )
-    .map((val) => {
-      return { value: val.id, label: val.name };
-    });
+    .flat();
 
   async function onSubmit() {
     filteredProgresses?.forEach(async (progress, index) => {
@@ -229,8 +197,8 @@ export default function FacultyCourses() {
     ]
   );
 
-  const isLoading = facultyIsLoading || studentIsLoading || progressIsLoading;
-  const isError = !!facultyError || !!studentError || !!progressError;
+  const isLoading = studentIsLoading || progressIsLoading;
+  const isError = !!studentError || !!progressError;
 
   if (isLoading) {
     return <Spinner variant="page" />;
