@@ -85,15 +85,9 @@ export default function StudentGrades() {
     (grade) => grade.student.id === value
   );
   const students = studentData?.docs;
-
   const courses = courseData?.docs;
-  const courseStudents = students?.filter((val) =>
-    val.courses.some((course) =>
-      courses?.map((course) => course.id)?.includes(course.id)
-    )
-  );
 
-  const studentsOptions = courseStudents?.map((val) => {
+  const studentsOptions = students?.map((val) => {
     return { value: val.id, label: val.user.name };
   });
 
